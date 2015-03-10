@@ -22,30 +22,16 @@ var block, block2;
 
 var block_types = ['column', 'triangle'];
 var last_column;
+var grid;
 
 // function generateGrid() {
-//     var current_CELL_SIZE = 0,
-//         current_column = 0;
 
-//     // Fill rows    
 //     for (var i = 0; i < ROWS.length; i++) {
 //         for (var j = 0; j < COLUMNS.length; j++) {
-//             GRID[i][j] = COLUMNS
+//             grid[i][j] = 0;
 //         }        
 //     }
 
-//     // for (var i = 0; i < ROWS.length; i++) {
-//     //     for (var j = 0; j < COLUMNS.length; j++) {
-//     //         GRID[i][j] = ROW[i];
-//     //         // GRID[i][j] = current_CELL_SIZE + CELL_SIZE;
-
-//     //         // current_column = current_column + CELL_SIZE;
-//     //         // current_CELL_SIZE   = GRID[] 
-//     //     }    
-
-//         // current_row = current_row + CELL_SIZE;
-//         // current_
-//     }
 // }
 
 function preload() {
@@ -73,7 +59,7 @@ function throwBlock() {
     block.anchor.setTo(0, 1);
     tween = game.add.tween(block).to( { y: FLOOR }, 2400, Phaser.Easing.Linear.None, true);
 
-    getVirtualShape(block);
+    // trackBlock(block, tween);
     // tween.onStart = trackBlock(block, tween);
     // var block2 = blocks.create(random_column, 0, 'triangle');
 
@@ -90,72 +76,42 @@ function throwBlock() {
 
 }
 
-function trackOccupiedCells(block) {
-    var x = block.x / CELL_SIZE;
-    var y = block.y / CELL_SIZE;
+// function shapeOccupiedCells(block) {
 
-    var cells = [];// = [[x,y]];
+//     if (!tween.isRunning) clearInterval(interval_id);
 
-    var shape_type = 'column';
+//     var x = block.x / CELL_SIZE;
+//     var y = block.y / CELL_SIZE;
 
-    switch(shape_type) {
-        case 'column':
-            cells.push([x,y]);
-            // Next cell is at the bottom
-            cells.push([x+1,y]);
-            // Next cell is at the bottom
-            cells.push([x+2,y]);
-    }
-}
+//     var grid = [];// = [[x,y]];
+
+//     var shape_type = 'column';
+
+//     switch(shape_type) {
+//         case 'column':
+//             grid.push([x,y]);
+//             // Next cell is at the bottom
+//             grid.push([x+1,y]);
+//             // Next cell is at the bottom
+//             grid.push([x+2,y]);
+//     }
+// }
 
 function trackBlock(block, tween) {
+    var inderval_id = setInterval(shapeOccupiedCells,50);
+
     while (tween.isRunning) {
-        trackOccupiedCells();
+        // shapeOccupiedCells(block);
     }
-}
-
-function CELL_SIZEsOccupiedByShape(block) {
-
+    debugger;
 }
 
 function create() {  
 
-    // game.physics.startSystem(Phaser.Physics.ARCADE);
-
     blocks = game.add.group();
-    // blocks.enableBody = true;
-    // blocks.physicsBodyType = Phaser.Physics.ARCADE;
-
-    // block = blocks.create(100, 100, 'column');
-
-    // block.body.collideWorldBounds = true;
-    // block.body.velocity.y=150;
-    // block.body.bounce.y = 0;
-
-    // block2 = blocks.create(100, 300, 'column');
-
-    // block2.body.collideWorldBounds = true;
-    // block2.body.velocity.y=150;    
-
 
     setInterval(throwBlock, 500);
-
-    // for (var i = 0; i < 3; i++)
-    // {
-        // var block = blocks.create(game.world.randomX, 0, 'column');
-
-        // // block.body.setCollisionGroup(blocks_collision_group);
-        // // block.body.collides([blocks_collision_group]);
-
-        // block.body.collideWorldBounds = true;
-        // block.body.velocity.y=150;
-        // block.body.bounce.y = 0;        
-    // }     
-
-
 }
 
 function update() {
-    // game.physics.arcade.collide(block, block2);
-    // game.physics.arcade.collide(blocks);
 }

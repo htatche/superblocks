@@ -51,6 +51,15 @@ We also have the bidimensional grid array to easily know which cells are occupie
 Example of grid with a column at the top-left:
 Grid = [[1,0], [1,0], [1,0]]
 
+It could become later on an object with methods 
+such as:
+	blowRow(x)
+	blowColorCells('color') // Joker shape
+
+Or even events that listen constantly to
+the grid cells:
+	filledRow(x) -> blowRow(x) -> filledRow(x) ...
+
 Blocks:
 
 Every block has a different shape and uses several
@@ -81,4 +90,27 @@ Detect block position:
 Read x,y from sprite and divide each by 35
 
 
+Grid control
+============
+
+Grid = [[x,y]]
+
+A block falls, we start to track it
+
+while (isRunning) usedShapeCells();
+
+function usedShapeCells() {
+	shape = [[x,y]...]
+}
+
+function updateGrid() {
+  grid.filterBy(block = 1232) {
+  	change any grid cell used by that shape to 0
+  	update new ones to 1
+
+  	if it is already 1 by another shape, pause the tween
+  	right before since it means collision
+  }
+
+}
 
