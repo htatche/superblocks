@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"sh",
+				"shapeOccupiedCells"
+			],
+			[
+				"get",
+				"getVirtualShape"
+			],
+			[
+				"pickRandom",
+				"pickRandomBlock"
+			],
+			[
+				"block",
+				"blocks_collision_group"
+			],
+			[
+				"blo",
+				"blocks_collision_group"
+			],
+			[
 				"sc",
 				"scrolling"
 			],
@@ -204,6 +224,14 @@
 	},
 	"file_history":
 	[
+		"/Users/htatche/dev/last projects/woody/main.js",
+		"/Users/htatche/dev/last projects/woody/src/woodie.js",
+		"/Users/htatche/Documents/Nomad Stays/Landing Page/SeventyTwo - Premium Coming Soon - Live Preview - WrapBootstrap.html",
+		"/Users/htatche/dev/tetris/tetris.js",
+		"/Users/htatche/dev/tetris/ROADMAP",
+		"/Users/htatche/dev/tetris/index.html",
+		"/Users/htatche/dev/tetris/server.js",
+		"/Users/htatche/dev/phaser-examples/examples/games/breakout.js",
 		"/Users/htatche/dev/localmarket/client/templates/home.js",
 		"/Users/htatche/dev/localmarket/client/helpers.js",
 		"/Users/htatche/dev/localmarket/client/templates/recipes.html",
@@ -213,11 +241,9 @@
 		"/Users/htatche/dev/localmarket/client/stylesheets/globals/form.import.less",
 		"/Users/htatche/dev/localmarket/client/stylesheets/globals/welcome.import.less",
 		"/Users/htatche/dev/localmarket/client/init.js",
-		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/last projects/blacktable/lib/blacktable.js",
 		"/Users/htatche/dev/last projects/cluey/app/assets/javascripts/pos/models/product.js.coffee",
 		"/Users/htatche/dev/last projects/cluey/app/assets/javascripts/pos/controllers/payment_methods_controller.js.coffee",
-		"/Users/htatche/dev/last projects/woody/src/woodie.js",
 		"/Users/htatche/dev/last projects/woody/src/status.js",
 		"/Users/htatche/dev/simpleweb/index.html",
 		"/Users/htatche/dev/simpleweb/stylesheets/main.css",
@@ -325,17 +351,11 @@
 		"/Users/htatche/dev/woody/poc.js",
 		"/Users/htatche/dev/woody/library.js",
 		"/Users/htatche/dev/woody/pattern.js",
-		"/Users/htatche/dev/tweetmybtc/twitter/question.js",
-		"/Users/htatche/dev/tweetmybtc/twitter/answer.js",
-		"/Users/htatche/dev/tweetmybtc/twitter/status.js",
-		"/Users/htatche/dev/tweetmybtc/README.md",
-		"/Users/htatche/dev/tweetmybtc/wtf.js",
-		"/Users/htatche/dev/tweetmybtc/wtf.html",
-		"/Users/htatche/dev/tweetmybtc/twitter/main.js"
+		"/Users/htatche/dev/tweetmybtc/twitter/question.js"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -379,6 +399,48 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"heading",
+			"coming soon",
+			"debugg",
+			"RIGHT",
+			"platforms",
+			"\nFLOOR",
+			"FLOOR",
+			"LEFT_WALL",
+			"generateGrid",
+			"GRID",
+			"generateGrid",
+			"rows",
+			"generateGrid",
+			"shapeOccupiedCells",
+			"cells",
+			"getVirtualShape",
+			"cell",
+			"CELL",
+			"cell",
+			"CELL",
+			"cell",
+			"CELL",
+			"i",
+			"grid_columns",
+			"world",
+			"2",
+			"column",
+			"1",
+			"random_x",
+			"game.world.randomX",
+			"boun",
+			"var",
+			"block",
+			"ground",
+			"walls_collision_group",
+			"ship",
+			"column",
+			"Pandas",
+			"pandas",
+			"blocks",
+			"blocks_group",
+			"image",
 			"home",
 			"arrow",
 			"main-header",
@@ -464,49 +526,7 @@
 			"scrolltop",
 			"media",
 			"scrolltop",
-			"main-nav",
-			"rotate",
-			"pointer",
-			"post-title",
-			"siz",
-			"diz",
-			"icon",
-			"icons",
-			"scroll",
-			"arrow",
-			"body:not(.post-template)",
-			"3.2rem",
-			"hover",
-			"post-title",
-			"home-template .po",
-			"post-descri",
-			"opaci",
-			"post-templ",
-			"media",
-			"icon",
-			"untitled-font-1",
-			"fonts",
-			"arrow",
-			".post-template",
-			".main-nav",
-			"post-meta",
-			"display: table",
-			"170",
-			".post-template .post",
-			".post",
-			"post-templ",
-			"table-cell",
-			".post-tem",
-			"arrow",
-			".post",
-			"transitio",
-			".post",
-			"transiti",
-			"subscribe-butt",
-			"subscr",
-			"subscribe-but",
-			"hover",
-			"icon-arrow-le"
+			"main-nav"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -541,7 +561,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 34.0
+		"height": 26.0
 	},
 	"input":
 	{
@@ -581,7 +601,7 @@
 	"project": "tetris.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 64.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1184,7 +1204,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 233.0,
+	"side_bar_width": 149.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

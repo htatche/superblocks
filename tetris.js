@@ -1,38 +1,72 @@
-var TOP = 0,
-    FLOOR = 600,
-    LEFT_WALL = 0,
-    RIGHT_WALL = 350;
-
-// Each cell from the grid is 35 px
+var TOP         = 0,
+    FLOOR       = 600,
+    LEFT_WALL   = 0,
+    RIGHT_WALL  = 350;
 
 var ROWS    = [  0,  35,  70, 105, 140, 175, 210, 245, 280, 315,
                350, 385, 420, 455, 490, 525, 560, 595, 630, 665];
 
 var COLUMNS = [0, 35, 70, 105, 140, 175, 210, 245, 280, 315];
 
-// var GRID = generateGrid();//   = [[ROWS[0], COLUMNS[0]], [ROWS[0], COLUMNS[1]]];
-
 var CELL_SIZE = 35;
 
-var game = new Phaser.Game(RIGHT_WALL, FLOOR, Phaser.AUTO, 'tetris', { preload: preload, create: create, update: update });
-
-var blocks, platforms, floor;
-
-var block, block2;
+var game = new Phaser.Game(RIGHT_WALL, FLOOR,
+                           Phaser.AUTO, 
+                           'tetris',
+                           { preload: preload,
+                             create: create,
+                             update: update });
 
 var block_types = ['column', 'triangle'];
+
+var blocks = [
+    {name: 'column',   xsize: 3, ysize: 1},
+    {name: 'triangle', xsize: 2, ysize: 3}
+]
+
 var last_column;
-var grid;
 
-// function generateGrid() {
+// Block starts in row 0
+// moveDown() moves it one row below, if there is no
+// collision, we execute again this function
 
-//     for (var i = 0; i < ROWS.length; i++) {
-//         for (var j = 0; j < COLUMNS.length; j++) {
-//             grid[i][j] = 0;
-//         }        
-//     }
+var Block = function() {
+    this.row      = 0,
+    this.column   = 0
+    // this.sprite   = null
+}
 
-// }
+Block.prototype.moveDown = function() {
+    var parent = this;
+
+    if (ROWS[this.row] == ROWS[FLOOR] ) return;
+
+    ++this.row;
+
+    this.tween = game.add.tween(this.sprite);
+
+    this.tween.to(
+        { y: ROWS[this.row] },
+        500,
+        Phaser.Easing.Linear.None,
+        true // No autostart
+    );
+
+    parent.tween.onComplete.add(this.moveDown, this);
+
+    // tween = game.add.tween(block).to( { y: FLOOR }, 2400, Phaser.Easing.Linear.None, true);
+
+    // debugger;
+    // setTimeout(this.moveDown(), 5);
+    // this.moveDown()
+
+    // debugger;
+}
+
+Block.prototype.detectCollision = function() {
+    // this.moveDown();
+    // return function(){};
+}
 
 function preload() {
      game.load.image('column', 'images/block_03.png');
@@ -49,68 +83,33 @@ function pickRandomBlock() {
 
 function throwBlock() {
 
-    var random_column, block, tween;
+    var block = new Block();
+
+    var random_column;
 
     while (last_column === random_column) random_column = pickRandomColumn();
 
     last_column = random_column;          
 
-    block = blocks.create(random_column, 0, pickRandomBlock());
-    block.anchor.setTo(0, 1);
-    tween = game.add.tween(block).to( { y: FLOOR }, 2400, Phaser.Easing.Linear.None, true);
+    block.sprite = blocks.create(random_column, 0, pickRandomBlock());
+    block.sprite.anchor.setTo(0, 0);
 
-    // trackBlock(block, tween);
-    // tween.onStart = trackBlock(block, tween);
-    // var block2 = blocks.create(random_column, 0, 'triangle');
+    block.moveDown();
 
-    // block.body.setCollisionGroup(blocks_collision_group);
-    // block.body.collides([blocks_collision_group]);
-
-    // block.body.collideWorldBounds = true;
-    // block.body.velocity.y=150;
-    // block.body.bounce.y = 0;    
-
-    // block2.body.collideWorldBounds = true;
-    // block2.body.velocity.y=150;
-    // block2.body.bounce.y = 0;    
-
+    // block.moveDown();
 }
 
-// function shapeOccupiedCells(block) {
-
-//     if (!tween.isRunning) clearInterval(interval_id);
-
-//     var x = block.x / CELL_SIZE;
-//     var y = block.y / CELL_SIZE;
-
-//     var grid = [];// = [[x,y]];
-
-//     var shape_type = 'column';
-
-//     switch(shape_type) {
-//         case 'column':
-//             grid.push([x,y]);
-//             // Next cell is at the bottom
-//             grid.push([x+1,y]);
-//             // Next cell is at the bottom
-//             grid.push([x+2,y]);
-//     }
-// }
-
-function trackBlock(block, tween) {
-    var inderval_id = setInterval(shapeOccupiedCells,50);
-
-    while (tween.isRunning) {
-        // shapeOccupiedCells(block);
-    }
-    debugger;
+var complete = function() {  
+    console.log('complete!');
 }
 
 function create() {  
 
     blocks = game.add.group();
 
-    setInterval(throwBlock, 500);
+    throwBlock();
+
+    // setInterval(throwBlock, 500);
 }
 
 function update() {
