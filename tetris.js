@@ -17,12 +17,14 @@ var game = new Phaser.Game(RIGHT_WALL, FLOOR,
                              create: create,
                              update: update });
 
+var blocks_group;
+
 var block_types = ['column', 'triangle'];
 
 var blocks = [
-    {name: 'column',   xsize: 3, ysize: 1},
+    {name: 'column',   xsize: 3, ysize: 1, cells_occupied: []},
     {name: 'triangle', xsize: 2, ysize: 3}
-]
+];
 
 var last_column;
 
@@ -33,7 +35,6 @@ var last_column;
 var Block = function() {
     this.row      = 0,
     this.column   = 0
-    // this.sprite   = null
 }
 
 Block.prototype.moveDown = function() {
@@ -49,23 +50,19 @@ Block.prototype.moveDown = function() {
         { y: ROWS[this.row] },
         500,
         Phaser.Easing.Linear.None,
-        true // No autostart
+        true
     );
 
-    parent.tween.onComplete.add(this.moveDown, this);
-
-    // tween = game.add.tween(block).to( { y: FLOOR }, 2400, Phaser.Easing.Linear.None, true);
-
-    // debugger;
-    // setTimeout(this.moveDown(), 5);
-    // this.moveDown()
-
-    // debugger;
+    parent.tween.onComplete.add(this.preventCollision, this);
 }
 
-Block.prototype.detectCollision = function() {
-    // this.moveDown();
-    // return function(){};
+Block.prototype.preventCollision = function() {
+    // 1 Create an array of falses that represents the grid
+    // 2 Give to every block an array that represents which blocks it uses (from anchor)
+    // 3 Before moveDown(), check that we are not going to overlap any existing block
+    // 4 Perform actual tween move with moveDown(), update grid with new cells used
+    // Back to 3
+    this.moveDown();
 }
 
 function preload() {
@@ -73,30 +70,37 @@ function preload() {
      game.load.image('triangle', 'images/block_06.png');
 }
 
-function pickRandomColumn() {
-    return COLUMNS[Math.floor(Math.random() * COLUMNS.length)]; 
+function pickRandomColumn(block_shape) {
+    // We add 1 since the last column of the array isn't the
+    // y limit but only the last available column
+    var limit = (COLUMNS.length + 1) - block_shape.ysize;
+
+    return COLUMNS[Math.floor(Math.random() * limit)]; 
 }
 
 function pickRandomBlock() {
-    return block_types[Math.floor(Math.random() * block_types.length)]; 
+    var block_shape = blocks[Math.floor(Math.random() * blocks.length)]; 
+
+    return block_shape;
 }
 
 function throwBlock() {
 
-    var block = new Block();
+    var block = new Block();   
+
+    var block_shape = pickRandomBlock();
 
     var random_column;
 
-    while (last_column === random_column) random_column = pickRandomColumn();
+    while (last_column === random_column) random_column = pickRandomColumn(block_shape);
 
-    last_column = random_column;          
+    last_column = random_column;           
 
-    block.sprite = blocks.create(random_column, 0, pickRandomBlock());
+    block.sprite = blocks_group.create(random_column, 0, block_shape.name);
     block.sprite.anchor.setTo(0, 0);
 
     block.moveDown();
 
-    // block.moveDown();
 }
 
 var complete = function() {  
@@ -105,11 +109,11 @@ var complete = function() {
 
 function create() {  
 
-    blocks = game.add.group();
+    blocks_group = game.add.group();
 
     throwBlock();
 
-    // setInterval(throwBlock, 500);
+    setInterval(throwBlock, 200);
 }
 
 function update() {
