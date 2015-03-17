@@ -3,7 +3,11 @@
 	[
 		{
 			"follow_symlinks": true,
-			"path": "/Users/htatche/dev/phaser-examples/examples/games"
+			"path": "."
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/htatche/dev/last projects/woody/src"
 		}
 	]
 }
