@@ -1,5 +1,5 @@
 var TOP         = 0,
-    FLOOR       = 600,
+    FLOOR       = 700,
     LEFT_WALL   = 0,
     RIGHT_WALL  = 350;
 
@@ -19,50 +19,164 @@ var game = new Phaser.Game(RIGHT_WALL, FLOOR,
 
 var blocks_group;
 
-var block_types = ['column', 'triangle'];
-
 var blocks = [
-    {name: 'column',   xsize: 3, ysize: 1, cells_occupied: []},
-    {name: 'triangle', xsize: 2, ysize: 3}
+    {name: 'column',   xsize: 3, ysize: 1, cells: [1, COLUMNS.length, 2 * COLUMNS.length], occupied_cells: []}
+    // {name: 'triangle', xsize: 2, ysize: 3}
 ];
 
 var last_column;
+
+var grid;
+
+// Blocks counter, used for block.number
+var nblock = 0;
+
+// Grid is 10x20 and contains 
+// an array of cells initialized with falses
+
+var Grid = function() {
+    this.cells = []
+}
 
 // Block starts in row 0
 // moveDown() moves it one row below, if there is no
 // collision, we execute again this function
 
 var Block = function() {
-    this.row      = 0,
-    this.column   = 0
+    this.row      = 1,
+    this.column   = 1
+}
+
+Grid.prototype.initialize = function() {
+    var parent = this;
+
+    var ncells = ROWS.length * COLUMNS.length;
+
+    for (var i=1; i <= ncells; ++i) {
+        parent.cells[i] = [{occupied: false, number: null}];
+    }
+}
+
+Grid.prototype.updateGrid = function(block) {
+    var parent = this;  
+
+    // Update old occupied cells with false
+    for (var i=1; i < parent.cells.length; ++i) {
+        if (parent.cells[i].number == block.number) {
+            parent.cells[i] = {occupied: false, number: null};
+        }
+    }
+
+    // Update new occupied cells with true
+    for (var i=0; i < block.shape.occupied_cells.length; ++i) {
+        parent.cells[block.shape.occupied_cells[i]] = {occupied: true, number: block.number};
+    }
+
+    // for (var j=1; j <= parent.cells.length; ++j) {
+    //     if (parent.cells[i].occupied == true) { console.log(i + " is occupied") }
+    // }
+
+}
+
+// Updates cells that this block occupies
+Block.prototype.setOccupiedCells = function() {
+    var parent = this;
+
+    var ncell = parent.shape.cells[0] * parent.row * COLUMNS.length; 
+
+    for (var i=0; i < parent.shape.cells.length; ++i) {
+        if (i == 0) {
+            parent.shape.occupied_cells[0] = parent.shape.cells[i] + ncell;
+        } else {
+            parent.shape.occupied_cells[i] = parent.shape.cells[i] + ncell + 1;
+        }
+    }
+
+    console.log(parent.shape.occupied_cells);
+}
+
+Block.prototype.preventCollision = function() {
+    var parent    = this;
+    var collision = false;
+
+    // console.log(parent.shape.occupied_cells);
+
+    for (var i=0; i < parent.shape.occupied_cells.length; ++i) {    
+        if (grid.cells[parent.shape.occupied_cells[i]].number != parent.number) {
+            if (grid.cells[parent.shape.occupied_cells[i]].occupied == true) {
+                collision = true;
+                console.log("Collision !");
+            }
+        }
+    }
+
+    // for (var i=0; i < parent.shape.occupied_cells.length; ++i) {
+    //     for (var j=0; j < grid.cells.length; ++j) {
+    //         if (grid.cells[parent.shape.occupied_cells[i]].number != parent.number) {
+    //             if (grid.cells[parent.shape.occupied_cells[i]].occupied == true) {
+    //                 collision = true;
+    //                 // console.log("Collision !");
+    //             }
+    //         }
+    //     }
+    // }
+
+    return collision;
+}
+
+Grid.prototype.throwBlock = function() {
+
+    var block = new Block();   
+
+    var block_shape = pickRandomBlock();
+
+    var random_column;
+
+    while (last_column === random_column) random_column = pickRandomColumn(block_shape);
+
+    last_column = random_column;           
+
+    block.shape = block_shape;
+    block.number = ++nblock;
+
+    block.sprite = blocks_group.create(random_column, 0, block_shape.name);
+    block.sprite.anchor.setTo(0, 0);
+
+    block.moveDown();
 }
 
 Block.prototype.moveDown = function() {
     var parent = this;
 
-    if (ROWS[this.row] == ROWS[FLOOR] ) return;
+    console.log(parent.number);
 
-    ++this.row;
+    parent.setOccupiedCells();    
+    grid.updateGrid(parent);
 
-    this.tween = game.add.tween(this.sprite);
+    if (parent.row == (ROWS.length - parent.shape.xsize) ) {
+        console.log("Ground touched !");
+        parent.tween.stop();
+        return;
+    }  
 
-    this.tween.to(
-        { y: ROWS[this.row] },
+    if (parent.preventCollision()) {
+        console.log ("Collision !");
+        parent.tween.stop();
+        return;
+    } 
+
+    ++parent.row;
+
+    parent.tween = game.add.tween(parent.sprite);
+
+    parent.tween.to(
+        { y: ROWS[parent.row] },
         500,
         Phaser.Easing.Linear.None,
         true
     );
 
-    parent.tween.onComplete.add(this.preventCollision, this);
-}
-
-Block.prototype.preventCollision = function() {
-    // 1 Create an array of falses that represents the grid
-    // 2 Give to every block an array that represents which blocks it uses (from anchor)
-    // 3 Before moveDown(), check that we are not going to overlap any existing block
-    // 4 Perform actual tween move with moveDown(), update grid with new cells used
-    // Back to 3
-    this.moveDown();
+    parent.tween.onComplete.add(parent.moveDown, parent);
 }
 
 function preload() {
@@ -75,7 +189,9 @@ function pickRandomColumn(block_shape) {
     // y limit but only the last available column
     var limit = (COLUMNS.length + 1) - block_shape.ysize;
 
-    return COLUMNS[Math.floor(Math.random() * limit)]; 
+
+    return COLUMNS[0]; 
+    // return COLUMNS[Math.floor(Math.random() * limit)]; 
 }
 
 function pickRandomBlock() {
@@ -84,36 +200,16 @@ function pickRandomBlock() {
     return block_shape;
 }
 
-function throwBlock() {
-
-    var block = new Block();   
-
-    var block_shape = pickRandomBlock();
-
-    var random_column;
-
-    while (last_column === random_column) random_column = pickRandomColumn(block_shape);
-
-    last_column = random_column;           
-
-    block.sprite = blocks_group.create(random_column, 0, block_shape.name);
-    block.sprite.anchor.setTo(0, 0);
-
-    block.moveDown();
-
-}
-
-var complete = function() {  
-    console.log('complete!');
-}
-
 function create() {  
+    grid = new Grid();
+
+    grid.initialize();
 
     blocks_group = game.add.group();
 
-    throwBlock();
-
-    setInterval(throwBlock, 200);
+    grid.throwBlock();
+    setTimeout(grid.throwBlock, 10000);
+    // setInterval(grid.throwBlock, 2000);
 }
 
 function update() {
