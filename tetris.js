@@ -20,7 +20,7 @@ var game = new Phaser.Game(RIGHT_WALL, FLOOR,
 var blocks_group;
 
 var blocks = [
-    {name: 'column',   xsize: 3, ysize: 1, cells: [1, COLUMNS.length, 2 * COLUMNS.length], occupied_cells: []}
+    {name: 'column',   xsize: 3, ysize: 1, cells: [1, COLUMNS.length, 2 * COLUMNS.length]}
     // {name: 'triangle', xsize: 2, ysize: 3}
 ];
 
@@ -44,7 +44,9 @@ var Grid = function() {
 
 var Block = function() {
     this.row      = 1,
-    this.column   = 1
+    this.column   = 1,
+    this.occupied_cells = [],
+    this.next_occupied_cells = []
 }
 
 Grid.prototype.initialize = function() {
@@ -59,6 +61,7 @@ Grid.prototype.initialize = function() {
 
 Grid.prototype.updateGrid = function(block) {
     var parent = this;  
+    var collision = false;
 
     // Update old occupied cells with false
     for (var i=1; i < parent.cells.length; ++i) {
@@ -68,14 +71,18 @@ Grid.prototype.updateGrid = function(block) {
     }
 
     // Update new occupied cells with true
-    for (var i=0; i < block.shape.occupied_cells.length; ++i) {
-        parent.cells[block.shape.occupied_cells[i]] = {occupied: true, number: block.number};
+    for (var i=0; i < block.occupied_cells.length; ++i) {
+
+        // before overriding grid cells occupation, we check if they are already
+        // oocupied, which means collision!
+        if (block.preventCollision("down")) {
+            collision = true;
+        } 
+
+        parent.cells[block.occupied_cells[i]] = {occupied: true, number: block.number};
     }
 
-    // for (var j=1; j <= parent.cells.length; ++j) {
-    //     if (parent.cells[i].occupied == true) { console.log(i + " is occupied") }
-    // }
-
+    return collision;
 }
 
 // Updates cells that this block occupies
@@ -86,42 +93,59 @@ Block.prototype.setOccupiedCells = function() {
 
     for (var i=0; i < parent.shape.cells.length; ++i) {
         if (i == 0) {
-            parent.shape.occupied_cells[0] = parent.shape.cells[i] + ncell;
+            parent.occupied_cells[0] = parent.shape.cells[i] + ncell;
         } else {
-            parent.shape.occupied_cells[i] = parent.shape.cells[i] + ncell + 1;
+            parent.occupied_cells[i] = parent.shape.cells[i] + ncell + 1;
         }
     }
 
-    console.log(parent.shape.occupied_cells);
+    console.log(parent.occupied_cells);
 }
 
-Block.prototype.preventCollision = function() {
-    var parent    = this;
-    var collision = false;
+// Updates next cells that will be occupied
+Block.prototype.setNextOccupiedCells = function() {
+    var parent = this;
 
-    // console.log(parent.shape.occupied_cells);
+    var next_row = parent.row + 1
 
-    for (var i=0; i < parent.shape.occupied_cells.length; ++i) {    
-        if (grid.cells[parent.shape.occupied_cells[i]].number != parent.number) {
-            if (grid.cells[parent.shape.occupied_cells[i]].occupied == true) {
-                collision = true;
-                console.log("Collision !");
-            }
+    var ncell = parent.shape.cells[0] * next_row * COLUMNS.length; 
+
+    for (var i=0; i < parent.shape.cells.length; ++i) {
+        if (i == 0) {
+            parent.next_occupied_cells[0] = parent.shape.cells[i] + ncell;
+        } else {
+            parent.next_occupied_cells[i] = parent.shape.cells[i] + ncell + 1;
         }
     }
 
-    // for (var i=0; i < parent.shape.occupied_cells.length; ++i) {
-    //     for (var j=0; j < grid.cells.length; ++j) {
-    //         if (grid.cells[parent.shape.occupied_cells[i]].number != parent.number) {
-    //             if (grid.cells[parent.shape.occupied_cells[i]].occupied == true) {
-    //                 collision = true;
-    //                 // console.log("Collision !");
-    //             }
-    //         }
-    //     }
-    // }
+    // console.log(parent.occupied_cells);
+}
 
-    return collision;
+Block.prototype.preventCollision = function(direction) {
+    var parent    = this;
+
+
+    switch(direction) {
+        case "down":
+           parent.setNextOccupiedCells()
+    }
+
+    for (var i=0; i < parent.next_occupied_cells.length; ++i) {   
+        // unless we touched ground or out of grid scope 
+        if (grid.cells[parent.next_occupied_cells[i]] != undefined) {
+
+            if (grid.cells[parent.next_occupied_cells[i]].number != parent.number) {
+                if (grid.cells[parent.next_occupied_cells[i]].occupied == true) {
+                    return true;
+                }
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 Grid.prototype.throwBlock = function() {
@@ -139,7 +163,7 @@ Grid.prototype.throwBlock = function() {
     block.shape = block_shape;
     block.number = ++nblock;
 
-    block.sprite = blocks_group.create(random_column, 0, block_shape.name);
+    block.sprite = blocks_group.create(random_column, - (block.shape.xsize * 1000), block_shape.name);
     block.sprite.anchor.setTo(0, 0);
 
     block.moveDown();
@@ -150,20 +174,30 @@ Block.prototype.moveDown = function() {
 
     console.log(parent.number);
 
+    // if (parent.preventCollision()) {
+    //     console.log ("Collision !");
+    //     parent.shape.tween.stop();
+    //     return;
+    // } 
+
     parent.setOccupiedCells();    
-    grid.updateGrid(parent);
+    // grid.updateGrid(parent);
+
+    if (grid.updateGrid(parent)) {
+        console.log ("Collision !");
+        parent.tween.stop();
+        console.log("Throwing another block");
+        grid.throwBlock();        
+        return;
+    }     
 
     if (parent.row == (ROWS.length - parent.shape.xsize) ) {
         console.log("Ground touched !");
         parent.tween.stop();
+        console.log("Throwing another block");
+        grid.throwBlock();
         return;
     }  
-
-    if (parent.preventCollision()) {
-        console.log ("Collision !");
-        parent.tween.stop();
-        return;
-    } 
 
     ++parent.row;
 
@@ -171,12 +205,18 @@ Block.prototype.moveDown = function() {
 
     parent.tween.to(
         { y: ROWS[parent.row] },
-        500,
+        1,
         Phaser.Easing.Linear.None,
         true
     );
 
-    parent.tween.onComplete.add(parent.moveDown, parent);
+    parent.tween.onComplete.add(parent.moveNext, parent); 
+}
+
+Block.prototype.moveNext = function() {
+    var parent = this;
+
+    setTimeout(parent.moveDown.bind(parent), 200);   
 }
 
 function preload() {
@@ -208,7 +248,7 @@ function create() {
     blocks_group = game.add.group();
 
     grid.throwBlock();
-    setTimeout(grid.throwBlock, 10000);
+    // setTimeout(grid.throwBlock, 10000);
     // setInterval(grid.throwBlock, 2000);
 }
 

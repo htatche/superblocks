@@ -139,14 +139,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "tetris.js",
-			"settings":
-			{
-				"buffer_size": 4566,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -245,11 +237,16 @@
 	],
 	"file_history":
 	[
+		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Tween.js.html",
+		"/Users/htatche/dev/tetris/bower_components/phaser/docs/RenderTexture.js_.html",
+		"/Users/htatche/dev/tetris/node_modules/serve-static/node_modules/send/node_modules/etag/node_modules/crc/.npmignore",
+		"/Users/htatche/dev/tetris/node_modules/serve-static/node_modules/escape-html/.npmignore",
+		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Easing.js.html",
+		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/tetris.sublime-project",
 		"/Users/htatche/dev/last projects/woody/main.js",
 		"/Users/htatche/dev/last projects/woody/src/woodie.js",
 		"/Users/htatche/Documents/Nomad Stays/Landing Page/SeventyTwo - Premium Coming Soon - Live Preview - WrapBootstrap.html",
-		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/ROADMAP",
 		"/Users/htatche/dev/tetris/index.html",
 		"/Users/htatche/dev/tetris/server.js",
@@ -367,12 +364,7 @@
 		"/Users/htatche/dev/hbs2emblem/index.html",
 		"/Users/htatche/dev/curios/node_modules/bootstrap/bin/bootstrap",
 		"/Users/htatche/dev/hbs2emblem/file.html",
-		"/Users/htatche/dev/woody/woodiewoodpicker.js",
-		"/Users/htatche/dev/woody/auth.js",
-		"/Users/htatche/dev/woody/src/twitter.js",
-		"/Users/htatche/dev/woody/poc.js",
-		"/Users/htatche/dev/woody/library.js",
-		"/Users/htatche/dev/woody/pattern.js"
+		"/Users/htatche/dev/woody/woodiewoodpicker.js"
 	],
 	"find":
 	{
@@ -420,6 +412,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"tween.to",
+			"moveDow",
+			"console",
+			"throwbl",
 			"lookupO",
 			"updateO",
 			"i",
@@ -543,11 +539,7 @@
 			"post-meta",
 			"scrolltop",
 			".scrolltop",
-			"content-overl",
-			"scrolltop",
-			".post-template .cont",
-			"overlay",
-			"back-button:hover"
+			"content-overl"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -575,39 +567,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "tetris.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4566,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3346,
-								3346
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1855.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -661,6 +622,10 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"en.ht",
+				"tetris/bower_components/phaser/docs/Tween.js.html"
+			],
 			[
 				"scree",
 				"content/themes/casper/assets/css/screen.css"
@@ -1168,10 +1133,6 @@
 			[
 				"keypadview",
 				"app/assets/javascripts/pos/views/keypad_view.js.coffee"
-			],
-			[
-				"openprice",
-				"app/assets/javascripts/pos/templates/menus/_open_price_popup.emblem"
 			]
 		],
 		"width": 0.0
@@ -1183,7 +1144,7 @@
 		[
 			[
 				"",
-				"~/dev/cluey.sublime-project"
+				"~/Documents/Nomad Stays/Landing Page/landing_page.sublime-workspace"
 			]
 		],
 		"width": 380.0
