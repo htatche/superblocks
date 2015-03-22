@@ -20,7 +20,8 @@ var game = new Phaser.Game(RIGHT_WALL, FLOOR,
 var blocks_group;
 
 var blocks = [
-    {name: 'column',   xsize: 3, ysize: 1, cells: [1, COLUMNS.length, 2 * COLUMNS.length]}
+    {name: 'column',   xsize: 3, ysize: 1, cells: [1, COLUMNS.length, 2 * COLUMNS.length]},
+    {name: 'triangle',   xsize: 2, ysize: 3, cells: [2, COLUMNS.length + 1, (2 * COLUMNS.length) + 1]}
     // {name: 'triangle', xsize: 2, ysize: 3}
 ];
 
@@ -163,8 +164,8 @@ Grid.prototype.throwBlock = function() {
     block.shape = block_shape;
     block.number = ++nblock;
 
-    block.sprite = blocks_group.create(random_column, - (block.shape.xsize * 1000), block_shape.name);
-    block.sprite.anchor.setTo(0, 0);
+    block.sprite = blocks_group.create(random_column, - (block.shape.xsize * 35), block_shape.name);
+    block.sprite.anchor.setTo(0, 3);
 
     block.moveDown();
 }
@@ -199,7 +200,7 @@ Block.prototype.moveDown = function() {
         return;
     }  
 
-    ++parent.row;
+    // ++parent.row;
 
     parent.tween = game.add.tween(parent.sprite);
 
@@ -209,6 +210,8 @@ Block.prototype.moveDown = function() {
         Phaser.Easing.Linear.None,
         true
     );
+
+    ++parent.row;
 
     parent.tween.onComplete.add(parent.moveNext, parent); 
 }

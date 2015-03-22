@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"set",
+				"setOccupiedCells"
+			],
+			[
 				"up",
 				"updateOccupiedCells"
 			],
@@ -139,6 +143,14 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "tetris.js",
+			"settings":
+			{
+				"buffer_size": 6346,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -237,19 +249,20 @@
 	],
 	"file_history":
 	[
+		"/Users/htatche/dev/tetris/bower_components/phaser/docs/TimerEvent.js.html",
+		"/Users/htatche/dev/tetris/tetris.js",
+		"/Users/htatche/dev/tetris/server.js",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Tween.js.html",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/RenderTexture.js_.html",
 		"/Users/htatche/dev/tetris/node_modules/serve-static/node_modules/send/node_modules/etag/node_modules/crc/.npmignore",
 		"/Users/htatche/dev/tetris/node_modules/serve-static/node_modules/escape-html/.npmignore",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Easing.js.html",
-		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/tetris.sublime-project",
 		"/Users/htatche/dev/last projects/woody/main.js",
 		"/Users/htatche/dev/last projects/woody/src/woodie.js",
 		"/Users/htatche/Documents/Nomad Stays/Landing Page/SeventyTwo - Premium Coming Soon - Live Preview - WrapBootstrap.html",
 		"/Users/htatche/dev/tetris/ROADMAP",
 		"/Users/htatche/dev/tetris/index.html",
-		"/Users/htatche/dev/tetris/server.js",
 		"/Users/htatche/dev/phaser-examples/examples/games/breakout.js",
 		"/Users/htatche/dev/localmarket/client/templates/home.js",
 		"/Users/htatche/dev/localmarket/client/helpers.js",
@@ -363,8 +376,7 @@
 		"/Users/htatche/dev/curios/node_modules/twitter-bootstrap/less/accordion.less",
 		"/Users/htatche/dev/hbs2emblem/index.html",
 		"/Users/htatche/dev/curios/node_modules/bootstrap/bin/bootstrap",
-		"/Users/htatche/dev/hbs2emblem/file.html",
-		"/Users/htatche/dev/woody/woodiewoodpicker.js"
+		"/Users/htatche/dev/hbs2emblem/file.html"
 	],
 	"find":
 	{
@@ -412,6 +424,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"occupied_cells =",
+			"prevenT",
+			"preventCollision",
+			"setOcc",
+			"updateG",
+			"parent",
+			"parent.shape.occ",
+			"occupied_cell",
+			"occupied",
+			"block.shape.occu",
+			"throwB",
+			"collisi",
+			"preventC",
+			"collisi",
+			"moveDow",
 			"tween.to",
 			"moveDow",
 			"console",
@@ -524,22 +551,7 @@
 			"subscribe",
 			"before",
 			"subscribe-button:before",
-			"subscr",
-			"left",
-			"header",
-			".post h3",
-			"gohome",
-			".post-content",
-			".post",
-			"scrolling",
-			"ing",
-			"scroll",
-			"media",
-			".post-template .gohome",
-			"post-meta",
-			"scrolltop",
-			".scrolltop",
-			"content-overl"
+			"subscr"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -567,8 +579,39 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "tetris.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6346,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1992,
+								1992
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 781.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -622,6 +665,10 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"tet",
+				"tetris/tetris.js"
+			],
 			[
 				"en.ht",
 				"tetris/bower_components/phaser/docs/Tween.js.html"
@@ -1129,10 +1176,6 @@
 			[
 				"productmodifier",
 				"app/assets/javascripts/pos/models/product_modifier_category.js.coffee"
-			],
-			[
-				"keypadview",
-				"app/assets/javascripts/pos/views/keypad_view.js.coffee"
 			]
 		],
 		"width": 0.0
@@ -1144,7 +1187,7 @@
 		[
 			[
 				"",
-				"~/Documents/Nomad Stays/Landing Page/landing_page.sublime-workspace"
+				"~/dev/nomadstays_landing/landing_page.sublime-project"
 			]
 		],
 		"width": 380.0
