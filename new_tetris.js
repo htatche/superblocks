@@ -1,7 +1,10 @@
 var CELL_SIZE = 35;
 
-var HEIGHT    = CELL_SIZE * 20,
-    WIDTH 		= CELL_SIZE * 10;
+var COLUMNS = 10,
+    ROWS		= 20;
+
+var HEIGHT    = CELL_SIZE * ROWS,
+    WIDTH 		= CELL_SIZE * COLUMNS;
 
 var game = new Phaser.Game(WIDTH,
 													 HEIGHT,
@@ -10,36 +13,46 @@ var game = new Phaser.Game(WIDTH,
                            { preload: preload, create: create, update: update });
 
 var grid = [];
+
 var shapes = [
-	{type: 'column',   	blocks: [ [0,0], [0,1], [0,2] ],         ysize: 3 * CELL_SIZE},
-	{type: 'triangle',	blocks: [ [1,0], [0,1], [1,1], [2,1] ],  ysize: 2 * CELL_SIZE}
+	{type: 'column',   	blocks: [ [0,0], [0,1], [0,2] ],        xsize: 1, ysize: 3 * CELL_SIZE},
+	{type: 'triangle',	blocks: [ [0,0], [1,0], [2,0], [1,1] ], xsize: 3, ysize: 2 * CELL_SIZE}
 ]
 
-function initialize_grid() {
-	var n = HEIGHT * WIDTH;
+var nshape = 0;
 
-	for (var i=0; i < n; ++i) {
-	    grid[i] = {busy: false, color: null};
+function initialize_grid() {
+	for (var x=0; x < ROWS; ++x) {
+		grid[x] = new Array(COLUMNS); 
+
+		for (var y=0; y < COLUMNS; ++y) {
+			grid[x][y] = null; //{busy: false, color: null};
+		}		
 	}
 }
 
-function create_shape() {
+function create_shape(shape) {
 	var blocks_group = game.add.group();
-			blocks_group.details = shapes[1];
+			blocks_group.details = shape;
 
-	var blocks = shapes[1].blocks;
+	var blocks = shape.blocks;
+
+	// Random column
+	var random_x = randomNColumn(shape.xsize);
 
 	for (var i=0; i < blocks.length; ++i) {
-	    add_block(blocks_group, blocks[i]); 
+	    add_block(blocks_group, blocks[i], random_x); 
 	}
 
 	return blocks_group;
-
 }
 
-function add_block(blocks_group, block) {
+function add_block(blocks_group, block, random_x) {
 	var x = block[0] * CELL_SIZE;
 	var y = block[1] * CELL_SIZE;
+
+	// Random column
+	x = x + random_x;
 
 	// We launch it from above the grid
 	y = y - blocks_group.details.ysize;
@@ -52,19 +65,77 @@ function add_block(blocks_group, block) {
 function throw_shape(shape) {
 	var tween;
 
-	tween = move.call(shape, "down", loop = true);
+	var dfd = new jQuery.Deferred();
+
+	tween = move_to_floor.call(shape, "down", loop = true, dfd);
+
+	return dfd.promise();
 }
 
-function move_to_floor(direction, loop) {
+function move_to_floor(direction, loop, dfd) {
 	var y = Math.round(this.y);
 
-	// if (loop && y < HEIGHT - this.details.ysize) {
-	if (loop && y < HEIGHT) {
-		setTimeout(move.bind(this, direction, loop=true), 500);
+	var collision = detect_collision.call(this, direction);
+
+	if (loop && y < HEIGHT && !collision) {
+		
+		setTimeout(loop_move.bind(this, direction, loop, dfd), 100);
+
+	} else {
+		dfd.resolve();
 	}	
+
 }
 
-function move(direction, loop) {
+function loop_move(direction, loop, dfd) {
+	
+	var tween;
+	var previous_x = this.x;
+	var previous_y = this.y;
+
+	tween = move.call(this, direction, loop=true, dfd);
+
+  tween.onComplete.add(
+  	update_grid.bind(this, previous_x, previous_y, "orange", dfd)
+  , this);		
+
+  // Loop
+  if (loop) {
+  	tween.onComplete.add(move_to_floor.bind(this, "down", loop=true, dfd), this);	
+  }	
+
+}
+
+function detect_collision(direction) {
+	var collision = false;
+	var next_position;
+
+	switch(direction) {
+		case "down":
+			next_position = { x: this.x, y: this.y + CELL_SIZE };
+	}	
+
+	for (var i=0; i < COLUMNS; ++i) {
+		for (var j=0; j < ROWS; ++j) {
+
+			for (var l=0; l < this.children.length; ++l) {
+				var block = this.children[l];
+				var next_axis = posToAxis(next_position.x + block.x, next_position.y + block.y);				
+
+				if (i == next_axis[0] && j == next_axis[1]) {
+					if (grid[j][i] != null && grid[j][i] != nshape) {
+						return collision = true;
+					}
+				}				
+
+			}
+		}		
+	}	
+
+	return collision;
+}
+
+function move(direction, loop, dfd) {
 	var tween = game.add.tween(this);
 	var coords;
 
@@ -78,22 +149,94 @@ function move(direction, loop) {
     100,
 	  Phaser.Easing.Linear.None,
     true
-  );
-
-  update_grid();
-
-  // Loop
-	tween.onComplete.add(move_to_floor.bind(this, "down", loop=true), this);
+  )
 
   return tween;
 }
 
-function update_grid() {
-	
+function posToAxis(x, y) {
+	var x = Math.round(x / CELL_SIZE),
+			y = Math.round(y / CELL_SIZE);
+
+	return [x,y];
+}
+
+function update_grid(previous_x, previous_y, block_color, dfd) {
+	var previous_axis;
+	var axis;
+	var x_transition = this.x - previous_x;
+	var y_transition = this.y - previous_y;
+
+	for (var i=0; i < COLUMNS; ++i) {
+		for (var j=0; j < ROWS; ++j) {
+
+			for (var l=0; l < this.children.length; ++l) {
+				var block = this.children[l];
+
+				previous_axis = posToAxis(previous_x + block.x, previous_y + block.y);
+				axis 					= posToAxis(this.x + block.x, this.y + block.y);				
+
+				if (i == previous_axis[0] && j == previous_axis[1]) {
+			    grid[j][i] = null; //{busy: false, color: null};
+				}	
+
+			}
+
+			for (var l=0; l < this.children.length; ++l) {
+				var block = this.children[l];
+
+				previous_axis = posToAxis(previous_x + block.x, previous_y + block.y);
+				axis 					= posToAxis(this.x + block.x, this.y + block.y);				
+
+				if (i == axis[0] && j == axis[1]) {
+			    grid[j][i] = nshape; //{busy: true, color: block_color};
+				}				
+
+			}
+
+		}		
+	}
+
 }
 
 function clear_row() {
 
+}
+
+function randomNColumn(block_shape_xsize) {
+    var limit = COLUMNS - block_shape_xsize;
+    var ncolumn = limit + 1;
+    var position;
+
+    while (ncolumn > limit || ncolumn == 0) {
+    	ncolumn = Math.round(Math.random() * 10);
+    }
+
+    position = ncolumn * CELL_SIZE;
+
+    return position;
+}
+
+function randomShape() {
+    var shape = shapes[Math.floor(Math.random() * shapes.length)]; 
+
+    return shape;
+}
+
+function game_loop() {
+	var random_shape_type = randomShape();
+	var shape = create_shape(random_shape_type);
+
+	$.when( throw_shape(shape) ).then(
+	  function() {
+	  	++nshape;
+	    game_loop();
+	  },
+	  function() {
+	  	++nshape;
+	  	game_loop();
+	  }
+  )	
 }
 
 function create() {  
@@ -101,9 +244,7 @@ function create() {
 
 	initialize_grid();
 
-	var shape = create_shape();
-
-	throw_shape(shape);
+	game_loop();
 }
 
 function update() {
