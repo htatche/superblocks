@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"move",
+				"moveDown"
+			],
+			[
 				"set",
 				"setOccupiedCells"
 			],
@@ -144,10 +148,21 @@
 	"buffers":
 	[
 		{
+			"contents": "var TOP         = 0,\n    FLOOR       = 700,\n    LEFT_WALL   = 0,\n    RIGHT_WALL  = 350;\n\nvar ROWS    = [  0,  35,  70, 105, 140, 175, 210, 245, 280, 315,\n               350, 385, 420, 455, 490, 525, 560, 595, 630, 665];\n\nvar COLUMNS = [0, 35, 70, 105, 140, 175, 210, 245, 280, 315];\n\nvar CELL_SIZE = 35;\n\nvar game = new Phaser.Game(RIGHT_WALL, FLOOR,\n                           Phaser.AUTO, \n                           'tetris',\n                           { preload: preload,\n                             create: create,\n                             update: update });\n\nvar blocks_group;\n\nvar blocks = [\n    {name: 'column',     ysize: 3, xsize: 1, cells: [1, COLUMNS.length, 2 * COLUMNS.length]},\n    {name: 'triangle',   ysize: 2, xsize: 3, cells: [2, COLUMNS.length + 1, (2 * COLUMNS.length) + 1]}\n    // {name: 'triangle', ysize: 2, xsize: 3}\n];\n\nvar last_column;\n\nvar grid;\n\n// Blocks counter, used for block.number\nvar nblock = 0;\n\n// Grid is 10x20 and contains \n// an array of cells initialized with falses\nvar Grid = function() {\n    this.cells = []\n}\n\nGrid.prototype.initialize = function() {\n    var parent = this;\n\n    var ncells = ROWS.length * COLUMNS.length;\n\n    for (var i=1; i <= ncells; ++i) {\n        parent.cells[i] = [{occupied: false, number: null}];\n    }\n}\n\nfunction pickRandomColumn(block_shape) {\n    // We add 1 since the last column of the array isn't the\n    // y limit but only the last available column\n    var limit = (COLUMNS.length + 1) - block_shape.xsize;\n\n    return COLUMNS[Math.floor(Math.random() * limit)]; \n}\n\nfunction pickRandomBlock() {\n    var block_shape = blocks[Math.floor(Math.random() * blocks.length)]; \n\n    return block_shape;\n}\n\nfunction create() {  \n    grid = new Grid();\n\n    grid.initialize();\n\n    blocks_group = game.add.group();\n}\n\nfunction update() {\n}\n",
 			"file": "tetris.js",
+			"file_size": 3309,
+			"file_write_time": 130715092940000000,
 			"settings":
 			{
-				"buffer_size": 6346,
+				"buffer_size": 1815,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "new_tetris.js",
+			"settings":
+			{
+				"buffer_size": 825,
 				"line_ending": "Unix"
 			}
 		}
@@ -249,9 +264,10 @@
 	],
 	"file_history":
 	[
+		"/Users/htatche/dev/tetris/index.html",
+		"/Users/htatche/dev/tetris/server.js",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/TimerEvent.js.html",
 		"/Users/htatche/dev/tetris/tetris.js",
-		"/Users/htatche/dev/tetris/server.js",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Tween.js.html",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/RenderTexture.js_.html",
 		"/Users/htatche/dev/tetris/node_modules/serve-static/node_modules/send/node_modules/etag/node_modules/crc/.npmignore",
@@ -262,7 +278,6 @@
 		"/Users/htatche/dev/last projects/woody/src/woodie.js",
 		"/Users/htatche/Documents/Nomad Stays/Landing Page/SeventyTwo - Premium Coming Soon - Live Preview - WrapBootstrap.html",
 		"/Users/htatche/dev/tetris/ROADMAP",
-		"/Users/htatche/dev/tetris/index.html",
 		"/Users/htatche/dev/phaser-examples/examples/games/breakout.js",
 		"/Users/htatche/dev/localmarket/client/templates/home.js",
 		"/Users/htatche/dev/localmarket/client/helpers.js",
@@ -424,6 +439,20 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"add",
+			".length",
+			"preload",
+			"zsize",
+			"ysize",
+			"xsize",
+			"tween",
+			"moveNex",
+			"tween",
+			"moveDown",
+			"throwB",
+			"parent.row =",
+			"texture",
+			"throwB",
 			"occupied_cells =",
 			"prevenT",
 			"preventCollision",
@@ -537,21 +566,7 @@
 			"subscribe-button",
 			"subscribe-button:h",
 			"before",
-			"subscribe-button:before",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"before",
-			"subscribe-button:before",
-			"subscr"
+			"subscribe-button:before"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -579,7 +594,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -588,15 +603,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6346,
+						"buffer_size": 1815,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1992,
-								1992
+								1333,
+								1336
 							]
 						],
 						"settings":
@@ -606,7 +621,35 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 781.0,
+						"translation.y": 481.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "new_tetris.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 825,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								443,
+								443
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 56.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1250,7 +1293,7 @@
 				"@writeLogEntry"
 			]
 		],
-		"width": 629.0
+		"width": 392.0
 	},
 	"selected_group": 0,
 	"settings":
