@@ -11,8 +11,8 @@ var game = new Phaser.Game(WIDTH,
 
 var grid = [];
 var shapes = [
-	{type: 'column',   	blocks: [ [0,0], [0,1], [0,2] ]},
-	{type: 'triangle',	blocks: [ [1,0], [0,1], [1,1], [2,1] ]}
+	{type: 'column',   	blocks: [ [0,0], [0,1], [0,2] ],         ysize: 3 * CELL_SIZE},
+	{type: 'triangle',	blocks: [ [1,0], [0,1], [1,1], [2,1] ],  ysize: 2 * CELL_SIZE}
 ]
 
 function initialize_grid() {
@@ -25,7 +25,9 @@ function initialize_grid() {
 
 function create_shape() {
 	var blocks_group = game.add.group();
-	var blocks = shapes[0].blocks;
+			blocks_group.details = shapes[1];
+
+	var blocks = shapes[1].blocks;
 
 	for (var i=0; i < blocks.length; ++i) {
 	    add_block(blocks_group, blocks[i]); 
@@ -38,7 +40,9 @@ function create_shape() {
 function add_block(blocks_group, block) {
 	var x = block[0] * CELL_SIZE;
 	var y = block[1] * CELL_SIZE;
-	    // y = y - 105;
+
+	// We launch it from above the grid
+	y = y - blocks_group.details.ysize;
 
   var block = blocks_group.create(x, y, 'block');
 
@@ -54,7 +58,8 @@ function throw_shape(shape) {
 function move_to_floor(direction, loop) {
 	var y = Math.round(this.y);
 
-	if (loop && y < HEIGHT - 105) {
+	// if (loop && y < HEIGHT - this.details.ysize) {
+	if (loop && y < HEIGHT) {
 		setTimeout(move.bind(this, direction, loop=true), 500);
 	}	
 }
@@ -75,10 +80,16 @@ function move(direction, loop) {
     true
   );
 
+  update_grid();
+
   // Loop
 	tween.onComplete.add(move_to_floor.bind(this, "down", loop=true), this);
 
   return tween;
+}
+
+function update_grid() {
+	
 }
 
 function clear_row() {
