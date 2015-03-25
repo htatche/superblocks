@@ -20,6 +20,7 @@ var shapes = [
 ]
 
 var nshape = 0;
+var falling_shape = null;
 
 function initialize_grid() {
 	for (var x=0; x < ROWS; ++x) {
@@ -79,7 +80,7 @@ function move_to_floor(direction, loop, dfd) {
 
 	if (loop && y < HEIGHT && !collision) {
 		
-		setTimeout(loop_move.bind(this, direction, loop, dfd), 100);
+		setTimeout(loop_move.bind(this, direction, loop, dfd), 500);
 
 	} else {
 		dfd.resolve();
@@ -101,19 +102,14 @@ function loop_move(direction, loop, dfd) {
 
   // Loop
   if (loop) {
-  	tween.onComplete.add(move_to_floor.bind(this, "down", loop=true, dfd), this);	
+  	tween.onComplete.add(move_to_floor.bind(this, direction, loop=true, dfd), this);	
   }	
 
 }
 
 function detect_collision(direction) {
 	var collision = false;
-	var next_position;
-
-	switch(direction) {
-		case "down":
-			next_position = { x: this.x, y: this.y + CELL_SIZE };
-	}	
+	var next_position = getNextPosition.call(this, direction);	
 
 	for (var i=0; i < COLUMNS; ++i) {
 		for (var j=0; j < ROWS; ++j) {
@@ -137,21 +133,36 @@ function detect_collision(direction) {
 
 function move(direction, loop, dfd) {
 	var tween = game.add.tween(this);
-	var coords;
+	var next_position = getNextPosition.call(this, direction);
 
-	switch(direction) {
-		case "down":
-			coords = { y: this.y + CELL_SIZE };
-	}
+	// tweenMenuShrink.chain(tweenFadeIn);	
 
   tween.to(
-    coords,
+    next_position,
     100,
 	  Phaser.Easing.Linear.None,
     true
-  )
+  );
 
   return tween;
+}
+
+function getNextPosition (direction) {
+	var position;
+
+	switch(direction) {
+		case "down":
+			position = { x: this.x, y: this.y + CELL_SIZE };
+			break;
+		case "left":
+			position = { x: this.x - CELL_SIZE, y: this.y };			
+			break;
+		case "right":
+			position = { x: this.x + CELL_SIZE, y: this.y };						
+			break;
+	}
+
+	return position;
 }
 
 function posToAxis(x, y) {
@@ -227,6 +238,8 @@ function game_loop() {
 	var random_shape_type = randomShape();
 	var shape = create_shape(random_shape_type);
 
+	falling_shape = shape; 
+
 	$.when( throw_shape(shape) ).then(
 	  function() {
 	  	++nshape;
@@ -242,12 +255,18 @@ function game_loop() {
 function create() {  
 	var graphics = game.add.graphics(0, 0);
 
+	this.cursors = game.input.keyboard.createCursorKeys();
 	initialize_grid();
 
 	game_loop();
 }
 
 function update() {
+	if (this.cursors.left.justDown) {
+		move.call(falling_shape, "left", loop=false);
+	}	else if (this.cursors.right.isDown) {
+		move.call(falling_shape, "right", loop=false);
+	}	
 }
 
 function preload() {
