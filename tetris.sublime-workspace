@@ -4,6 +4,46 @@
 		"selected_items":
 		[
 			[
+				"tween",
+				"tweens_chain"
+			],
+			[
+				"fa",
+				"falling_tween"
+			],
+			[
+				"ne",
+				"next_position"
+			],
+			[
+				"twee",
+				"falling_tween"
+			],
+			[
+				"ra",
+				"random_x"
+			],
+			[
+				"ran",
+				"random"
+			],
+			[
+				"rando",
+				"randomShape"
+			],
+			[
+				"det",
+				"detect_collision"
+			],
+			[
+				"bl",
+				"block_color"
+			],
+			[
+				"move",
+				"moveDown"
+			],
+			[
 				"set",
 				"setOccupiedCells"
 			],
@@ -144,18 +184,23 @@
 	"buffers":
 	[
 		{
-			"file": "tetris.js",
+			"file": "new_tetris.js",
 			"settings":
 			{
-				"buffer_size": 6346,
+				"buffer_size": 5580,
 				"line_ending": "Unix"
 			}
 		}
 	],
 	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
 	"command_palette":
 	{
 		"height": 307.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
@@ -245,13 +290,20 @@
 	"expanded_folders":
 	[
 		"/Users/htatche/dev/tetris",
+		"/Users/htatche/dev/tetris/bower_components",
 		"/Users/htatche/dev/last projects/woody/src"
 	],
 	"file_history":
 	[
-		"/Users/htatche/dev/tetris/bower_components/phaser/docs/TimerEvent.js.html",
+		"/Users/htatche/dev/tetris/index.html",
+		"/Users/htatche/Downloads/schemacrawler-12.06.01-main/examples/javascript/droptables.js",
+		"/Users/htatche/dev/last projects/woody/src/status.js",
+		"/Users/htatche/dev/tetris/bower_components/require/README.md",
+		"/Users/htatche/dev/tetris/bower.json",
+		"/Users/htatche/dev/last projects/woody/src/woodie.js",
 		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/server.js",
+		"/Users/htatche/dev/tetris/bower_components/phaser/docs/TimerEvent.js.html",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Tween.js.html",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/RenderTexture.js_.html",
 		"/Users/htatche/dev/tetris/node_modules/serve-static/node_modules/send/node_modules/etag/node_modules/crc/.npmignore",
@@ -259,10 +311,8 @@
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Easing.js.html",
 		"/Users/htatche/dev/tetris/tetris.sublime-project",
 		"/Users/htatche/dev/last projects/woody/main.js",
-		"/Users/htatche/dev/last projects/woody/src/woodie.js",
 		"/Users/htatche/Documents/Nomad Stays/Landing Page/SeventyTwo - Premium Coming Soon - Live Preview - WrapBootstrap.html",
 		"/Users/htatche/dev/tetris/ROADMAP",
-		"/Users/htatche/dev/tetris/index.html",
 		"/Users/htatche/dev/phaser-examples/examples/games/breakout.js",
 		"/Users/htatche/dev/localmarket/client/templates/home.js",
 		"/Users/htatche/dev/localmarket/client/helpers.js",
@@ -276,7 +326,6 @@
 		"/Users/htatche/dev/last projects/blacktable/lib/blacktable.js",
 		"/Users/htatche/dev/last projects/cluey/app/assets/javascripts/pos/models/product.js.coffee",
 		"/Users/htatche/dev/last projects/cluey/app/assets/javascripts/pos/controllers/payment_methods_controller.js.coffee",
-		"/Users/htatche/dev/last projects/woody/src/status.js",
 		"/Users/htatche/dev/simpleweb/index.html",
 		"/Users/htatche/dev/simpleweb/stylesheets/main.css",
 		"/Users/htatche/dev/simpleweb/stylesheet.css",
@@ -373,10 +422,7 @@
 		"/Users/htatche/dev/curios/bower_components/bootstrap/less/variables.less",
 		"/Users/htatche/dev/curios/todo.txt",
 		"/Users/htatche/dev/curios/bower_components/bootstrap/dist/js/bootstrap.js",
-		"/Users/htatche/dev/curios/node_modules/twitter-bootstrap/less/accordion.less",
-		"/Users/htatche/dev/hbs2emblem/index.html",
-		"/Users/htatche/dev/curios/node_modules/bootstrap/bin/bootstrap",
-		"/Users/htatche/dev/hbs2emblem/file.html"
+		"/Users/htatche/dev/curios/node_modules/twitter-bootstrap/less/accordion.less"
 	],
 	"find":
 	{
@@ -424,6 +470,72 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"game_loop",
+			"block",
+			"update_",
+			"nshap",
+			"loop",
+			"game_loo",
+			"this",
+			"falling_shape",
+			"falling_t",
+			"falling_tween",
+			"this",
+			"parent",
+			"this",
+			"set",
+			"200",
+			"100",
+			"detect_coll",
+			"error",
+			"move_to_floor",
+			"create_shap",
+			"move.c",
+			"move(",
+			"move_to_floor",
+			"randomNColumn",
+			"random",
+			"setTime",
+			"set",
+			"create_shape",
+			"settime",
+			"block_col",
+			"100",
+			"collision=false",
+			", dfd_collision",
+			"update_grid",
+			"rest",
+			"var",
+			"i",
+			" =",
+			"previous_axis",
+			"axisToNCell",
+			"x",
+			"j",
+			"shape",
+			"bind",
+			"setTime",
+			"ROWS",
+			"sprite",
+			"tween",
+			"sprite",
+			"tween",
+			"graphics",
+			"throwBl",
+			"add",
+			".length",
+			"preload",
+			"zsize",
+			"ysize",
+			"xsize",
+			"tween",
+			"moveNex",
+			"tween",
+			"moveDown",
+			"throwB",
+			"parent.row =",
+			"texture",
+			"throwB",
 			"occupied_cells =",
 			"prevenT",
 			"preventCollision",
@@ -485,73 +597,7 @@
 			"block",
 			"ground",
 			"walls_collision_group",
-			"ship",
-			"column",
-			"Pandas",
-			"pandas",
-			"blocks",
-			"blocks_group",
-			"image",
-			"home",
-			"arrow",
-			"main-header",
-			".main-header",
-			"margin",
-			"2",
-			"per",
-			"page",
-			"posts",
-			"archive-templ",
-			"archive-templa",
-			".post {",
-			"archiv",
-			".post {",
-			"newer",
-			"pagi",
-			"hr {",
-			"border-bottom",
-			"var total",
-			"post-content .full",
-			"xml",
-			"post-title",
-			"article",
-			"main-header",
-			"overlay",
-			"main-header",
-			"media",
-			"scroll",
-			"arrow",
-			"scroll-down:af",
-			":after",
-			"scroll-down",
-			"arrow",
-			"media",
-			"back-but",
-			"contact",
-			"media",
-			"contact-b",
-			"main-nav.overl",
-			"background-color",
-			"contact-button",
-			"contact-butt",
-			"subscribe-button",
-			"subscribe-button:h",
-			"before",
-			"subscribe-button:before",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"Subscribe",
-			"subscribe",
-			"before",
-			"subscribe-button:before",
-			"subscr"
+			"ship"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -584,29 +630,31 @@
 			[
 				{
 					"buffer": 0,
-					"file": "tetris.js",
+					"file": "new_tetris.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6346,
+						"buffer_size": 5580,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1992,
-								1992
+								1907,
+								1907
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"rulers":
+							[
+								120
+							],
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 781.0,
+						"translation.y": 1091.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -654,6 +702,7 @@
 	{
 		"height": 100.0
 	},
+	"pinned_build_system": "",
 	"project": "tetris.sublime-project",
 	"replace":
 	{
@@ -663,8 +712,21 @@
 	"select_file":
 	{
 		"height": 0.0,
+		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"require/read",
+				"tetris/bower_components/require/README.md"
+			],
+			[
+				"bower",
+				"tetris/bower.json"
+			],
+			[
+				"inde",
+				"tetris/index.html"
+			],
 			[
 				"tet",
 				"tetris/tetris.js"
@@ -804,10 +866,6 @@
 			[
 				"404",
 				"404.php"
-			],
-			[
-				"inde",
-				"index.php"
 			],
 			[
 				"foo",
@@ -1168,14 +1226,6 @@
 			[
 				"productsizebutt",
 				"app/assets/javascripts/pos/controllers/product_size_buttons_controller.js.coffee"
-			],
-			[
-				"outletresourcesjs",
-				"app/views/api/sales_resources/outlet_resources.json.rabl"
-			],
-			[
-				"productmodifier",
-				"app/assets/javascripts/pos/models/product_modifier_category.js.coffee"
 			]
 		],
 		"width": 0.0
@@ -1183,6 +1233,7 @@
 	"select_project":
 	{
 		"height": 500.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
@@ -1195,6 +1246,7 @@
 	"select_symbol":
 	{
 		"height": 392.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
@@ -1250,7 +1302,7 @@
 				"@writeLogEntry"
 			]
 		],
-		"width": 629.0
+		"width": 392.0
 	},
 	"selected_group": 0,
 	"settings":
