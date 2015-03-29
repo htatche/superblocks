@@ -4,6 +4,42 @@
 		"selected_items":
 		[
 			[
+				"tween",
+				"tweens_chain"
+			],
+			[
+				"fa",
+				"falling_tween"
+			],
+			[
+				"ne",
+				"next_position"
+			],
+			[
+				"twee",
+				"falling_tween"
+			],
+			[
+				"ra",
+				"random_x"
+			],
+			[
+				"ran",
+				"random"
+			],
+			[
+				"rando",
+				"randomShape"
+			],
+			[
+				"det",
+				"detect_collision"
+			],
+			[
+				"bl",
+				"block_color"
+			],
+			[
 				"move",
 				"moveDown"
 			],
@@ -148,29 +184,23 @@
 	"buffers":
 	[
 		{
-			"contents": "var TOP         = 0,\n    FLOOR       = 700,\n    LEFT_WALL   = 0,\n    RIGHT_WALL  = 350;\n\nvar ROWS    = [  0,  35,  70, 105, 140, 175, 210, 245, 280, 315,\n               350, 385, 420, 455, 490, 525, 560, 595, 630, 665];\n\nvar COLUMNS = [0, 35, 70, 105, 140, 175, 210, 245, 280, 315];\n\nvar CELL_SIZE = 35;\n\nvar game = new Phaser.Game(RIGHT_WALL, FLOOR,\n                           Phaser.AUTO, \n                           'tetris',\n                           { preload: preload,\n                             create: create,\n                             update: update });\n\nvar blocks_group;\n\nvar blocks = [\n    {name: 'column',     ysize: 3, xsize: 1, cells: [1, COLUMNS.length, 2 * COLUMNS.length]},\n    {name: 'triangle',   ysize: 2, xsize: 3, cells: [2, COLUMNS.length + 1, (2 * COLUMNS.length) + 1]}\n    // {name: 'triangle', ysize: 2, xsize: 3}\n];\n\nvar last_column;\n\nvar grid;\n\n// Blocks counter, used for block.number\nvar nblock = 0;\n\n// Grid is 10x20 and contains \n// an array of cells initialized with falses\nvar Grid = function() {\n    this.cells = []\n}\n\nGrid.prototype.initialize = function() {\n    var parent = this;\n\n    var ncells = ROWS.length * COLUMNS.length;\n\n    for (var i=1; i <= ncells; ++i) {\n        parent.cells[i] = [{occupied: false, number: null}];\n    }\n}\n\nfunction pickRandomColumn(block_shape) {\n    // We add 1 since the last column of the array isn't the\n    // y limit but only the last available column\n    var limit = (COLUMNS.length + 1) - block_shape.xsize;\n\n    return COLUMNS[Math.floor(Math.random() * limit)]; \n}\n\nfunction pickRandomBlock() {\n    var block_shape = blocks[Math.floor(Math.random() * blocks.length)]; \n\n    return block_shape;\n}\n\nfunction create() {  \n    grid = new Grid();\n\n    grid.initialize();\n\n    blocks_group = game.add.group();\n}\n\nfunction update() {\n}\n",
-			"file": "tetris.js",
-			"file_size": 3309,
-			"file_write_time": 130715092940000000,
-			"settings":
-			{
-				"buffer_size": 1815,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "new_tetris.js",
 			"settings":
 			{
-				"buffer_size": 825,
+				"buffer_size": 5580,
 				"line_ending": "Unix"
 			}
 		}
 	],
 	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
 	"command_palette":
 	{
 		"height": 307.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
@@ -260,14 +290,20 @@
 	"expanded_folders":
 	[
 		"/Users/htatche/dev/tetris",
+		"/Users/htatche/dev/tetris/bower_components",
 		"/Users/htatche/dev/last projects/woody/src"
 	],
 	"file_history":
 	[
 		"/Users/htatche/dev/tetris/index.html",
+		"/Users/htatche/Downloads/schemacrawler-12.06.01-main/examples/javascript/droptables.js",
+		"/Users/htatche/dev/last projects/woody/src/status.js",
+		"/Users/htatche/dev/tetris/bower_components/require/README.md",
+		"/Users/htatche/dev/tetris/bower.json",
+		"/Users/htatche/dev/last projects/woody/src/woodie.js",
+		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/server.js",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/TimerEvent.js.html",
-		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Tween.js.html",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/RenderTexture.js_.html",
 		"/Users/htatche/dev/tetris/node_modules/serve-static/node_modules/send/node_modules/etag/node_modules/crc/.npmignore",
@@ -275,7 +311,6 @@
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Easing.js.html",
 		"/Users/htatche/dev/tetris/tetris.sublime-project",
 		"/Users/htatche/dev/last projects/woody/main.js",
-		"/Users/htatche/dev/last projects/woody/src/woodie.js",
 		"/Users/htatche/Documents/Nomad Stays/Landing Page/SeventyTwo - Premium Coming Soon - Live Preview - WrapBootstrap.html",
 		"/Users/htatche/dev/tetris/ROADMAP",
 		"/Users/htatche/dev/phaser-examples/examples/games/breakout.js",
@@ -291,7 +326,6 @@
 		"/Users/htatche/dev/last projects/blacktable/lib/blacktable.js",
 		"/Users/htatche/dev/last projects/cluey/app/assets/javascripts/pos/models/product.js.coffee",
 		"/Users/htatche/dev/last projects/cluey/app/assets/javascripts/pos/controllers/payment_methods_controller.js.coffee",
-		"/Users/htatche/dev/last projects/woody/src/status.js",
 		"/Users/htatche/dev/simpleweb/index.html",
 		"/Users/htatche/dev/simpleweb/stylesheets/main.css",
 		"/Users/htatche/dev/simpleweb/stylesheet.css",
@@ -388,10 +422,7 @@
 		"/Users/htatche/dev/curios/bower_components/bootstrap/less/variables.less",
 		"/Users/htatche/dev/curios/todo.txt",
 		"/Users/htatche/dev/curios/bower_components/bootstrap/dist/js/bootstrap.js",
-		"/Users/htatche/dev/curios/node_modules/twitter-bootstrap/less/accordion.less",
-		"/Users/htatche/dev/hbs2emblem/index.html",
-		"/Users/htatche/dev/curios/node_modules/bootstrap/bin/bootstrap",
-		"/Users/htatche/dev/hbs2emblem/file.html"
+		"/Users/htatche/dev/curios/node_modules/twitter-bootstrap/less/accordion.less"
 	],
 	"find":
 	{
@@ -439,6 +470,58 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"game_loop",
+			"block",
+			"update_",
+			"nshap",
+			"loop",
+			"game_loo",
+			"this",
+			"falling_shape",
+			"falling_t",
+			"falling_tween",
+			"this",
+			"parent",
+			"this",
+			"set",
+			"200",
+			"100",
+			"detect_coll",
+			"error",
+			"move_to_floor",
+			"create_shap",
+			"move.c",
+			"move(",
+			"move_to_floor",
+			"randomNColumn",
+			"random",
+			"setTime",
+			"set",
+			"create_shape",
+			"settime",
+			"block_col",
+			"100",
+			"collision=false",
+			", dfd_collision",
+			"update_grid",
+			"rest",
+			"var",
+			"i",
+			" =",
+			"previous_axis",
+			"axisToNCell",
+			"x",
+			"j",
+			"shape",
+			"bind",
+			"setTime",
+			"ROWS",
+			"sprite",
+			"tween",
+			"sprite",
+			"tween",
+			"graphics",
+			"throwBl",
 			"add",
 			".length",
 			"preload",
@@ -514,59 +597,7 @@
 			"block",
 			"ground",
 			"walls_collision_group",
-			"ship",
-			"column",
-			"Pandas",
-			"pandas",
-			"blocks",
-			"blocks_group",
-			"image",
-			"home",
-			"arrow",
-			"main-header",
-			".main-header",
-			"margin",
-			"2",
-			"per",
-			"page",
-			"posts",
-			"archive-templ",
-			"archive-templa",
-			".post {",
-			"archiv",
-			".post {",
-			"newer",
-			"pagi",
-			"hr {",
-			"border-bottom",
-			"var total",
-			"post-content .full",
-			"xml",
-			"post-title",
-			"article",
-			"main-header",
-			"overlay",
-			"main-header",
-			"media",
-			"scroll",
-			"arrow",
-			"scroll-down:af",
-			":after",
-			"scroll-down",
-			"arrow",
-			"media",
-			"back-but",
-			"contact",
-			"media",
-			"contact-b",
-			"main-nav.overl",
-			"background-color",
-			"contact-button",
-			"contact-butt",
-			"subscribe-button",
-			"subscribe-button:h",
-			"before",
-			"subscribe-button:before"
+			"ship"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -594,62 +625,36 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "tetris.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1815,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1333,
-								1336
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 481.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "new_tetris.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 825,
+						"buffer_size": 5580,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								443,
-								443
+								1907,
+								1907
 							]
 						],
 						"settings":
 						{
+							"rulers":
+							[
+								120
+							],
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 56.0,
+						"translation.y": 1091.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -697,6 +702,7 @@
 	{
 		"height": 100.0
 	},
+	"pinned_build_system": "",
 	"project": "tetris.sublime-project",
 	"replace":
 	{
@@ -706,8 +712,21 @@
 	"select_file":
 	{
 		"height": 0.0,
+		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"require/read",
+				"tetris/bower_components/require/README.md"
+			],
+			[
+				"bower",
+				"tetris/bower.json"
+			],
+			[
+				"inde",
+				"tetris/index.html"
+			],
 			[
 				"tet",
 				"tetris/tetris.js"
@@ -847,10 +866,6 @@
 			[
 				"404",
 				"404.php"
-			],
-			[
-				"inde",
-				"index.php"
 			],
 			[
 				"foo",
@@ -1211,14 +1226,6 @@
 			[
 				"productsizebutt",
 				"app/assets/javascripts/pos/controllers/product_size_buttons_controller.js.coffee"
-			],
-			[
-				"outletresourcesjs",
-				"app/views/api/sales_resources/outlet_resources.json.rabl"
-			],
-			[
-				"productmodifier",
-				"app/assets/javascripts/pos/models/product_modifier_category.js.coffee"
 			]
 		],
 		"width": 0.0
@@ -1226,6 +1233,7 @@
 	"select_project":
 	{
 		"height": 500.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
@@ -1238,6 +1246,7 @@
 	"select_symbol":
 	{
 		"height": 392.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[

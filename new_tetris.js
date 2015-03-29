@@ -67,6 +67,7 @@ function add_block(blocks_group, block, random_x) {
 function throw_shape(shape) {
 	var dfd = new jQuery.Deferred();
 
+	// tween = move.call(shape, "down", loop=true, dfd);
 	loop_move.call(shape, "down", dfd);
 
 	return dfd.promise();
@@ -80,23 +81,29 @@ function loop_move(direction, dfd) {
 
 	if (y < HEIGHT && !collision) {	
 
-		setTimeout(function() {
-			flag = true;	
-			tween = move.call(parent, direction);
-			tween.onComplete.add(loop_move.bind(parent, direction, dfd), parent);	
-		}, 500);
-
+		$.when( move.call(parent, direction) ).then(
+			function() {
+				game.time.events.add(500, loop_move.bind(parent, direction, dfd), this);
+			}		
+		);	
+		
 	} else {
+		++nshape;
 		dfd.resolve();
 	}		
 
 }
 
 function move(direction) {
-	var tween = game.add.tween(this);
-	var next_position = getNextPosition.call(this, direction);
-	var previous_x = this.x;
-	var previous_y = this.y;
+	var parent = this;
+	var dfd_move = new jQuery.Deferred();
+
+	var tween = game.add.tween(parent);
+	var next_position = getNextPosition.call(parent, direction);
+	var previous_x = parent.x;
+	var previous_y = parent.y;
+
+	flag = true;	
 
   tween.to(
     next_position,
@@ -106,10 +113,14 @@ function move(direction) {
   );
 
   tween.onComplete.add(
-  	update_grid.bind(this, previous_x, previous_y, "orange")
-  , this);	
+  	update_grid.bind(parent, previous_x, previous_y, "orange", dfd_move)
+  , parent);	
 
-  return tween;
+	return dfd_move.promise();
+}
+
+function tween_done (dfd_move) {
+	dfd_move.resolve();
 }
 
 function popTweensChain () {
@@ -135,8 +146,6 @@ function detect_collision(direction) {
 		}
 
 		// Walls collision		
-
-		
 
 	}
 
@@ -168,7 +177,7 @@ function posToAxis(x, y) {
 	return [x,y];
 }
 
-function update_grid(previous_x, previous_y, block_color) {
+function update_grid(previous_x, previous_y, block_color, dfd_move) {
 	var previous_axis;
 	var axis;
 
@@ -200,8 +209,8 @@ function update_grid(previous_x, previous_y, block_color) {
 
 	}
 
+	if (dfd_move) dfd_move.resolve();
 	flag = false;
-
 }
 
 function clear_row() {
@@ -231,16 +240,15 @@ function randomShape() {
 function game_loop() {
 	var random_shape_type = randomShape();
 	var shape = create_shape(random_shape_type);
-
 	falling_shape = shape; 
 
 	$.when( throw_shape(shape) ).then(
 	  function() {
-	  	++nshape;
+	  	// --nshape;
 	    game_loop();
 	  },
 	  function() {
-	  	++nshape;
+	  	// --nshape;
 	  	game_loop();
 	  }
   )	
@@ -258,14 +266,25 @@ function create() {
 function update() {
 	var direction;
 
-	if (this.cursors.left.justDown) {
+	if (this.cursors.left.isDown) {
 		direction = "left";
-	}	else if (this.cursors.right.justDown) {
+
+		if (!flag)
+	  	move.call(falling_shape, direction);			
+
+	}	else if (this.cursors.right.isDown) {
 		direction = "right";
+
+		if (!flag)
+	  	move.call(falling_shape, direction);			
 	}	
 
-	if (!flag) move.call(falling_shape, direction);
-
+	// For some reason this forces the grid update and prevents
+	// from messing up the grid
+	if (!flag) {
+		move.call(falling_shape, direction);	
+	}
+	
 	if (direction) {
 		// var collision = detect_collision.call(falling_shape, direction);
 
