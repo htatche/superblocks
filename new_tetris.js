@@ -21,7 +21,9 @@ var shapes = [
 
 var nshape = 0;
 var falling_shape = null;
-var flag = false;
+// var flag = false;
+
+var queue = [];
 
 function initialize_grid() {
 	for (var x=0; x < ROWS; ++x) {
@@ -67,7 +69,6 @@ function add_block(blocks_group, block, random_x) {
 function throw_shape(shape) {
 	var dfd = new jQuery.Deferred();
 
-	// tween = move.call(shape, "down", loop=true, dfd);
 	loop_move.call(shape, "down", dfd);
 
 	return dfd.promise();
@@ -75,18 +76,12 @@ function throw_shape(shape) {
 
 function loop_move(direction, dfd) {
 	var parent = this;
-	var y = Math.round(this.y);
 
 	var collision = detect_collision.call(this, direction);
 
-	if (y < HEIGHT && !collision) {	
-
-		$.when( move.call(parent, direction) ).then(
-			function() {
-				game.time.events.add(500, loop_move.bind(parent, direction, dfd), this);
-			}		
-		);	
-		
+	if (!collision) {	
+		queue.push(move.bind(parent, direction));
+		game.time.events.add(100, loop_move.bind(parent, direction, dfd), this);
 	} else {
 		++nshape;
 		dfd.resolve();
@@ -96,14 +91,14 @@ function loop_move(direction, dfd) {
 
 function move(direction) {
 	var parent = this;
+	var tween = game.add.tween(parent);
+
 	var dfd_move = new jQuery.Deferred();
 
-	var tween = game.add.tween(parent);
+	var x = Math.round(parent.children[0].x);
 	var next_position = getNextPosition.call(parent, direction);
 	var previous_x = parent.x;
 	var previous_y = parent.y;
-
-	flag = true;	
 
   tween.to(
     next_position,
@@ -119,15 +114,10 @@ function move(direction) {
 	return dfd_move.promise();
 }
 
-function tween_done (dfd_move) {
-	dfd_move.resolve();
-}
-
-function popTweensChain () {
-	tweens_chain.pop(this);
-}
-
 function detect_collision(direction) {
+	var last_row 		= ROWS - 1,
+			last_column = COLUMNS - 1;
+
 	var collision = false;
 	var next_position = getNextPosition.call(this, direction);	
 
@@ -135,20 +125,21 @@ function detect_collision(direction) {
 		var block = this.children[l];
 		var next_axis = posToAxis(next_position.x + block.x, next_position.y + block.y);				
 
-		// Blocks collision
 
-		try {
+		// Walls collision
+		if (next_axis[0] < 0 || next_axis[0] > last_column || next_axis[1] > last_row) {
+			return collision = true;
+		}						
+
+		// Cancel detection when above the grid 
+		if (next_axis[1] > 0) {
+			// Blocks collision
 			if (grid[next_axis[1]][next_axis[0]] != null && grid[next_axis[1]][next_axis[0]] != nshape) {
 				return collision = true;
-			}
-		} catch (e) {
-			// Out of grid range
+			}				
 		}
 
-		// Walls collision		
-
 	}
-
 	return collision;
 }
 
@@ -185,12 +176,9 @@ function update_grid(previous_x, previous_y, block_color, dfd_move) {
 		var block = this.children[l];
 
 		previous_axis = posToAxis(previous_x + block.x, previous_y + block.y);
-		axis 					= posToAxis(this.x + block.x, this.y + block.y);				
 
-		try {
+		if (previous_axis[1] > 0) {
 	    grid[previous_axis[1]][previous_axis[0]] = null; //{busy: false, color: null};
-		} catch (e) {
-			// Out of grid range
 		}
 
 	}
@@ -198,19 +186,15 @@ function update_grid(previous_x, previous_y, block_color, dfd_move) {
 	for (var l=0; l < this.children.length; ++l) {
 		var block = this.children[l];
 
-		previous_axis = posToAxis(previous_x + block.x, previous_y + block.y);
-		axis 					= posToAxis(this.x + block.x, this.y + block.y);				
+		axis = posToAxis(this.x + block.x, this.y + block.y);				
 
-		try {
+		if (axis[1] > 0) {
     	grid[axis[1]][axis[0]] = nshape; //{busy: true, color: block_color};
-		} catch (e) {
-			// Out of grid range
-		}    	
+		}
 
 	}
 
 	if (dfd_move) dfd_move.resolve();
-	flag = false;
 }
 
 function clear_row() {
@@ -244,11 +228,9 @@ function game_loop() {
 
 	$.when( throw_shape(shape) ).then(
 	  function() {
-	  	// --nshape;
 	    game_loop();
 	  },
 	  function() {
-	  	// --nshape;
 	  	game_loop();
 	  }
   )	
@@ -261,40 +243,40 @@ function create() {
 	initialize_grid();
 
 	game_loop();
+	flush_queue();
+}
+
+/* Flush the queue every 1 ms */
+function flush_queue () {
+	if (queue.length > 0) {
+		$.when( queue[0].call() ).then(
+			function() {
+				queue.shift();
+				flush_queue.call();
+			}		
+		);			
+	} else {
+		setTimeout(function() { flush_queue.call(); }, 1)
+	}
 }
 
 function update() {
 	var direction;
 
-	if (this.cursors.left.isDown) {
-		direction = "left";
-
-		if (!flag)
-	  	move.call(falling_shape, direction);			
-
-	}	else if (this.cursors.right.isDown) {
-		direction = "right";
-
-		if (!flag)
-	  	move.call(falling_shape, direction);			
-	}	
-
-	// For some reason this forces the grid update and prevents
-	// from messing up the grid
-	if (!flag) {
-		move.call(falling_shape, direction);	
-	}
-	
-	if (direction) {
-		// var collision = detect_collision.call(falling_shape, direction);
-
-		// if (!collision) {
-			// move.call(falling_shape, direction, loop=false);
-		// }			
-	}
+	if (this.cursors.left.justDown) {
+		var collision = detect_collision.call(falling_shape, "left");
+		if (!collision) {
+			queue.push(move.bind(falling_shape, "left"));
+		}
+	}	else if (this.cursors.right.justDown) {
+		var collision = detect_collision.call(falling_shape, "right");
+		if (!collision) {
+			queue.push(move.bind(falling_shape, "right"));
+		}
+	}			
 
 }
 
 function preload() {
-     game.load.image('block', 'images/block_orange.png');
+	game.load.image('block', 'images/block_orange.png');
 }

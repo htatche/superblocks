@@ -4,6 +4,34 @@
 		"selected_items":
 		[
 			[
+				"rig",
+				"right_wall"
+			],
+			[
+				"x",
+				"xsize"
+			],
+			[
+				"fl",
+				"flush_movement"
+			],
+			[
+				"pro",
+				"process_queue"
+			],
+			[
+				"u",
+				"update_grid"
+			],
+			[
+				"lo",
+				"loop_move"
+			],
+			[
+				"dfd",
+				"dfd_move"
+			],
+			[
 				"tween",
 				"tweens_chain"
 			],
@@ -49,10 +77,6 @@
 			],
 			[
 				"up",
-				"updateOccupiedCells"
-			],
-			[
-				"u",
 				"updateOccupiedCells"
 			],
 			[
@@ -183,14 +207,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "new_tetris.js",
-			"settings":
-			{
-				"buffer_size": 5580,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -295,13 +311,14 @@
 	],
 	"file_history":
 	[
+		"/Users/htatche/dev/tetris/new_tetris.js",
+		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/index.html",
 		"/Users/htatche/Downloads/schemacrawler-12.06.01-main/examples/javascript/droptables.js",
 		"/Users/htatche/dev/last projects/woody/src/status.js",
 		"/Users/htatche/dev/tetris/bower_components/require/README.md",
 		"/Users/htatche/dev/tetris/bower.json",
 		"/Users/htatche/dev/last projects/woody/src/woodie.js",
-		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/server.js",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/TimerEvent.js.html",
 		"/Users/htatche/dev/tetris/bower_components/phaser/docs/Tween.js.html",
@@ -421,8 +438,7 @@
 		"/Users/htatche/dev/curios/node_modules/grunt-contrib-jade/node_modules/jade/lib/inline-tags.js",
 		"/Users/htatche/dev/curios/bower_components/bootstrap/less/variables.less",
 		"/Users/htatche/dev/curios/todo.txt",
-		"/Users/htatche/dev/curios/bower_components/bootstrap/dist/js/bootstrap.js",
-		"/Users/htatche/dev/curios/node_modules/twitter-bootstrap/less/accordion.less"
+		"/Users/htatche/dev/curios/bower_components/bootstrap/dist/js/bootstrap.js"
 	],
 	"find":
 	{
@@ -470,6 +486,47 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"create_s",
+			"queue.push",
+			"update_g",
+			"parent.x",
+			"resolve",
+			"y =",
+			"ysize",
+			"xsize",
+			"ysize",
+			"xsize",
+			"queue",
+			"call",
+			"bind",
+			"when",
+			"move.ca",
+			"flag =",
+			"flag",
+			"move.call",
+			"flag",
+			"falling_shape",
+			"flag",
+			"console",
+			"dfd_move",
+			"++ns",
+			"nshape",
+			"nshap",
+			"nshape",
+			"shape =",
+			"nshape",
+			"shapes",
+			"nshape",
+			"when",
+			"dfd_move",
+			"this",
+			"time",
+			"timer",
+			"flag",
+			"update_",
+			"HEIGHT",
+			"update_grid",
+			"nshape",
 			"game_loop",
 			"block",
 			"update_",
@@ -556,48 +613,7 @@
 			"console",
 			"throwbl",
 			"lookupO",
-			"updateO",
-			"i",
-			"j",
-			"block_shape",
-			"blocks",
-			"for",
-			"heading",
-			"coming soon",
-			"debugg",
-			"RIGHT",
-			"platforms",
-			"\nFLOOR",
-			"FLOOR",
-			"LEFT_WALL",
-			"generateGrid",
-			"GRID",
-			"generateGrid",
-			"rows",
-			"generateGrid",
-			"shapeOccupiedCells",
-			"cells",
-			"getVirtualShape",
-			"cell",
-			"CELL",
-			"cell",
-			"CELL",
-			"cell",
-			"CELL",
-			"i",
-			"grid_columns",
-			"world",
-			"2",
-			"column",
-			"1",
-			"random_x",
-			"game.world.randomX",
-			"boun",
-			"var",
-			"block",
-			"ground",
-			"walls_collision_group",
-			"ship"
+			"updateO"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -625,41 +641,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "new_tetris.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5580,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1907,
-								1907
-							]
-						],
-						"settings":
-						{
-							"rulers":
-							[
-								120
-							],
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1091.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -1238,7 +1221,7 @@
 		[
 			[
 				"",
-				"~/dev/nomadstays_landing/landing_page.sublime-project"
+				"~/dev/tetris/tetris.sublime-project"
 			]
 		],
 		"width": 380.0
@@ -1311,8 +1294,8 @@
 	"show_minimap": false,
 	"show_open_files": true,
 	"show_tabs": true,
-	"side_bar_visible": true,
-	"side_bar_width": 159.0,
+	"side_bar_visible": false,
+	"side_bar_width": 208.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
