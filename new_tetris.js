@@ -17,7 +17,9 @@ var grid = [];
 var shapes = [
 	{type: 'column',   	blocks: [ [0,0], [0,1], [0,2] ],        xsize: 1, ysize: 3 * CELL_SIZE},
 	// {type: 'block',   	blocks: [ [0,0] ],        							xsize: 1, ysize: 1 * CELL_SIZE}
-	{type: 'triangle',	blocks: [ [0,1], [1,1], [2,1], [1,0] ], xsize: 3, ysize: 2 * CELL_SIZE}
+	{type: 'triangle',	blocks: [ [0,1], [1,1], [2,1], [1,0] ], xsize: 3, ysize: 2 * CELL_SIZE},
+	{type: 'cube',			blocks: [ [0,0], [0,1], [1,0], [1,1] ], xsize: 2, ysize: 2 * CELL_SIZE},
+	{type: 'snake',			blocks: [ [0,0], [1,0], [1,1], [2,1] ], xsize: 4, ysize: 2 * CELL_SIZE},
 ]
 
 var block_colors = ['orange', 'yellow', 'green', 'pink'];
@@ -29,6 +31,24 @@ var thrown_shapes = [];
 var queue = [];
 
 var stop_throwing_shapes = false;
+
+function nshapes_grid (argument) {
+	var ngrid = [];
+
+	for (var x=0; x < ROWS; ++x) {
+		ngrid[x] = new Array(COLUMNS); 
+
+		for (var y=0; y < COLUMNS; ++y) {
+			if (grid[x][y] != null) {
+				ngrid[x][y] = grid[x][y].nshape; 
+			} else {
+				ngrid[x][y] = null;
+			}
+		}		
+	}
+
+	// console.table(ngrid);
+}
 
 function initialize_grid() {
 	for (var x=0; x < ROWS; ++x) {
@@ -57,6 +77,10 @@ function create_shape(shape) {
 	}
 
 	return blocks_group;
+}
+
+function transform_shape(shape) {
+
 }
 
 function random_color (argument) {
@@ -94,13 +118,14 @@ function loop_move(direction, dfd) {
 
 	if (!collision) {	
 		queue.push(move.bind(parent, direction));
-		game.time.events.add(100, loop_move.bind(parent, direction, dfd), this);
+		game.time.events.add(150, loop_move.bind(parent, direction, dfd), this);
 	} else {
 
 		if (bottom_row_is_completed()) {
 			stop_throwing_shapes = true;
 		}
 
+		// nshapes_grid();
 		++nshape;
 		dfd.resolve();
 	}		
@@ -152,11 +177,11 @@ function update_grid(previous_x, previous_y, dfd_move) {
 
 		axis = posToAxis(this.x + block.x, this.y + block.y);				
 
-		// try {
-			if (axis[1] > 0) {
-	    	grid[axis[1]][axis[0]] = {block: this.children[l], nshape: nshape};
-			}			
-		// } catch (e) {}
+		// If the shape is not above the grid
+		if (axis[1] > 0) {
+    	console.log("updating nshape " + this.nshape + "to x:" + axis[1] + " y:" + axis[0]);
+    	grid[axis[1]][axis[0]] = {block: this.children[l], nshape: this.nshape};
+		}			
 
 	}
 
@@ -217,10 +242,6 @@ function posToAxis(x, y) {
 	return [x,y];
 }
 
-function clear_row() {
-
-}
-
 function randomNColumn(block_shape_xsize) {
     var limit = COLUMNS - block_shape_xsize;
     var ncolumn = limit + 1;
@@ -244,16 +265,23 @@ function randomShape() {
 function game_loop() {
 
 	if (!stop_throwing_shapes) { 
-
 		var random_shape_type = randomShape();
 		var shape = create_shape(random_shape_type);
+
+		shape.nshape = nshape;
 
 		thrown_shapes.push(shape);	
 		falling_shape = shape; 
 
 		$.when( throw_shape(shape) ).then(
 		  function() {
+
+				// Save the nrow where the last shape has collapsed
+				var axis = posToAxis(falling_shape.x, falling_shape.y);
+				falling_shape.last_nrow = axis[1];
+
 		    game_loop();
+
 		  }
 	  )	
 
@@ -283,8 +311,10 @@ function flush_queue () {
 			}		
 		);			
 	} else {
-		if (stop_throwing_shapes && bottom_row_is_completed()) {
-			clear_completed_row();
+		var nrow = bottom_row_is_completed();
+
+		if (stop_throwing_shapes && nrow) {
+			clear_completed_row(nrow);
 		} else {
 			stop_throwing_shapes = false;
 		}
@@ -293,14 +323,22 @@ function flush_queue () {
 }
 
 function bottom_row_is_completed (argument) {
-	var row_is_completed = true;
-	var bottom_row = 19;
+	// var bottom_row = 19;
+	var nrow;
 
-	for (var i=0; i<COLUMNS; ++i) {
-		var cell  = grid[bottom_row][i];
+	for (var i=0; i<ROWS; ++i) {
+		var row_is_completed = true;
 
-		if (cell == null) {
-			row_is_completed = false;
+		for (var j=0; j<COLUMNS; ++j) {
+			var cell  = grid[i][j];
+
+			if (cell == null) {
+				row_is_completed = false;
+			}
+		}
+		if (row_is_completed) {
+			nrow = i;
+			return nrow;
 		}
 	}
 
@@ -308,8 +346,8 @@ function bottom_row_is_completed (argument) {
 }
 
 /* Clear bottom row when completed */
-function clear_completed_row () {
-	var bottom_row = 19;
+function clear_completed_row (nrow) {
+	var bottom_row = nrow;
 
 	// Destroy the blocks at the bottom
 	for (var i=0; i<COLUMNS; ++i) {
@@ -320,18 +358,44 @@ function clear_completed_row () {
 		grid[bottom_row][i] = null;
 	}
 
-	move_all_blocks_down();
+	move_all_blocks_down(nrow);
 }
 
-/* After clearing the bottom row, we move all the blocks
-   of the grid one level below */
-function move_all_blocks_down () {
-	for (var i=0; i<thrown_shapes.length; ++i) {
-		if (thrown_shapes[i].children.length > 0) {
-			console.log("moving down!")
-			queue.push(move.bind(thrown_shapes[i], "down"));
+/* After clearing one row, we move all the blocks
+   of rows above one level below */
+function move_all_blocks_down (nrow) {
+
+	var shapes_moved_down = [];
+	var above_row = nrow - 1;
+
+	for (var j=above_row; j>0; --j) {
+
+		for (var i=0; i<COLUMNS; ++i) {
+
+			// If cell is not null
+			if (grid[j][i]) {
+
+				var shape = grid[j][i].block.parent;
+
+				if (shape.children.length > 0) {
+
+					var nshape = grid[j][i].nshape;
+
+					if (shapes_moved_down.indexOf(nshape) == -1) {
+						queue.push(move.bind(shape, "down"));
+						shapes_moved_down.push(nshape);					
+					} 
+
+				}
+
+			}
+
 		}
+
 	}
+
+	shapes_moved_down = [];
+
 }
 
 function update() {
