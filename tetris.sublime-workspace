@@ -4,6 +4,34 @@
 		"selected_items":
 		[
 			[
+				"throw_shap",
+				"thrown_shapes"
+			],
+			[
+				"move",
+				"move_all_blocks_down"
+			],
+			[
+				"bottoM",
+				"bottom_row"
+			],
+			[
+				"row",
+				"row_is_completed"
+			],
+			[
+				"cle",
+				"clear_completed_rows"
+			],
+			[
+				"ran",
+				"random_color"
+			],
+			[
+				"ri",
+				"right"
+			],
+			[
 				"rig",
 				"right_wall"
 			],
@@ -52,10 +80,6 @@
 				"random_x"
 			],
 			[
-				"ran",
-				"random"
-			],
-			[
 				"rando",
 				"randomShape"
 			],
@@ -66,10 +90,6 @@
 			[
 				"bl",
 				"block_color"
-			],
-			[
-				"move",
-				"moveDown"
 			],
 			[
 				"set",
@@ -486,6 +506,38 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"thrown_shape",
+			"update_grid",
+			"null",
+			"nsha",
+			"update_g",
+			"block",
+			"color",
+			"tween_done",
+			"popTweensChain",
+			"flush_movement",
+			"100",
+			"COLUMNS - 1",
+			"COLUMNS -",
+			"justDown",
+			"100",
+			"below",
+			"try",
+			"console",
+			"dete",
+			"abov",
+			"collisi",
+			"game_lo",
+			"collisi",
+			"flush",
+			"resolve",
+			"detect_coll",
+			"detect_c",
+			"preven",
+			"preventC",
+			"nshape",
+			"flag",
+			"when",
 			"create_s",
 			"queue.push",
 			"update_g",
@@ -581,39 +633,7 @@
 			"throwBl",
 			"add",
 			".length",
-			"preload",
-			"zsize",
-			"ysize",
-			"xsize",
-			"tween",
-			"moveNex",
-			"tween",
-			"moveDown",
-			"throwB",
-			"parent.row =",
-			"texture",
-			"throwB",
-			"occupied_cells =",
-			"prevenT",
-			"preventCollision",
-			"setOcc",
-			"updateG",
-			"parent",
-			"parent.shape.occ",
-			"occupied_cell",
-			"occupied",
-			"block.shape.occu",
-			"throwB",
-			"collisi",
-			"preventC",
-			"collisi",
-			"moveDow",
-			"tween.to",
-			"moveDow",
-			"console",
-			"throwbl",
-			"lookupO",
-			"updateO"
+			"preload"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -648,7 +668,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 26.0
+		"height": 34.0
 	},
 	"input":
 	{
@@ -698,6 +718,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"new",
+				"tetris/new_tetris.js"
+			],
 			[
 				"require/read",
 				"tetris/bower_components/require/README.md"
@@ -1205,10 +1229,6 @@
 			[
 				"menusco",
 				"app/assets/javascripts/pos/controllers/menus_controller.js.coffee"
-			],
-			[
-				"productsizebutt",
-				"app/assets/javascripts/pos/controllers/product_size_buttons_controller.js.coffee"
 			]
 		],
 		"width": 0.0

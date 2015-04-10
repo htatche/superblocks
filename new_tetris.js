@@ -15,8 +15,9 @@ var game = new Phaser.Game(WIDTH,
 var grid = [];
 
 var shapes = [
-	{type: 'column',   	blocks: [ [0,0], [0,1], [0,2] ],        xsize: 1, ysize: 3 * CELL_SIZE}
-	// {type: 'triangle',	blocks: [ [0,1], [1,1], [2,1], [1,0] ], xsize: 3, ysize: 2 * CELL_SIZE}
+	{type: 'column',   	blocks: [ [0,0], [0,1], [0,2] ],        xsize: 1, ysize: 3 * CELL_SIZE},
+	// {type: 'block',   	blocks: [ [0,0] ],        							xsize: 1, ysize: 1 * CELL_SIZE}
+	{type: 'triangle',	blocks: [ [0,1], [1,1], [2,1], [1,0] ], xsize: 3, ysize: 2 * CELL_SIZE}
 ]
 
 var block_colors = ['orange', 'yellow', 'green', 'pink'];
@@ -26,6 +27,8 @@ var falling_shape = null;
 var thrown_shapes = [];
 
 var queue = [];
+
+var stop_throwing_shapes = false;
 
 function initialize_grid() {
 	for (var x=0; x < ROWS; ++x) {
@@ -87,13 +90,17 @@ function throw_shape(shape) {
 
 function loop_move(direction, dfd) {
 	var parent = this;
-
 	var collision = detect_collision.call(this, direction);
 
 	if (!collision) {	
 		queue.push(move.bind(parent, direction));
 		game.time.events.add(100, loop_move.bind(parent, direction, dfd), this);
 	} else {
+
+		if (bottom_row_is_completed()) {
+			stop_throwing_shapes = true;
+		}
+
 		++nshape;
 		dfd.resolve();
 	}		
@@ -235,19 +242,25 @@ function randomShape() {
 }
 
 function game_loop() {
-	var random_shape_type = randomShape();
-	var shape = create_shape(random_shape_type);
-	thrown_shapes.push(shape);	
-	falling_shape = shape; 
 
-	$.when( throw_shape(shape) ).then(
-	  function() {
-	    game_loop();
-	  },
-	  function() {
-	  	game_loop();
-	  }
-  )	
+	if (!stop_throwing_shapes) { 
+
+		var random_shape_type = randomShape();
+		var shape = create_shape(random_shape_type);
+
+		thrown_shapes.push(shape);	
+		falling_shape = shape; 
+
+		$.when( throw_shape(shape) ).then(
+		  function() {
+		    game_loop();
+		  }
+	  )	
+
+	} else {
+		setTimeout(function() { game_loop(); }, 1);
+	}
+
 }
 
 function create() {  
@@ -267,16 +280,19 @@ function flush_queue () {
 			function() {
 				queue.shift();
 				flush_queue.call();
-				clear_completed_row();
 			}		
 		);			
 	} else {
+		if (stop_throwing_shapes && bottom_row_is_completed()) {
+			clear_completed_row();
+		} else {
+			stop_throwing_shapes = false;
+		}
 		setTimeout(function() { flush_queue.call(); }, 1)
 	}
 }
 
-/* Clear bottom row when completed */
-function clear_completed_row () {
+function bottom_row_is_completed (argument) {
 	var row_is_completed = true;
 	var bottom_row = 19;
 
@@ -288,29 +304,32 @@ function clear_completed_row () {
 		}
 	}
 
-	if (row_is_completed) {
-		// Destroy the blocks at the bottom
-		for (var i=0; i<COLUMNS; ++i) {
-			var cell  = grid[bottom_row][i];
+	return row_is_completed;
+}
 
-			cell.block.parent.remove(cell.block, destroy=true);
-			grid[bottom_row][i] = null;
-		}
+/* Clear bottom row when completed */
+function clear_completed_row () {
+	var bottom_row = 19;
 
-		move_all_blocks_down();
+	// Destroy the blocks at the bottom
+	for (var i=0; i<COLUMNS; ++i) {
+		var cell  = grid[bottom_row][i];
+		
+		cell.block.parent.remove(cell.block, destroy=true);
+
+		grid[bottom_row][i] = null;
 	}
+
+	move_all_blocks_down();
 }
 
 /* After clearing the bottom row, we move all the blocks
    of the grid one level below */
-function move_all_blocks_down (argument) {
+function move_all_blocks_down () {
 	for (var i=0; i<thrown_shapes.length; ++i) {
-		var collision = detect_collision.call(thrown_shapes[i], "down");
-		if (!collision) {		
+		if (thrown_shapes[i].children.length > 0) {
+			console.log("moving down!")
 			queue.push(move.bind(thrown_shapes[i], "down"));
-			console.log("moving it down !");
-		} else {
-			console.log("collision!");
 		}
 	}
 }
