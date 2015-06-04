@@ -4,6 +4,30 @@
 		"selected_items":
 		[
 			[
+				"r",
+				"resolve"
+			],
+			[
+				"add",
+				"add_blocks"
+			],
+			[
+				"pos",
+				"posToAxis"
+			],
+			[
+				"botto",
+				"bottom_row"
+			],
+			[
+				"last",
+				"last_nrow"
+			],
+			[
+				"clear",
+				"clear_completed_row"
+			],
+			[
 				"throw_shap",
 				"thrown_shapes"
 			],
@@ -332,6 +356,7 @@
 	"file_history":
 	[
 		"/Users/htatche/dev/tetris/new_tetris.js",
+		"/Users/htatche/Downloads/palette.css",
 		"/Users/htatche/dev/tetris/tetris.js",
 		"/Users/htatche/dev/tetris/index.html",
 		"/Users/htatche/Downloads/schemacrawler-12.06.01-main/examples/javascript/droptables.js",
@@ -457,8 +482,7 @@
 		"/Users/htatche/dev/curios/Gruntfile.js",
 		"/Users/htatche/dev/curios/node_modules/grunt-contrib-jade/node_modules/jade/lib/inline-tags.js",
 		"/Users/htatche/dev/curios/bower_components/bootstrap/less/variables.less",
-		"/Users/htatche/dev/curios/todo.txt",
-		"/Users/htatche/dev/curios/bower_components/bootstrap/dist/js/bootstrap.js"
+		"/Users/htatche/dev/curios/todo.txt"
 	],
 	"find":
 	{
@@ -506,6 +530,46 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"console.",
+			"console",
+			"transform_sh",
+			"update_gri",
+			"return dfd",
+			"details",
+			"x",
+			"add_blocks",
+			"console",
+			"blocks",
+			"remove",
+			"children",
+			"xsize",
+			"blocks",
+			"move_all_blocks_down",
+			"blocks",
+			"addC",
+			"nshapes_grid",
+			"console",
+			"nshape",
+			"nshapes_grid",
+			"nshape",
+			"grid",
+			"detect",
+			"above_row",
+			"bottom_row",
+			"shape",
+			"posToAxis",
+			"posTo",
+			"last_nrow",
+			"posToAxis",
+			"thrown_shapes",
+			"bottom_row_is_completed",
+			"clear",
+			"clear_c",
+			"i",
+			"clear",
+			"stop_throw",
+			"loop_move",
+			"nshape",
 			"thrown_shape",
 			"update_grid",
 			"null",
@@ -593,47 +657,7 @@
 			"parent",
 			"this",
 			"set",
-			"200",
-			"100",
-			"detect_coll",
-			"error",
-			"move_to_floor",
-			"create_shap",
-			"move.c",
-			"move(",
-			"move_to_floor",
-			"randomNColumn",
-			"random",
-			"setTime",
-			"set",
-			"create_shape",
-			"settime",
-			"block_col",
-			"100",
-			"collision=false",
-			", dfd_collision",
-			"update_grid",
-			"rest",
-			"var",
-			"i",
-			" =",
-			"previous_axis",
-			"axisToNCell",
-			"x",
-			"j",
-			"shape",
-			"bind",
-			"setTime",
-			"ROWS",
-			"sprite",
-			"tween",
-			"sprite",
-			"tween",
-			"graphics",
-			"throwBl",
-			"add",
-			".length",
-			"preload"
+			"200"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -668,7 +692,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 34.0
+		"height": 29.0
 	},
 	"input":
 	{
@@ -709,7 +733,7 @@
 	"project": "tetris.sublime-project",
 	"replace":
 	{
-		"height": 64.0
+		"height": 54.0
 	},
 	"save_all_on_build": true,
 	"select_file":
