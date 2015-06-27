@@ -41,7 +41,7 @@ var thrown_shapes = [];
 var queue = [];
 
 var stop_throwing_shapes = false;
-// var stop_game_loop = false;
+var STOP=false;
 
 function nshapes_grid (argument) {
   var ngrid = [];
@@ -209,7 +209,6 @@ function loop_move(direction, dfd) {
   var collision = detect_collision.call(this, direction);
 
   if (!collision) { 
-  // if (!collision && !stop_game_loop) {     
     queue.push(move.bind(parent, direction));
     game.time.events.add(150, loop_move.bind(parent, direction, dfd), this);
   } else {
@@ -224,27 +223,35 @@ function loop_move(direction, dfd) {
 
 }
 
+// Modified to also prevent collision when left/right commands
 function move(direction) {
   var parent = this;
-  var tween = game.add.tween(parent);
-
   var dfd_move = new jQuery.Deferred();
 
-  // var x = Math.round(parent.children[0].x);
-  var next_position = getNextPosition.call(parent, direction);
-  var previous_x = parent.x;
-  var previous_y = parent.y;
+  var collision = detect_collision.call(parent, direction);
 
-  tween.to(
-    next_position,
-    1,
-    Phaser.Easing.Linear.None,
-    true
-  );
+  if (!collision) {
 
-  tween.onComplete.add(
-    update_grid.bind(parent, previous_x, previous_y, dfd_move)
-  , parent);  
+    var tween = game.add.tween(parent);  
+    // var x = Math.round(parent.children[0].x);
+    var next_position = getNextPosition.call(parent, direction);
+    var previous_x = parent.x;
+    var previous_y = parent.y;
+
+    tween.to(
+      next_position,
+      1,
+      Phaser.Easing.Linear.None,
+      true
+    );
+
+    tween.onComplete.add(
+      update_grid.bind(parent, previous_x, previous_y, dfd_move)
+    , parent);  
+
+  } else {
+    dfd_move.resolve("blocked action!");
+  }
 
   return dfd_move.promise();
 }
@@ -281,7 +288,7 @@ function update_grid(previous_x, previous_y, dfd_move, transform) {
 
   }
 
-  if (dfd_move) dfd_move.resolve();
+  if (dfd_move) dfd_move.resolve("action!");
 }
 
 function detect_collision(direction) {
@@ -399,14 +406,24 @@ function create() {
 
 /* Flush the queue every 1 ms or after movement is completed */
 function flush_queue () {
-  if (queue.length > 0) {
-    $.when( queue[0].call() ).then(
-      function() {
-        queue.shift();
-        flush_queue.call();
-      }   
-    );      
-  } else {
+  if (!STOP) {
+
+    if (queue.length > 0) {
+
+      var action = queue[0];
+      queue.shift();
+      STOP = true;
+
+      $.when( action.call() ).then(
+        function(movement) {
+          console.log(movement);
+          // queue.shift();
+          STOP=false;
+          flush_queue.call();
+        }   
+      );      
+    }
+
     var nrow = bottom_row_is_completed();
 
     if (stop_throwing_shapes && nrow) {
@@ -414,8 +431,10 @@ function flush_queue () {
     } else {
       stop_throwing_shapes = false;
     }
+
     setTimeout(function() { flush_queue.call(); }, 1)
   }
+
 }
 
 function bottom_row_is_completed (argument) {
@@ -507,10 +526,7 @@ function update() {
   }
 
   if (direction == "left" || direction == "right") {
-    var collision = detect_collision.call(falling_shape, direction);
-
-    if (!collision) 
-      queue.push(move.bind(falling_shape, direction));
+    queue.push(move.bind(falling_shape, direction));
   }
 
   if (direction == "up") {
