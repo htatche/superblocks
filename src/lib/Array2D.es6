@@ -7,7 +7,7 @@ export default class Array2D {
 
     get array() { return this._array; }
 
-    getAt(x, y)      { return this.array[x][y]; }
+    getAt(x, y)      { return this._array[x][y]; }
     setAt(x, y, val) { this._array[x][y] = val; }
 
     buildArray() {
@@ -22,13 +22,13 @@ export default class Array2D {
         return this.array;
     }
 
-    fillWith(val) {
-        for (var x = 0; x < this.xSize; ++x) {
-            for (var y = 0; y < this.ySize; ++y) {
-              this.setAt(x, y, val);
-            }
-        }
+    prettyPrint() {
+        var array = this.array.map(row => {
+            return row.map(cell => {
+                return (cell.nBlock);
+            });
+        });
 
-        return this.array;
+        return console.table(array);
     }
 }

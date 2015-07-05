@@ -40,19 +40,6 @@ Block
 Array2D
   findN(n)
 
-Cell
-  constructor
-    this.x
-    this.y
-    this.nBrick
-    this.nBlock
-
-  clear()
-    this.nBlock, this.nBrick = null
-
-  setTo(nBrick, nBlock)
-    this.nBrick = nBrick
-    this.nBlock = nBlock
 
 CellsArray extends Array2D
   findNBrick()

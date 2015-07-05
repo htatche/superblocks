@@ -49,7 +49,8 @@
       ],
       "strict": 0,
       "no-underscore-dangle": 0,
-      "no-multi-spaces": 0
+      "no-multi-spaces": 0,
+      "no-console": 0
     },
     "ecmaFeatures": {
       "modules": true

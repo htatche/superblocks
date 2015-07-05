@@ -1,14 +1,6 @@
-export default class ArrayBlocks extends Array {
+export default class ArrayBlocks extends ArrayMain {
     constructor() {
         super();
-    }
-
-    add(block) {
-        return this.push(block);
-    }
-
-    last() {
-        return this.slice(-1)[0];
     }
 
     findByColor() {
