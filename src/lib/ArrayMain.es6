@@ -4,7 +4,9 @@ export default class ArrayBlocks extends Array {
     }
 
     add(block) {
-        return this.push(block);
+        this.push(block);
+
+        return this.last();
     }
 
     last() {
