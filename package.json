@@ -1,0 +1,58 @@
+{
+  "name": "superblocks",
+  "version": "1.0.0",
+  "description": "Here goes my attempt on building a Tetris with Phaser.js, right now it is a work in progress !",
+  "author": "",
+  "license": "ISC",
+  "main": "src/superblocks.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/htatche/tetris.git"
+  },
+  "dependencies": {
+    "connect": "^3.3.4",
+    "gulp-babel": "^5.1.0",
+    "serve-static": "^1.9.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^3.1.20",
+    "babelify": "^6.1.2",
+    "browser-sync": "^2.7.13",
+    "browserify": "^10.2.4",
+    "deprecated": "0.0.1",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-eslint": "^0.15.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-util": "^3.0.6",
+    "gulp-watch": "^4.2.4",
+    "orchestrator": "^0.3.7",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "env": {
+      "browser": true,
+      "node": false
+    },
+    "rules": {
+      "quotes": [
+        1,
+        "single"
+      ],
+      "strict": 0,
+      "no-underscore-dangle": 0,
+      "no-multi-spaces": 0
+    },
+    "ecmaFeatures": {
+      "modules": true
+    }
+  }
+}
