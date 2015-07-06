@@ -20,7 +20,7 @@ export default class Block {
     set position(position) { this._position = position; }
 
     addBrick(brick) {
-        this.table.putBrick(brick);
+        this.table.putBrick(brick, brick.position);
 
         return this.bricks.add(brick);
     }
@@ -28,7 +28,24 @@ export default class Block {
     newBrick(position) {
         this.phaserGroup.create(position.xPixels, position.yPixels, 'green');
 
-        return this.addBrick(new Brick(position, this.nBlock));
+        return this.addBrick(new Brick(position, this));
+    }
+
+    /**
+     * @param  {Boolean}
+     * @return {[type]}
+     * TODO: Apply changes in Table
+     */
+    removeBricks(destroy = false) {
+        this.phaserGroup.removeAll(destroy);
+    }
+
+    /**
+     * @return {[type]}
+     * TODO: Apply changes in Table
+     */
+    destroy() {
+        this.phaserGroup.removeAll(true);
     }
 
     move(direction) {

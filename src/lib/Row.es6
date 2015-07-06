@@ -1,8 +1,8 @@
-import ArrayMain             from './lib/ArrayMain.es6';
+import ArrayMain             from './ArrayMain.es6';
 
 export default class Row {
     constructor(tableRow) {
-        this.cells          = new ArrayMain(tableRow);
+        this.cells          = tableRow;
     }
 
     get cells()              { return this._cells; }

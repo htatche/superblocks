@@ -1,6 +1,7 @@
 import ArrayBlocks      from './ArrayBlocks.es6';
 import CellsArray       from './CellsArray.es6';
 import Move             from './Move.es6';
+import Row              from './Row.es6';
 
 export default class Table {
     constructor(xSize, ySize) {
@@ -12,7 +13,7 @@ export default class Table {
 
     get cellsArray()   { return this._cellsArray; }
 
-    row(x) { return this.cellsArray[x]; }
+    row(x)             { return new Row(this.cellsArray.array[x]); }
 
     incrementNBlocks() {
         return ++this.blocks.length;

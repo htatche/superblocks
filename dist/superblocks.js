@@ -1592,7 +1592,7 @@ var Block = (function () {
     _createClass(Block, [{
         key: 'addBrick',
         value: function addBrick(brick) {
-            this.table.putBrick(brick);
+            this.table.putBrick(brick, brick.position);
 
             return this.bricks.add(brick);
         }
@@ -1601,7 +1601,30 @@ var Block = (function () {
         value: function newBrick(position) {
             this.phaserGroup.create(position.xPixels, position.yPixels, 'green');
 
-            return this.addBrick(new _BrickEs62['default'](position, this.nBlock));
+            return this.addBrick(new _BrickEs62['default'](position, this));
+        }
+    }, {
+        key: 'removeBricks',
+
+        /**
+         * @param  {Boolean}
+         * @return {[type]}
+         * TODO: Apply changes in Table
+         */
+        value: function removeBricks() {
+            var destroy = arguments[0] === undefined ? false : arguments[0];
+
+            this.phaserGroup.removeAll(destroy);
+        }
+    }, {
+        key: 'destroy',
+
+        /**
+         * @return {[type]}
+         * TODO: Apply changes in Table
+         */
+        value: function destroy() {
+            this.phaserGroup.removeAll(true);
         }
     }, {
         key: 'move',
@@ -1666,14 +1689,37 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Brick = (function () {
-    function Brick(position, nBlock) {
+    function Brick(position, block) {
         _classCallCheck(this, Brick);
 
         this.position = position;
-        this.nBlock = nBlock;
+        this.block = block;
     }
 
     _createClass(Brick, [{
+        key: "remove",
+
+        /**
+         * @param  {Boolean}
+         * @return {[type]}
+         * TODO: Apply changes in Table
+         */
+        value: function remove() {
+            var destroy = arguments[0] === undefined ? false : arguments[0];
+
+            this.block.remove(destroy);
+        }
+    }, {
+        key: "destroy",
+
+        /**
+         * @return {[type]}
+         * TODO: Apply changes in Table
+         */
+        value: function destroy() {
+            this.block.remove(true);
+        }
+    }, {
         key: "position",
         get: function get() {
             return this._position;
@@ -1774,11 +1820,6 @@ var CellsArray = (function (_Array2D) {
             return this.array[position.y][position.x];
         }
     }, {
-        key: 'row',
-        value: function row(x) {
-            return this.array[x];
-        }
-    }, {
         key: 'createCells',
         value: function createCells() {
             for (var x = 0; x < this.ySize; ++x) {
@@ -1874,7 +1915,7 @@ var Game = (function () {
 exports['default'] = Game;
 module.exports = exports['default'];
 
-},{"./Position.es6":18,"./Table.es6":19}],17:[function(require,module,exports){
+},{"./Position.es6":18,"./Table.es6":20}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1984,6 +2025,53 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var _ArrayMainEs6 = require('./ArrayMain.es6');
+
+var _ArrayMainEs62 = _interopRequireDefault(_ArrayMainEs6);
+
+var Row = (function () {
+    function Row(tableRow) {
+        _classCallCheck(this, Row);
+
+        this.cells = tableRow;
+    }
+
+    _createClass(Row, [{
+        key: 'clear',
+        value: function clear() {
+            for (var i = 0; i < this.cells.length; ++i) {
+                this.cells[i].clear();
+            }
+        }
+    }, {
+        key: 'cells',
+        get: function get() {
+            return this._cells;
+        },
+        set: function set(cells) {
+            this._cells = cells;
+        }
+    }]);
+
+    return Row;
+})();
+
+exports['default'] = Row;
+module.exports = exports['default'];
+
+},{"./ArrayMain.es6":11}],20:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 var _ArrayBlocksEs6 = require('./ArrayBlocks.es6');
 
 var _ArrayBlocksEs62 = _interopRequireDefault(_ArrayBlocksEs6);
@@ -1995,6 +2083,10 @@ var _CellsArrayEs62 = _interopRequireDefault(_CellsArrayEs6);
 var _MoveEs6 = require('./Move.es6');
 
 var _MoveEs62 = _interopRequireDefault(_MoveEs6);
+
+var _RowEs6 = require('./Row.es6');
+
+var _RowEs62 = _interopRequireDefault(_RowEs6);
 
 var Table = (function () {
     function Table(xSize, ySize) {
@@ -2009,7 +2101,7 @@ var Table = (function () {
     _createClass(Table, [{
         key: 'row',
         value: function row(x) {
-            return this.cellsArray[x];
+            return new _RowEs62['default'](this.cellsArray.array[x]);
         }
     }, {
         key: 'incrementNBlocks',
@@ -2017,26 +2109,36 @@ var Table = (function () {
             return ++this.blocks.length;
         }
     }, {
-        key: 'moveBlock',
-        value: function moveBlock(block, direction) {
-            var _this = this;
-
-            block.bricks.forEach(function (brick) {
-                return _this.cellsArray.cell(brick.position).clear();
-            });
-
-            block.bricks.forEach(function (brick) {
-                var newPosition = new _MoveEs62['default'](brick.position)[direction]();
-
-                brick.position = newPosition;
-
-                return _this.cellsArray.cell(newPosition).setTo(brick.nBlock);
-            });
+        key: 'clearBrick',
+        value: function clearBrick(brick) {
+            return this.cellsArray.cell(brick.position).clear();
         }
     }, {
         key: 'putBrick',
-        value: function putBrick(brick) {
-            return this.cellsArray.cell(brick.position).setTo(brick.nBlock);
+        value: function putBrick(brick, position) {
+            brick.position = position;
+
+            return this.cellsArray.cell(position).setTo(brick.nBlock);
+        }
+    }, {
+        key: 'moveBrick',
+        value: function moveBrick(brick, strDirection) {
+            var newPosition = new _MoveEs62['default'](brick.position)[strDirection]();
+
+            return this.putBrick(brick, newPosition);
+        }
+    }, {
+        key: 'moveBlock',
+        value: function moveBlock(block, strDirection) {
+            var _this = this;
+
+            block.bricks.forEach(function (brick) {
+                _this.clearBrick(brick);
+            });
+
+            block.bricks.forEach(function (brick) {
+                _this.moveBrick(brick, strDirection);
+            });
         }
     }, {
         key: 'cellsArray',
@@ -2051,7 +2153,7 @@ var Table = (function () {
 exports['default'] = Table;
 module.exports = exports['default'];
 
-},{"./ArrayBlocks.es6":10,"./CellsArray.es6":15,"./Move.es6":17}],20:[function(require,module,exports){
+},{"./ArrayBlocks.es6":10,"./CellsArray.es6":15,"./Move.es6":17,"./Row.es6":19}],21:[function(require,module,exports){
 /*global Phaser*/
 
 'use strict';
@@ -2083,13 +2185,15 @@ var start = function start() {
     block.newBrick(new _libPositionEs62['default'](0, 1));
     block.newBrick(new _libPositionEs62['default'](0, 2));
 
-    block.down().then(block.up.bind(block));
+    setTimeout(function () {
+        game.table.row(0).clear();
+    }, 2000);
 };
 
 game = new _libGameEs62['default'](10, 20, 35, start);
 window.game = game;
 
-},{"./lib/Block.es6":12,"./lib/Game.es6":16,"./lib/Position.es6":18}]},{},[20])
+},{"./lib/Block.es6":12,"./lib/Game.es6":16,"./lib/Position.es6":18}]},{},[21])
 
 
 //# sourceMappingURL=superblocks.js.map

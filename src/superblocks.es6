@@ -17,8 +17,9 @@ var start = function() {
     block.newBrick(new Position(0, 1));
     block.newBrick(new Position(0, 2));
 
-    block.down()
-    .then(block.up.bind(block));
+    setTimeout(function() {
+        game.table.row(0).clear();
+    }, 2000);
 };
 
 game = new Game(10, 20, 35, start);

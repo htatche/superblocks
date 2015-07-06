@@ -36,7 +36,7 @@ gulp.task('libs', function () {
         debug: true
     })
     .transform(babelify)
-    .bundle()
+    .bundle().pipe(plumber())
     .pipe(source('Promise.browserify-es6.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
@@ -53,6 +53,7 @@ gulp.task('browserify', ['es6-lint'], function() {
     })
     .transform(babelify)
     .bundle()
+    .pipe(plumber())
     .pipe(source('superblocks.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
