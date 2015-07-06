@@ -1543,8 +1543,6 @@ exports["default"] = ArrayBlocks;
 module.exports = exports["default"];
 
 },{}],12:[function(require,module,exports){
-/*global Phaser*/
-
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1569,9 +1567,9 @@ var _PositionEs6 = require('./Position.es6');
 
 var _PositionEs62 = _interopRequireDefault(_PositionEs6);
 
-var _MoveEs6 = require('./Move.es6');
+var _MoveMoveBlockEs6 = require('./Move/MoveBlock.es6');
 
-var _MoveEs62 = _interopRequireDefault(_MoveEs6);
+var _MoveMoveBlockEs62 = _interopRequireDefault(_MoveMoveBlockEs6);
 
 var _bower_componentsWhenEs6ShimPromiseBrowserifyEs6Js = require('../../bower_components/when/es6-shim/Promise.browserify-es6.js');
 
@@ -1592,7 +1590,7 @@ var Block = (function () {
     _createClass(Block, [{
         key: 'addBrick',
         value: function addBrick(brick) {
-            this.table.putBrick(brick, brick.position);
+            brick.putCell(brick.position, this.table);
 
             return this.bricks.add(brick);
         }
@@ -1627,39 +1625,14 @@ var Block = (function () {
             this.phaserGroup.removeAll(true);
         }
     }, {
-        key: 'move',
-        value: function move(direction) {
-            var _this = this;
-
-            return new _bower_componentsWhenEs6ShimPromiseBrowserifyEs6Js2['default'](function (resolve, reject) {
-                var newPosition = new _MoveEs62['default'](_this.position)[direction]();
-
-                _this.position = newPosition;
-
-                _this.phaserTranslate(newPosition);
-                _this.table.moveBlock(_this, direction);
-
-                resolve(_this.position);
-            });
+        key: 'down',
+        value: function down() {
+            return this.moveBlock.down();
         }
     }, {
         key: 'up',
         value: function up() {
-            return this.move('up');
-        }
-    }, {
-        key: 'down',
-        value: function down() {
-            return this.move('down');
-        }
-    }, {
-        key: 'phaserTranslate',
-        value: function phaserTranslate(position) {
-            var tween = this.phaserGame.add.tween(this.phaserGroup);
-
-            tween.to(position.phaserPosition, 1, Phaser.Easing.Linear.None, true);
-
-            return tween;
+            return this.moveBlock.up();
         }
     }, {
         key: 'position',
@@ -1669,6 +1642,11 @@ var Block = (function () {
         set: function set(position) {
             this._position = position;
         }
+    }, {
+        key: 'moveBlock',
+        get: function get() {
+            return new _MoveMoveBlockEs62['default'](this.position, this);
+        }
     }]);
 
     return Block;
@@ -1677,16 +1655,26 @@ var Block = (function () {
 exports['default'] = Block;
 module.exports = exports['default'];
 
-},{"../../bower_components/when/es6-shim/Promise.browserify-es6.js":1,"./ArrayMain.es6":11,"./Brick.es6":13,"./Move.es6":17,"./Position.es6":18}],13:[function(require,module,exports){
-"use strict";
+},{"../../bower_components/when/es6-shim/Promise.browserify-es6.js":1,"./ArrayMain.es6":11,"./Brick.es6":13,"./Move/MoveBlock.es6":18,"./Position.es6":20}],13:[function(require,module,exports){
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _MoveMoveBrickEs6 = require('./Move/MoveBrick.es6');
+
+var _MoveMoveBrickEs62 = _interopRequireDefault(_MoveMoveBrickEs6);
+
+/**
+ * @internal Brick should always be attached to a Block
+ */
 
 var Brick = (function () {
     function Brick(position, block) {
@@ -1697,45 +1685,72 @@ var Brick = (function () {
     }
 
     _createClass(Brick, [{
-        key: "remove",
+        key: 'remove',
 
         /**
          * @param  {Boolean}
          * @return {[type]}
-         * TODO: Apply changes in Table
+         * @todo Apply changes in Table
          */
         value: function remove() {
             var destroy = arguments[0] === undefined ? false : arguments[0];
 
-            this.block.remove(destroy);
+            return this.block.remove(destroy);
         }
     }, {
-        key: "destroy",
+        key: 'destroy',
 
         /**
+         * @todo Apply changes in Table
          * @return {[type]}
-         * TODO: Apply changes in Table
          */
         value: function destroy() {
-            this.block.remove(true);
+            return this.block.remove(true);
         }
     }, {
-        key: "position",
+        key: 'clearCell',
+        value: function clearCell() {
+            return this.block.table.cell(this.position).clear();
+        }
+    }, {
+        key: 'putCell',
+        value: function putCell(position) {
+            this.position = position;
+
+            return this.block.table.cellsArray.cell(position).setTo(this.block.nBlock);
+        }
+    }, {
+        key: 'down',
+        value: function down() {
+            return this.moveBlock.down();
+        }
+    }, {
+        key: 'up',
+        value: function up() {
+            return this.moveBlock.up();
+        }
+    }, {
+        key: 'position',
         get: function get() {
             return this._position;
         },
         set: function set(position) {
             this._position = position;
         }
+    }, {
+        key: 'moveBrick',
+        get: function get() {
+            return new _MoveMoveBrickEs62['default'](this.position, this);
+        }
     }]);
 
     return Brick;
 })();
 
-exports["default"] = Brick;
-module.exports = exports["default"];
+exports['default'] = Brick;
+module.exports = exports['default'];
 
-},{}],14:[function(require,module,exports){
+},{"./Move/MoveBrick.es6":19}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1915,7 +1930,7 @@ var Game = (function () {
 exports['default'] = Game;
 module.exports = exports['default'];
 
-},{"./Position.es6":18,"./Table.es6":20}],17:[function(require,module,exports){
+},{"./Position.es6":20,"./Table.es6":22}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1928,7 +1943,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _PositionEs6 = require('./Position.es6');
+var _PositionEs6 = require('../Position.es6');
 
 var _PositionEs62 = _interopRequireDefault(_PositionEs6);
 
@@ -1937,17 +1952,22 @@ var Move = (function () {
     _classCallCheck(this, Move);
 
     this.position = position;
+    this.nextPosition = null;
   }
 
   _createClass(Move, [{
     key: 'up',
     value: function up() {
-      return new _PositionEs62['default'](this.position.x, this.position.y - 1);
+      this.nextPosition = new _PositionEs62['default'](this.position.x, this.position.y - 1);
+
+      return this.nextPosition;
     }
   }, {
     key: 'down',
     value: function down() {
-      return new _PositionEs62['default'](this.position.x, this.position.y + 1);
+      this.nextPosition = new _PositionEs62['default'](this.position.x, this.position.y + 1);
+
+      return this.nextPosition;
     }
   }]);
 
@@ -1957,7 +1977,179 @@ var Move = (function () {
 exports['default'] = Move;
 module.exports = exports['default'];
 
-},{"./Position.es6":18}],18:[function(require,module,exports){
+},{"../Position.es6":20}],18:[function(require,module,exports){
+/*global Phaser*/
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _MoveEs6 = require('./Move.es6');
+
+var _MoveEs62 = _interopRequireDefault(_MoveEs6);
+
+var _MoveBrickEs6 = require('./MoveBrick.es6');
+
+var _MoveBrickEs62 = _interopRequireDefault(_MoveBrickEs6);
+
+var MoveBlock = (function (_Move) {
+    function MoveBlock(position, block) {
+        _classCallCheck(this, MoveBlock);
+
+        _get(Object.getPrototypeOf(MoveBlock.prototype), 'constructor', this).call(this);
+
+        this.position = position;
+        this.block = block;
+    }
+
+    _inherits(MoveBlock, _Move);
+
+    _createClass(MoveBlock, [{
+        key: 'phaserTranslate',
+        value: function phaserTranslate(position) {
+            var tween = this.block.phaserGame.add.tween(this.block.phaserGroup);
+
+            tween.to(position.phaserPosition, 1, Phaser.Easing.Linear.None, true);
+
+            return tween;
+        }
+    }, {
+        key: 'tableTranslate',
+        value: function tableTranslate(strDirection) {
+            this.block.bricks.forEach(function (brick) {
+                return brick.clearCell();
+            });
+
+            this.block.bricks.forEach(function (brick) {
+                var nextPosition = new _MoveEs62['default'](brick.position, brick)[strDirection]();
+
+                return brick.putCell(nextPosition);
+            });
+        }
+    }, {
+        key: 'move',
+
+        /**
+         * @internal  strDirection is used to calculate position for each brick
+         * @param  {strDirection}
+         * @return {[type]}
+         */
+        value: function move(strDirection) {
+            var _this = this;
+
+            return new Promise(function (resolve, reject) {
+                _this.block.position = _this.nextPosition;
+
+                _this.phaserTranslate(_this.nextPosition);
+                _this.tableTranslate(strDirection);
+
+                resolve(_this.position);
+            });
+        }
+    }, {
+        key: 'down',
+        value: function down() {
+            _get(Object.getPrototypeOf(MoveBlock.prototype), 'down', this).call(this);
+
+            return this.move('down');
+        }
+    }, {
+        key: 'up',
+        value: function up() {
+            _get(Object.getPrototypeOf(MoveBlock.prototype), 'up', this).call(this);
+
+            return this.move('up');
+        }
+    }]);
+
+    return MoveBlock;
+})(_MoveEs62['default']);
+
+exports['default'] = MoveBlock;
+module.exports = exports['default'];
+
+},{"./Move.es6":17,"./MoveBrick.es6":19}],19:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _MoveEs6 = require('./Move.es6');
+
+var _MoveEs62 = _interopRequireDefault(_MoveEs6);
+
+var MoveBrick = (function (_Move) {
+    function MoveBrick(position, brick) {
+        _classCallCheck(this, MoveBrick);
+
+        _get(Object.getPrototypeOf(MoveBrick.prototype), 'constructor', this).call(this);
+
+        this.position = position;
+        this.brick = brick;
+    }
+
+    _inherits(MoveBrick, _Move);
+
+    _createClass(MoveBrick, [{
+        key: 'phaserTranslate',
+        value: function phaserTranslate() {}
+    }, {
+        key: 'tableTranslate',
+        value: function tableTranslate() {}
+    }, {
+        key: 'move',
+        value: function move() {
+            var _this = this;
+
+            return new Promise(function (resolve, reject) {
+                _this.brick.clearCell();
+
+                _this.brick.position = _this.nextPosition;
+
+                _this.brick.putCell(_this.brick.position);
+
+                resolve(_this.position);
+            });
+        }
+    }, {
+        key: 'down',
+        value: function down() {
+            _get(Object.getPrototypeOf(MoveBrick.prototype), 'down', this).call(this);
+
+            return this.move();
+        }
+    }]);
+
+    return MoveBrick;
+})(_MoveEs62['default']);
+
+exports['default'] = MoveBrick;
+module.exports = exports['default'];
+
+},{"./Move.es6":17}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2012,7 +2204,7 @@ var Position = (function () {
 exports["default"] = Position;
 module.exports = exports["default"];
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2059,7 +2251,7 @@ var Row = (function () {
 exports['default'] = Row;
 module.exports = exports['default'];
 
-},{"./ArrayMain.es6":11}],20:[function(require,module,exports){
+},{"./ArrayMain.es6":11}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2080,9 +2272,7 @@ var _CellsArrayEs6 = require('./CellsArray.es6');
 
 var _CellsArrayEs62 = _interopRequireDefault(_CellsArrayEs6);
 
-var _MoveEs6 = require('./Move.es6');
-
-var _MoveEs62 = _interopRequireDefault(_MoveEs6);
+// import Move             from './Move.es6';
 
 var _RowEs6 = require('./Row.es6');
 
@@ -2104,41 +2294,14 @@ var Table = (function () {
             return new _RowEs62['default'](this.cellsArray.array[x]);
         }
     }, {
+        key: 'cell',
+        value: function cell(position) {
+            return this.cellsArray.cell(position);
+        }
+    }, {
         key: 'incrementNBlocks',
         value: function incrementNBlocks() {
             return ++this.blocks.length;
-        }
-    }, {
-        key: 'clearBrick',
-        value: function clearBrick(brick) {
-            return this.cellsArray.cell(brick.position).clear();
-        }
-    }, {
-        key: 'putBrick',
-        value: function putBrick(brick, position) {
-            brick.position = position;
-
-            return this.cellsArray.cell(position).setTo(brick.nBlock);
-        }
-    }, {
-        key: 'moveBrick',
-        value: function moveBrick(brick, strDirection) {
-            var newPosition = new _MoveEs62['default'](brick.position)[strDirection]();
-
-            return this.putBrick(brick, newPosition);
-        }
-    }, {
-        key: 'moveBlock',
-        value: function moveBlock(block, strDirection) {
-            var _this = this;
-
-            block.bricks.forEach(function (brick) {
-                _this.clearBrick(brick);
-            });
-
-            block.bricks.forEach(function (brick) {
-                _this.moveBrick(brick, strDirection);
-            });
         }
     }, {
         key: 'cellsArray',
@@ -2153,7 +2316,7 @@ var Table = (function () {
 exports['default'] = Table;
 module.exports = exports['default'];
 
-},{"./ArrayBlocks.es6":10,"./CellsArray.es6":15,"./Move.es6":17,"./Row.es6":19}],21:[function(require,module,exports){
+},{"./ArrayBlocks.es6":10,"./CellsArray.es6":15,"./Row.es6":21}],23:[function(require,module,exports){
 /*global Phaser*/
 
 'use strict';
@@ -2186,14 +2349,18 @@ var start = function start() {
     block.newBrick(new _libPositionEs62['default'](0, 2));
 
     setTimeout(function () {
-        game.table.row(0).clear();
+        block.down();
+    }, 1000);
+
+    setTimeout(function () {
+        block.destroy();
     }, 2000);
 };
 
 game = new _libGameEs62['default'](10, 20, 35, start);
 window.game = game;
 
-},{"./lib/Block.es6":12,"./lib/Game.es6":16,"./lib/Position.es6":18}]},{},[21])
+},{"./lib/Block.es6":12,"./lib/Game.es6":16,"./lib/Position.es6":20}]},{},[23])
 
 
 //# sourceMappingURL=superblocks.js.map

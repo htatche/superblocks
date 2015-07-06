@@ -18,8 +18,13 @@ var start = function() {
     block.newBrick(new Position(0, 2));
 
     setTimeout(function() {
-        game.table.row(0).clear();
+        block.down();
+    }, 1000);
+
+    setTimeout(function() {
+        block.destroy();
     }, 2000);
+
 };
 
 game = new Game(10, 20, 35, start);

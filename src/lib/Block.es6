@@ -1,9 +1,7 @@
-/*global Phaser*/
-
 import Brick            from './Brick.es6';
 import ArrayMain        from './ArrayMain.es6';
 import Position         from './Position.es6';
-import Move             from './Move.es6';
+import MoveBlock        from './Move/MoveBlock.es6';
 import Promise          from '../../bower_components/when/es6-shim/Promise.browserify-es6.js';
 
 export default class Block {
@@ -16,11 +14,12 @@ export default class Block {
         this.phaserGroup = phaserGame.add.group();
     }
 
-    get position() { return this._position; }
-    set position(position) { this._position = position; }
+    get position()          { return this._position; }
+    set position(position)  { this._position = position; }
+    get moveBlock()         { return new MoveBlock(this.position, this); }
 
     addBrick(brick) {
-        this.table.putBrick(brick, brick.position);
+        brick.putCell(brick.position, this.table);
 
         return this.bricks.add(brick);
     }
@@ -48,38 +47,7 @@ export default class Block {
         this.phaserGroup.removeAll(true);
     }
 
-    move(direction) {
-        return new Promise((resolve, reject) => {
-            var newPosition = new Move(this.position)[direction]();
+    down()      { return this.moveBlock.down(); }
 
-            this.position = newPosition;
-
-            this.phaserTranslate(newPosition);
-            this.table.moveBlock(this, direction);
-
-            resolve(this.position);
-        });
-    }
-
-    up() {
-        return this.move('up');
-    }
-
-    down() {
-        return this.move('down');
-    }
-
-    phaserTranslate(position) {
-        var tween = this.phaserGame.add.tween(this.phaserGroup);
-
-        tween.to(
-          position.phaserPosition,
-          1,
-          Phaser.Easing.Linear.None,
-          true
-        );
-
-        return tween;
-    }
-
+    up()        { return this.moveBlock.up(); }
 }
