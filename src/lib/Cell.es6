@@ -6,13 +6,13 @@ export default class Cell {
       this.nBlock = null;
     }
 
-    reset() {
+    clear() {
       this.nBlock = null;
-      this.nBrick = null;
     }
 
-    setTo(nBrick, nBlock) {
+    setTo(nBlock) {
       this.nBlock = nBlock;
-      this.nBrick = nBrick;
+
+      return this;
     }
 }

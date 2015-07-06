@@ -15,8 +15,8 @@
     "tests"
   ],
   "dependencies": {
-    "phaser": "~2.3.0"
+    "phaser": "~2.3.0",
+    "when": "~3.7.3"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

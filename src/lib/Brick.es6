@@ -1,5 +1,6 @@
 export default class Brick {
-    constructor(position) {
+    constructor(position, nBlock) {
         this.position = position;
+        this.nBlock   = nBlock;
     }
 }

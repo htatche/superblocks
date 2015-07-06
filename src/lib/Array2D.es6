@@ -11,10 +11,10 @@ export default class Array2D {
     setAt(x, y, val) { this._array[x][y] = val; }
 
     buildArray() {
-        var array = new Array(this.xSize);
+        var array = new Array(this.ySize);
 
-        for (var y = 0; y < this.xSize; y++) {
-            array[y] = new Array(this.ySize);
+        for (var y = 0; y < this.ySize; y++) {
+            array[y] = new Array(this.xSize);
         }
 
         this._array = array;
