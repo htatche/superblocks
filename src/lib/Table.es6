@@ -18,25 +18,32 @@ export default class Table {
         return ++this.blocks.length;
     }
 
-    moveBlock(block, direction) {
-        block.bricks.forEach((brick) => {
-            return this.cellsArray.cell(brick.position)
-            .clear();
-        });
-
-        block.bricks.forEach((brick) => {
-            var newPosition = new Move(brick.position)[direction]();
-
-            brick.position = newPosition;
-
-            return this.cellsArray.cell(newPosition)
-            .setTo(brick.nBlock);
-        });
+    clearBrick(brick) {
+        return this.cellsArray.cell(brick.position)
+        .clear();
     }
 
-    putBrick(brick) {
-        return this.cellsArray.cell(brick.position)
+    putBrick(brick, position) {
+        brick.position = position;
+
+        return this.cellsArray.cell(position)
         .setTo(brick.nBlock);
+    }
+
+    moveBrick(brick, strDirection) {
+        var newPosition = new Move(brick.position)[strDirection]();
+
+        return this.putBrick(brick, newPosition);
+    }
+
+    moveBlock(block, strDirection) {
+        block.bricks.forEach((brick) => {
+            this.clearBrick(brick);
+        });
+
+        block.bricks.forEach((brick) => {
+            this.moveBrick(brick, strDirection);
+        });
     }
 
 }

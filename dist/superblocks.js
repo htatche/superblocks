@@ -1774,6 +1774,11 @@ var CellsArray = (function (_Array2D) {
             return this.array[position.y][position.x];
         }
     }, {
+        key: 'row',
+        value: function row(x) {
+            return this.array[x];
+        }
+    }, {
         key: 'createCells',
         value: function createCells() {
             for (var x = 0; x < this.ySize; ++x) {

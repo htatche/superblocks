@@ -18,16 +18,7 @@ CellsArray extends Array2D
   clear(Array cells)
     forEach c.clear()
 
-Row extends ArrayBase
-  this.x
-
-  clear(Array cells)
-    cells.forEach i => i.clear()
-
 Table
-  constructor
-    this.cellsArray = new CellsArray
-
   findCellByBrick(Number nBrick)
     return this.cellsArray.findNBrick(nBrick)   
 
@@ -44,12 +35,3 @@ Table
     )
 
     return newCell
-
-  moveBlock(Block b, callback)
-    b.bricks.forEach brick =>
-      this.moveBrick brick, callback(brick.position)
-
-  clearRow(x)
-    var row = new Row(this.cellsArray.row(x))
-    row.clear()
-
