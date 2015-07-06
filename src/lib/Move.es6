@@ -1,12 +1,16 @@
+import Position         from './Position.es6';
+
 export default class Move {
     constructor(position) {
         this.position    = position;
     }
 
-    down() {
-      ++this.position.y;
+    up() {
+      return new Position(this.position.x, this.position.y - 1);
+    }
 
-      return this.position;
+    down() {
+      return new Position(this.position.x, this.position.y + 1);
     }
 
 }

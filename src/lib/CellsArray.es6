@@ -4,15 +4,12 @@ import Cell    from './Cell.es6';
 export default class CellsArray extends Array2D {
     constructor(xSize, ySize) {
         super(xSize, ySize);
+
         this.createCells();
     }
 
-    get array() { return this._array; }
-
     /* Notice that x and y are switched */
-    cell(position) {
-      return this.array[position.y][position.x];
-    }
+    cell(position) { return this.array[position.y][position.x]; }
 
     createCells() {
         for (var x = 0; x < this.ySize; ++x) {

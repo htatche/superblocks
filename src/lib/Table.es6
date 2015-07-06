@@ -12,18 +12,24 @@ export default class Table {
 
     get cellsArray()   { return this._cellsArray; }
 
+    row(x) { return this.cellsArray[x]; }
+
     incrementNBlocks() {
         return ++this.blocks.length;
     }
 
     moveBlock(block, direction) {
         block.bricks.forEach((brick) => {
-            this.cellsArray.cell(brick.position)
+            return this.cellsArray.cell(brick.position)
             .clear();
         });
 
         block.bricks.forEach((brick) => {
-            this.cellsArray.cell(new Move(brick.position)[direction]())
+            var newPosition = new Move(brick.position)[direction]();
+
+            brick.position = newPosition;
+
+            return this.cellsArray.cell(newPosition)
             .setTo(brick.nBlock);
         });
     }

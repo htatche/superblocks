@@ -1609,11 +1609,20 @@ var Block = (function () {
             var _this = this;
 
             return new _bower_componentsWhenEs6ShimPromiseBrowserifyEs6Js2['default'](function (resolve, reject) {
-                _this.phaserTranslate(new _MoveEs62['default'](_this.position)[direction]());
+                var newPosition = new _MoveEs62['default'](_this.position)[direction]();
+
+                _this.position = newPosition;
+
+                _this.phaserTranslate(newPosition);
                 _this.table.moveBlock(_this, direction);
 
                 resolve(_this.position);
             });
+        }
+    }, {
+        key: 'up',
+        value: function up() {
+            return this.move('up');
         }
     }, {
         key: 'down',
@@ -1625,8 +1634,17 @@ var Block = (function () {
         value: function phaserTranslate(position) {
             var tween = this.phaserGame.add.tween(this.phaserGroup);
 
-            // should I return tween ?
             tween.to(position.phaserPosition, 1, Phaser.Easing.Linear.None, true);
+
+            return tween;
+        }
+    }, {
+        key: 'position',
+        get: function get() {
+            return this._position;
+        },
+        set: function set(position) {
+            this._position = position;
         }
     }]);
 
@@ -1643,14 +1661,30 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Brick = function Brick(position, nBlock) {
-    _classCallCheck(this, Brick);
+var Brick = (function () {
+    function Brick(position, nBlock) {
+        _classCallCheck(this, Brick);
 
-    this.position = position;
-    this.nBlock = nBlock;
-};
+        this.position = position;
+        this.nBlock = nBlock;
+    }
+
+    _createClass(Brick, [{
+        key: "position",
+        get: function get() {
+            return this._position;
+        },
+        set: function set(position) {
+            this._position = position;
+        }
+    }]);
+
+    return Brick;
+})();
 
 exports["default"] = Brick;
 module.exports = exports["default"];
@@ -1726,6 +1760,7 @@ var CellsArray = (function (_Array2D) {
         _classCallCheck(this, CellsArray);
 
         _get(Object.getPrototypeOf(CellsArray.prototype), 'constructor', this).call(this, xSize, ySize);
+
         this.createCells();
     }
 
@@ -1748,11 +1783,6 @@ var CellsArray = (function (_Array2D) {
             }
 
             return this.array;
-        }
-    }, {
-        key: 'array',
-        get: function get() {
-            return this._array;
         }
     }]);
 
@@ -1840,39 +1870,48 @@ exports['default'] = Game;
 module.exports = exports['default'];
 
 },{"./Position.es6":18,"./Table.es6":19}],17:[function(require,module,exports){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
+Object.defineProperty(exports, '__esModule', {
+  value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _PositionEs6 = require('./Position.es6');
+
+var _PositionEs62 = _interopRequireDefault(_PositionEs6);
 
 var Move = (function () {
-    function Move(position) {
-        _classCallCheck(this, Move);
+  function Move(position) {
+    _classCallCheck(this, Move);
 
-        this.position = position;
+    this.position = position;
+  }
+
+  _createClass(Move, [{
+    key: 'up',
+    value: function up() {
+      return new _PositionEs62['default'](this.position.x, this.position.y - 1);
     }
+  }, {
+    key: 'down',
+    value: function down() {
+      return new _PositionEs62['default'](this.position.x, this.position.y + 1);
+    }
+  }]);
 
-    _createClass(Move, [{
-        key: "down",
-        value: function down() {
-            ++this.position.y;
-
-            return this.position;
-        }
-    }]);
-
-    return Move;
+  return Move;
 })();
 
-exports["default"] = Move;
-module.exports = exports["default"];
+exports['default'] = Move;
+module.exports = exports['default'];
 
-},{}],18:[function(require,module,exports){
+},{"./Position.es6":18}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1963,6 +2002,11 @@ var Table = (function () {
     }
 
     _createClass(Table, [{
+        key: 'row',
+        value: function row(x) {
+            return this.cellsArray[x];
+        }
+    }, {
         key: 'incrementNBlocks',
         value: function incrementNBlocks() {
             return ++this.blocks.length;
@@ -1973,11 +2017,15 @@ var Table = (function () {
             var _this = this;
 
             block.bricks.forEach(function (brick) {
-                _this.cellsArray.cell(brick.position).clear();
+                return _this.cellsArray.cell(brick.position).clear();
             });
 
             block.bricks.forEach(function (brick) {
-                _this.cellsArray.cell(new _MoveEs62['default'](brick.position)[direction]()).setTo(brick.nBlock);
+                var newPosition = new _MoveEs62['default'](brick.position)[direction]();
+
+                brick.position = newPosition;
+
+                return _this.cellsArray.cell(newPosition).setTo(brick.nBlock);
             });
         }
     }, {
@@ -2030,7 +2078,7 @@ var start = function start() {
     block.newBrick(new _libPositionEs62['default'](0, 1));
     block.newBrick(new _libPositionEs62['default'](0, 2));
 
-    block.down().then(block.down.bind(block)).then(block.down.bind(block)).then(block.down.bind(block));
+    block.down().then(block.up.bind(block));
 };
 
 game = new _libGameEs62['default'](10, 20, 35, start);

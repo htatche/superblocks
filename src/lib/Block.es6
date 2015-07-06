@@ -16,6 +16,9 @@ export default class Block {
         this.phaserGroup = phaserGame.add.group();
     }
 
+    get position() { return this._position; }
+    set position(position) { this._position = position; }
+
     addBrick(brick) {
         this.table.putBrick(brick);
 
@@ -30,11 +33,19 @@ export default class Block {
 
     move(direction) {
         return new Promise((resolve, reject) => {
-            this.phaserTranslate(new Move(this.position)[direction]());
+            var newPosition = new Move(this.position)[direction]();
+
+            this.position = newPosition;
+
+            this.phaserTranslate(newPosition);
             this.table.moveBlock(this, direction);
 
             resolve(this.position);
         });
+    }
+
+    up() {
+        return this.move('up');
     }
 
     down() {
@@ -44,13 +55,14 @@ export default class Block {
     phaserTranslate(position) {
         var tween = this.phaserGame.add.tween(this.phaserGroup);
 
-        // should I return tween ?
         tween.to(
           position.phaserPosition,
           1,
           Phaser.Easing.Linear.None,
           true
         );
+
+        return tween;
     }
 
 }

@@ -18,9 +18,7 @@ var start = function() {
     block.newBrick(new Position(0, 2));
 
     block.down()
-    .then(block.down.bind(block))
-    .then(block.down.bind(block))
-    .then(block.down.bind(block));
+    .then(block.up.bind(block));
 };
 
 game = new Game(10, 20, 35, start);

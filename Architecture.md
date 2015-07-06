@@ -1,38 +1,7 @@
-Brick
-  constructor(Block b)
-    this.block = b
-    this.phaserSprite
-    this.position = new Position()
-
 Block
-  constructor (phaserGame, Table t)
-    this.phaserGroup = phaserGame.add.group();
-    this.bricks = new ArrayMain()
-    this.table = t
-    this.position = new Position()
-    this.nBlock
-
-  newBrick()
-    this.bricks.add(new Brick(sprite))
-
-  addBrick(Brick b)
-    this.bricks.add(b)
-
   removeBrick()
 
-  phaserTranslate(optional position)
-    this.phaserGroup.translate(position.xPixels, position.yPixels)
-
-  down()
-    var move = new Move()
-
-    this.table.moveBlock(this, move.down)
-
-    this.phaserTranslate()
-
-    return this.position    
-
-  up() left() right()
+  left() right()
 
   destroy()
     this = undefined
@@ -46,14 +15,8 @@ CellsArray extends Array2D
   findNBlock()
     return [cell, cell, ...]
 
-  cell(x, y)
-    return this[x, y]
-
   clear(Array cells)
     forEach c.clear()
-
-  row(x)
-    return this[x]
 
 Row extends ArrayBase
   this.x
@@ -90,7 +53,3 @@ Table
     var row = new Row(this.cellsArray.row(x))
     row.clear()
 
-
-Move
-  down(Position p)
-    return new Position({x, y + 1})
