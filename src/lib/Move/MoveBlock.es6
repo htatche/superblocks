@@ -15,7 +15,7 @@ export default class MoveBlock extends Move {
         var tween = this.block.phaserGame.add.tween(this.block.phaserGroup);
 
         tween.to(
-          position.phaserPosition,
+          position.tweenPosition,
           1,
           Phaser.Easing.Linear.None,
           true
@@ -25,9 +25,7 @@ export default class MoveBlock extends Move {
     }
 
     tableTranslate(strDirection) {
-        this.block.bricks.forEach((brick) => {
-            return brick.clearCell();
-        });
+        this.block.clearCells();
 
         this.block.bricks.forEach((brick) => {
             var nextPosition = new Move(brick.position, brick)[strDirection]();

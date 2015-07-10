@@ -4,14 +4,21 @@ import MoveBrick             from './Move/MoveBrick.es6';
  * @internal Brick should always be attached to a Block
  */
 export default class Brick {
-    constructor(position, block) {
+    constructor(position, block, phaserSprite) {
         this.position = position;
         this.block   = block;
+        this.phaserSprite = phaserSprite;
+
+        this.setAnchor();
     }
 
     get position()          { return this._position; }
     set position(position)  { this._position = position; }
     get moveBrick()         { return new MoveBrick(this.position, this); }
+
+    setAnchor() {
+        this.phaserSprite.anchor.setTo(this.position.anchor, this.position.anchor);
+    }
 
     /**
      * @param  {Boolean}

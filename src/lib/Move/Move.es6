@@ -7,13 +7,19 @@ export default class Move {
     }
 
     up() {
-      this.nextPosition = new Position(this.position.x, this.position.y - 1);
+      this.nextPosition = new Position(
+        this.position.x,
+        this.position.y - 1
+      );
 
       return this.nextPosition;
     }
 
     down() {
-      this.nextPosition = new Position(this.position.x, this.position.y + 1);
+      this.nextPosition = new Position(
+        this.position.x,
+        this.position.y + 1
+      );
 
       return this.nextPosition;
     }

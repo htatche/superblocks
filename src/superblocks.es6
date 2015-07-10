@@ -2,7 +2,8 @@
 
 import Game             from './lib/Game.es6';
 import Block            from './lib/Block.es6';
-import Position         from './lib/Position.es6';
+import ArrayMain        from './lib/ArrayMain.es6';
+import data             from './data/data.json.es6';
 
 var game;
 
@@ -10,22 +11,28 @@ var printMessage = function() {
     console.log('Done !');
 };
 
-var start = function() {
-    var block = new Block(game.phaser, game.table);
+/**
+ * @todo This will be translate to parseJSONFile in Block
+ */
+var createShapesArray = function() {
+    var array = new ArrayMain();
 
-    block.newBrick(new Position(0, 0));
-    block.newBrick(new Position(0, 1));
-    block.newBrick(new Position(0, 2));
+    for (var i = 0; i < data.shapes.length; ++i) {
+        array.add(data.shapes[i]);
+    }
 
-    setTimeout(function() {
-        block.down();
-    }, 1000);
-
-    setTimeout(function() {
-        block.destroy();
-    }, 2000);
-
+    return array;
 };
 
-game = new Game(10, 20, 35, start);
+var start = function() {
+    var shapes = createShapesArray();
+
+    var block = new Block(game.phaser, game.table);
+
+    block.build(shapes.first)
+    // .then(block.rotateRight.bind(block))
+    .then(block.rotateRight.bind(block));
+};
+
+game = new Game(10, 20, 35, 'path', start);
 window.game = game;
