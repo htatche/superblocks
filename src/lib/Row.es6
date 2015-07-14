@@ -1,5 +1,3 @@
-import ArrayMain             from './ArrayMain.es6';
-
 export default class Row {
     constructor(tableRow) {
         this.cells          = tableRow;
@@ -14,4 +12,7 @@ export default class Row {
         }
     }
 
+    destroy() {
+        // level Up if x rows deleted from las time
+    }
 }

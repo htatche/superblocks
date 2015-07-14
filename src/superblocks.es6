@@ -22,19 +22,19 @@ var createBlocksArray = function() {
 
 var start = function() {
     var blocks = createBlocksArray(),
-        block  = blocks[0];
+        block  = blocks[1];
 
     var block = new Block(game.phaser, game.table, block.patterns, block.pivot, block.anchor);
 
     block.build();
-    // setTimeout(block.right.bind(block), 500);
+    setTimeout(block.down.bind(block), 500);
     // setTimeout(block.down.bind(block), 700);
-    // setTimeout(block.right.bind(block), 900);
+    setTimeout(block.right.bind(block), 900);
 
-    // setTimeout(block.rotateRight.bind(block), 1000);
-    // setTimeout(block.rotateRight.bind(block), 2000);
-    // setTimeout(block.rotateRight.bind(block), 3000);
-    // // setTimeout(block.rotateRight.bind(block), 4000);
+    setTimeout(block.rotateRight.bind(block), 1000);
+    setTimeout(block.rotateRight.bind(block), 2000);
+    setTimeout(block.rotateRight.bind(block), 3000);
+    setTimeout(block.rotateRight.bind(block), 4000);
 };
 
 var update = function() {

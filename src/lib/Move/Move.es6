@@ -1,49 +1,32 @@
-import Position         from '../Position.es6';
-
 export default class Move {
-    constructor(position) {
-        this.position           = position;
-        this.nextPosition       = null;
+    constructor() {
     }
 
     up() {
-      this.nextPosition = new Position(
-        this.position.x,
-        this.position.y - 1,
-        this.position.anchor
-      );
-
-      return this.nextPosition;
+      return {
+        x: this.position.x,
+        y: this.position.y - 1
+      };
     }
 
     down() {
-      this.nextPosition = new Position(
-        this.position.x,
-        this.position.y + 1,
-        this.position.anchor
-      );
-
-      return this.nextPosition;
+      return {
+        x: this.position.x,
+        y: this.position.y + 1
+      };
     }
 
     right() {
-      this.nextPosition = new Position(
-        this.position.x + 1,
-        this.position.y,
-        this.position.anchor
-      );
-
-      return this.nextPosition;
+      return {
+        x: this.position.x + 1,
+        y: this.position.y
+      };
     }
 
     left() {
-      this.nextPosition = new Position(
-        this.position.x - 1,
-        this.position.y,
-        this.position.anchor
-      );
-
-      return this.nextPosition;
+      return {
+        x: this.position.x - 1,
+        y: this.position.y
+      };
     }
-
 }

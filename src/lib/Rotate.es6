@@ -1,10 +1,6 @@
 /*global Phaser*/
 
-// import Brick            from './Brick.es6';
-// import ArrayMain        from './ArrayMain.es6';
-import Position         from './Position.es6';
-// import MoveBlock        from './Move/MoveBlock.es6';
-// import Promise          from '../../bower_components/when/es6-shim/Promise.browserify-es6.js';
+import BrickPosition         from './Position/BrickPosition.es6';
 
 export default class Rotate {
     constructor(block) {
@@ -23,10 +19,7 @@ export default class Rotate {
     }
 
     phaserTranslate(angle) {
-        // this.phaserGroup.pivot.x = 0;
-        // this.phaserGroup.pivot.y = 0;
-
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.phaserGame.add.tween(this.phaserGroup).to(
                 { angle: angle },
                 1,
@@ -39,17 +32,20 @@ export default class Rotate {
     }
 
     tableTranslate(angle) {
-        var pos = this.findPatternByAngle(angle).positions;
+        var pattern = this.findPatternByAngle(angle);
 
         this.block.clearCells();
 
-        this.block.bricks.forEach((brick, idx) => {
-            var position = new Position(pos[idx][0], pos[idx][1], brick.block.anchor);
+        for (var i = 0; i < this.block.bricks.length; ++i) {
+            var position = new BrickPosition(
+                this.block.position,
+                pattern.positions[i][0],
+                pattern.positions[i][1],
+                this.block.bricks[i].anchor
+            );
 
-            var nextPosition = position.relativeTo(brick.block.position);
-
-            return brick.putCell(nextPosition);
-        });
+            this.block.bricks[i].putCell(position);
+        }
     }
 
     execute(angle) {

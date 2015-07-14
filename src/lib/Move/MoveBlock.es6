@@ -1,8 +1,6 @@
 /*global Phaser*/
 
 import Move             from './Move.es6';
-import MoveBrick        from './MoveBrick.es6';
-import Position         from '../Position.es6';
 
 export default class MoveBlock extends Move {
     constructor(position, block) {
@@ -12,11 +10,11 @@ export default class MoveBlock extends Move {
         this.block    = block;
     }
 
-    phaserTranslate(position) {
+    phaserTranslate() {
         var tween = this.block.phaserGame.add.tween(this.block.phaserGroup);
 
         tween.to(
-          position.phaserGroupPosition(),
+          this.block.position.phaserGroupPosition(),
           1,
           Phaser.Easing.Linear.None,
           true
@@ -26,64 +24,46 @@ export default class MoveBlock extends Move {
     }
 
     tableTranslate() {
-        this.block.clearCells();
-
-        var pos = this.block.rotate.
-        findPatternByAngle(this.block.phaserGroup.angle).positions;
-
-        this.block.bricks.forEach((brick, idx) => {
-            var position = new Position(
-                pos[idx][0],
-                pos[idx][1],
-                brick.block.anchor
-            );
-
-            var nextPosition = position.relativeTo(this.block.position);
-
-            return brick.putCell(nextPosition);
+        this.block.bricks.forEach((brick) => {
+            return brick.putCell(brick.position);
         });
-
     }
 
-    /**
-     * @internal  strDirection is used to calculate position for each brick
-     * @param  {strDirection}
-     * @return {[type]}
-     */
-    move(strDirection) {
-        var self = this;
+    execute(position) {
+        return new Promise((resolve) => {
+            this.block.clearCells();
 
-        return new Promise((resolve, reject) => {
-            self.block.position = self.nextPosition;
+            this.block.position.x = position.x;
+            this.block.position.y = position.y;
 
-            self.phaserTranslate(self.block.position);
-            self.tableTranslate();
+            this.tableTranslate();
+            this.phaserTranslate();
 
-            resolve(self.position);
+            resolve(this.position);
         });
     }
 
     down() {
-        super.down();
+        var position = super.down();
 
-        return this.move('down');
+        return this.execute(position);
     }
 
     up() {
-        super.up();
+        var position = super.up();
 
-        return this.move('up');
+        return this.execute(position);        
     }
 
     right() {
-        super.right();
+        var position = super.right();
 
-        return this.move('right');
+        return this.execute(position);        
     }
 
     left() {
-        super.left();
+        var position = super.left();
 
-        return this.move('left');
+        return this.execute(position);        
     }
 }

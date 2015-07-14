@@ -7,9 +7,6 @@ export default class Position {
         this.pivot          = pivot;
         this.cellSize       = cellSize;
         this.anchor         = anchor;
-
-        // this.relativeX      = 
-        // this.relativeY      = 
     }
 
     phaserGroupPosition() {
