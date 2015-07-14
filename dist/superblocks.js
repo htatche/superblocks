@@ -45,13 +45,83 @@ var data = {
             positions: [[-2, 0], [-1, 0], [0, 0], [1, 0]]
         }, {
             angle: 90,
-            positions: [[0, -1], [0, -0], [0, 1], [0, 2]]
+            positions: [[0, -1], [0, 0], [0, 1], [0, 2]]
         }, {
             angle: 180,
             positions: [[1, 1], [0, 1], [-1, 1], [-2, 1]]
         }, {
             angle: 270,
             positions: [[-1, 2], [-1, 1], [-1, 0], [-1, -1]]
+        }
+        // {
+        //     angle: 360,
+        //     positions: [
+        //         [-2, 0], [-1, 0], [0, 0], [1, 0]
+        //     ]
+        // }
+        ]
+    },
+    // {
+    //     name: 'cube',
+    //     color: 'blue',
+    //     pivot: {
+    //         x: 1,
+    //         y: 1
+    //     },
+    //     anchor: {
+    //         x: 1,
+    //         y: 0
+    //     },
+    //     patterns: [
+    //         {
+    //             angle: 0,
+    //             positions: [
+    //                 [0, 0], [0, -1], [1, -1], [1, 0]
+    //             ]
+    //         },
+    //         {
+    //             angle: 90,
+    //             positions: [
+    //                 [0, -1], [1, -1], [1, 0], [0, 0]
+    //             ]
+    //         },
+    //         {
+    //             angle: 180,
+    //             positions: [
+    //                 [1, -1], [0, -1], [0, 0], [0, 1]
+    //             ]
+    //         },
+    //         {
+    //             angle: 270,
+    //             positions: [
+    //                 [1, 0], [0, 0], [0, -1], [1, -1]
+    //             ]
+    //         }
+    //     ]
+    // }          
+    {
+        name: 'cube',
+        color: 'blue',
+        pivot: {
+            x: 1,
+            y: 1
+        },
+        anchor: {
+            x: 0,
+            y: 0
+        },
+        patterns: [{
+            angle: 0,
+            positions: [[-1, 0], [-1, -1], [0, -1], [0, 0]]
+        }, {
+            angle: 90,
+            positions: [[-1, -1], [0, -1], [0, 0], [-1, 0]]
+        }, {
+            angle: 180,
+            positions: [[0, -1], [0, 0], [-1, 0], [-1, -1]]
+        }, {
+            angle: 270,
+            positions: [[0, 0], [-1, 0], [-1, -1], [0, -1]]
         }]
     }]
 };
@@ -107,7 +177,9 @@ var Array2D = (function () {
         value: function prettyPrint() {
             var array = this.array.map(function (row) {
                 return row.map(function (cell) {
-                    return cell.nBlock;
+                    if (!cell.isEmpty()) {
+                        return cell.brick.block.nBlock;
+                    }
                 });
             });
 
@@ -202,6 +274,11 @@ var ArrayMain = (function (_Array) {
             return this.last;
         }
     }, {
+        key: "find",
+        value: function find(idx) {
+            return this.indexOf(idx);
+        }
+    }, {
         key: "randomPick",
         value: function randomPick() {
             return this[Math.floor(Math.random() * this.length)];
@@ -267,13 +344,13 @@ var _RotateEs6 = require('./Rotate.es6');
 var _RotateEs62 = _interopRequireDefault(_RotateEs6);
 
 var Block = (function () {
-    function Block(phaserGame, table, patterns, pivot, childsAnchor) {
+    function Block(phaserGame, table, patterns, x, y, pivot, childsAnchor) {
         _classCallCheck(this, Block);
 
         this.phaserGame = phaserGame;
         this.phaserGroup = this.phaserGame.add.group();
 
-        this.position = new _PositionBlockPositionEs62['default'](2, 2, pivot, childsAnchor);
+        this.position = new _PositionBlockPositionEs62['default'](x, y, pivot, childsAnchor);
         this.bricks = new _ArrayMainEs62['default']();
 
         this.patterns = patterns;
@@ -377,6 +454,11 @@ var Block = (function () {
             return this.moveBlock.left();
         }
     }, {
+        key: 'to',
+        value: function to(position) {
+            return this.moveBlock.to(position);
+        }
+    }, {
         key: 'rotateRight',
         value: function rotateRight() {
             return new _RotateEs62['default'](this).right();
@@ -404,7 +486,7 @@ var Block = (function () {
 exports['default'] = Block;
 module.exports = exports['default'];
 
-},{"./ArrayMain.es6":4,"./Brick.es6":6,"./Move/MoveBlock.es6":11,"./Position/BlockPosition.es6":13,"./Position/BrickPosition.es6":14,"./Rotate.es6":16}],6:[function(require,module,exports){
+},{"./ArrayMain.es6":4,"./Brick.es6":6,"./Move/MoveBlock.es6":11,"./Position/BlockPosition.es6":12,"./Position/BrickPosition.es6":13,"./Rotate.es6":15}],6:[function(require,module,exports){
 // import MoveBrick             from './Move/MoveBrick.es6';
 
 /**
@@ -451,17 +533,21 @@ var Brick = (function () {
         value: function remove() {
             var destroy = arguments[0] === undefined ? false : arguments[0];
 
-            return this.block.remove(destroy);
+            var index = this.block.bricks.find(this);
+
+            this.block.bricks.splice(index, 1);
+            this.block.phaserGroup.remove(this.phaserSprite, destroy);
+
+            return this.clearCell();
         }
     }, {
         key: "destroy",
 
         /**
-         * @todo Apply changes in Table
          * @return {[type]}
          */
         value: function destroy() {
-            return this.block.remove(true);
+            return this.remove(true);
         }
     }, {
         key: "clearCell",
@@ -474,13 +560,8 @@ var Brick = (function () {
             // Allow to pass no position arg (Block.addBrick)
             this.position = position;
 
-            return this.block.table.cellsArray.cell(this.position).setTo(this.block.nBlock);
+            return this.block.table.cellsArray.cell(this.position).setTo(this);
         }
-
-        // down()      { return this.moveBlock.down(); }
-
-        // up()        { return this.moveBlock.up(); }
-
     }]);
 
     return Brick;
@@ -493,7 +574,7 @@ module.exports = exports["default"];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -501,30 +582,34 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Cell = (function () {
-  function Cell(x, y) {
-    _classCallCheck(this, Cell);
+    function Cell(x, y) {
+        _classCallCheck(this, Cell);
 
-    this.x = x;
-    this.y = y;
-    this.nBrick = null;
-    this.nBlock = null;
-  }
-
-  _createClass(Cell, [{
-    key: "clear",
-    value: function clear() {
-      this.nBlock = null;
+        this.x = x;
+        this.y = y;
+        this.brick = null;
     }
-  }, {
-    key: "setTo",
-    value: function setTo(nBlock) {
-      this.nBlock = nBlock;
 
-      return this;
-    }
-  }]);
+    _createClass(Cell, [{
+        key: "clear",
+        value: function clear() {
+            this.brick = null;
+        }
+    }, {
+        key: "setTo",
+        value: function setTo(brick) {
+            this.brick = brick;
 
-  return Cell;
+            return this;
+        }
+    }, {
+        key: "isEmpty",
+        value: function isEmpty() {
+            return this.brick === null;
+        }
+    }]);
+
+    return Cell;
 })();
 
 exports["default"] = Cell;
@@ -611,9 +696,9 @@ var _TableEs6 = require('./Table.es6');
 
 var _TableEs62 = _interopRequireDefault(_TableEs6);
 
-var _PositionEs6 = require('./Position.es6');
+var _PositionPositionEs6 = require('./Position/Position.es6');
 
-var _PositionEs62 = _interopRequireDefault(_PositionEs6);
+var _PositionPositionEs62 = _interopRequireDefault(_PositionPositionEs6);
 
 var Game = (function () {
     function Game(xSize, ySize, cellSize, dataPath, startCallback, updateCallback) {
@@ -632,8 +717,9 @@ var Game = (function () {
     _createClass(Game, [{
         key: 'phaserGame',
         value: function phaserGame(startCallback, updateCallback) {
-            var width = _PositionEs62['default'].toPixels(this.xSize, this.cellSize),
-                height = _PositionEs62['default'].toPixels(this.ySize, this.cellSize);
+            var position = new _PositionPositionEs62['default'](),
+                width = position.toPixels(this.xSize, this.cellSize),
+                height = position.toPixels(this.ySize, this.cellSize);
 
             return new Phaser.Game(width, height, Phaser.AUTO, 'tetris', {
                 preload: this.phaserPreload,
@@ -660,10 +746,7 @@ var Game = (function () {
         }
     }, {
         key: 'phaserUpdate',
-        value: function phaserUpdate(updateCallback) {
-
-            updateCallback();
-        }
+        value: function phaserUpdate(updateCallback) {}
     }, {
         key: 'phaserRender',
         value: function phaserRender() {}
@@ -684,7 +767,9 @@ var Game = (function () {
 exports['default'] = Game;
 module.exports = exports['default'];
 
-},{"./Position.es6":12,"./Table.es6":18}],10:[function(require,module,exports){
+// updateCallback();
+
+},{"./Position/Position.es6":14,"./Table.es6":17}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -836,6 +921,11 @@ var MoveBlock = (function (_Move) {
 
             return this.execute(position);
         }
+    }, {
+        key: 'to',
+        value: function to(position) {
+            return this.execute(position);
+        }
     }]);
 
     return MoveBlock;
@@ -845,81 +935,6 @@ exports['default'] = MoveBlock;
 module.exports = exports['default'];
 
 },{"./Move.es6":10}],12:[function(require,module,exports){
-// Create a BrickPosition and BlockPosition
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Position = (function () {
-    function Position() {
-        var x = arguments[0] === undefined ? 0 : arguments[0];
-        var y = arguments[1] === undefined ? 0 : arguments[1];
-        var anchor = arguments[2] === undefined ? 0 : arguments[2];
-        var pivot = arguments[3] === undefined ? { x: 0, y: 0 } : arguments[3];
-        var cellSize = arguments[4] === undefined ? 35 : arguments[4];
-
-        _classCallCheck(this, Position);
-
-        this.x = x;
-        this.y = y;
-        this.pivot = pivot;
-        this.cellSize = cellSize;
-        this.anchor = anchor;
-    }
-
-    _createClass(Position, [{
-        key: "phaserGroupPosition",
-        value: function phaserGroupPosition() {
-            return {
-                x: Position.toPixels(this.x + this.anchor.x, this.cellSize),
-                y: Position.toPixels(this.y + this.anchor.y, this.cellSize)
-            };
-        }
-    }, {
-        key: "relativeTo",
-        value: function relativeTo(position) {
-            return {
-                x: position.x + this.x,
-                y: position.y + this.y
-            };
-        }
-    }, {
-        key: "relativeToPivot",
-        value: function relativeToPivot(pivot) {
-            return {
-                x: (pivot.x + this.x + this.anchor.x) * this.cellSize,
-                y: (pivot.y + this.y + this.anchor.y) * this.cellSize
-            };
-        }
-    }, {
-        key: "phaserPivot",
-        get: function get() {
-            return {
-                x: Position.toPixels(this.pivot.x + this.anchor.x, this.cellSize),
-                y: Position.toPixels(this.pivot.y + this.anchor.y, this.cellSize)
-            };
-        }
-    }], [{
-        key: "toPixels",
-        value: function toPixels(val, cellSize) {
-            return val * cellSize;
-        }
-    }]);
-
-    return Position;
-})();
-
-exports["default"] = Position;
-module.exports = exports["default"];
-
-},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -979,7 +994,7 @@ var BlockPosition = (function (_Position) {
 exports['default'] = BlockPosition;
 module.exports = exports['default'];
 
-},{"./Position.es6":15}],14:[function(require,module,exports){
+},{"./Position.es6":14}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1044,7 +1059,7 @@ var BrickPosition = (function (_Position) {
 exports['default'] = BrickPosition;
 module.exports = exports['default'];
 
-},{"./Position.es6":15}],15:[function(require,module,exports){
+},{"./Position.es6":14}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1116,7 +1131,7 @@ var Position = (function () {
 exports["default"] = Position;
 module.exports = exports["default"];
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /*global Phaser*/
 
 'use strict';
@@ -1160,7 +1175,7 @@ var Rotate = (function () {
             var _this = this;
 
             return new Promise(function (resolve) {
-                _this.phaserGame.add.tween(_this.phaserGroup).to({ angle: angle }, 1, Phaser.Easing.Linear.None, true);
+                _this.phaserGame.add.tween(_this.phaserGroup).to({ angle: angle }, 500, Phaser.Easing.Linear.None, true);
 
                 resolve(_this.block);
             });
@@ -1168,7 +1183,13 @@ var Rotate = (function () {
     }, {
         key: 'tableTranslate',
         value: function tableTranslate(angle) {
-            var pattern = this.findPatternByAngle(angle);
+            var pattern;
+
+            if (angle === 360) {
+                angle = 0;
+            }
+
+            pattern = this.findPatternByAngle(angle);
 
             this.block.clearCells();
 
@@ -1190,8 +1211,6 @@ var Rotate = (function () {
     }, {
         key: 'left',
         value: function left() {
-            /////// ?
-            // var nextAngle = this.phaserGroup.angle === 0 ? 270 : -90;
             var angle = this.phaserGroup.angle === 0 ? 270 : this.phaserGroup.angle - 90;
 
             this.execute(angle);
@@ -1199,7 +1218,9 @@ var Rotate = (function () {
     }, {
         key: 'right',
         value: function right() {
-            var angle = this.phaserGroup.angle === 270 ? 0 : this.phaserGroup.angle + 90;
+            var angle = this.phaserGroup.angle === 360 ? 90 : this.phaserGroup.angle + 90;
+
+            console.log(angle);
 
             this.execute(angle);
         }
@@ -1211,7 +1232,7 @@ var Rotate = (function () {
 exports['default'] = Rotate;
 module.exports = exports['default'];
 
-},{"./Position/BrickPosition.es6":14}],17:[function(require,module,exports){
+},{"./Position/BrickPosition.es6":13}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1238,7 +1259,31 @@ var Row = (function () {
         }
     }, {
         key: "destroy",
-        value: function destroy() {}
+
+        /**
+         * @todo  level Up if x rows deleted from las time
+         * @return {[type]}
+         */
+        value: function destroy() {
+            for (var i = 0; i < this.cells.length; ++i) {
+                var cell = this.cells[i];
+
+                if (!cell.isEmpty()) {
+                    cell.brick.destroy();
+                }
+            }
+        }
+    }, {
+        key: "down",
+        value: function down() {
+            for (var i = 0; i < this.cells.length; ++i) {
+                var cell = this.cells[i];
+
+                if (!cell.isEmpty()) {
+                    cell.brick.block.down();
+                }
+            }
+        }
     }, {
         key: "cells",
         get: function get() {
@@ -1255,9 +1300,7 @@ var Row = (function () {
 exports["default"] = Row;
 module.exports = exports["default"];
 
-// level Up if x rows deleted from las time
-
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1277,8 +1320,6 @@ var _ArrayBlocksEs62 = _interopRequireDefault(_ArrayBlocksEs6);
 var _CellsArrayEs6 = require('./CellsArray.es6');
 
 var _CellsArrayEs62 = _interopRequireDefault(_CellsArrayEs6);
-
-// import Move             from './Move.es6';
 
 var _RowEs6 = require('./Row.es6');
 
@@ -1322,7 +1363,7 @@ var Table = (function () {
 exports['default'] = Table;
 module.exports = exports['default'];
 
-},{"./ArrayBlocks.es6":3,"./CellsArray.es6":8,"./Row.es6":17}],19:[function(require,module,exports){
+},{"./ArrayBlocks.es6":3,"./CellsArray.es6":8,"./Row.es6":16}],18:[function(require,module,exports){
 /*global Phaser*/
 
 'use strict';
@@ -1360,21 +1401,57 @@ var createBlocksArray = function createBlocksArray() {
     return array;
 };
 
+var moveAround = function moveAround(block) {};
+
 var start = function start() {
     var blocks = createBlocksArray(),
-        block = blocks[1];
+        column = blocks[1],
+        pyramid = blocks[0];
 
-    var block = new _libBlockEs62['default'](game.phaser, game.table, block.patterns, block.pivot, block.anchor);
+    new _libBlockEs62['default'](game.phaser, game.table, column.patterns, 2, 19, column.pivot, column.anchor).build();
 
-    block.build();
-    setTimeout(block.down.bind(block), 500);
-    // setTimeout(block.down.bind(block), 700);
-    setTimeout(block.right.bind(block), 900);
+    new _libBlockEs62['default'](game.phaser, game.table, column.patterns, 6, 19, column.pivot, column.anchor).build();
 
-    setTimeout(block.rotateRight.bind(block), 1000);
-    setTimeout(block.rotateRight.bind(block), 2000);
-    setTimeout(block.rotateRight.bind(block), 3000);
-    setTimeout(block.rotateRight.bind(block), 4000);
+    var pyramidBlock = new _libBlockEs62['default'](game.phaser, game.table, pyramid.patterns, 2, 2, pyramid.pivot, pyramid.anchor);
+
+    pyramidBlock.build();
+
+    setTimeout(pyramidBlock.rotateRight.bind(pyramidBlock), 1000);
+    setTimeout(pyramidBlock.to.bind(pyramidBlock, { x: 8, y: 18 }), 2000);
+
+    setTimeout(function () {
+        game.table.row(19).destroy();
+        game.table.row(18).down();
+    }, 5000);
+
+    // cubeBlock.up();
+    // cubeBlock.up();
+    // cubeBlock.left();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 19, block.pivot, block.anchor
+    // ).build();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 2, block.pivot, block.anchor
+    // ).build();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 2, block.pivot, block.anchor
+    // ).build();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 2, block.pivot, block.anchor
+    // ).build();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 2, block.pivot, block.anchor
+    // ).build();              
 };
 
 var update = function update() {};
@@ -1382,9 +1459,16 @@ var update = function update() {};
 game = new _libGameEs62['default'](10, 20, 35, 'path', start, update);
 window.game = game;
 
-// console.log('upd');
+// setTimeout(block.down.bind(block), 500);
+// setTimeout(block.down.bind(block), 700);
+// setTimeout(block.right.bind(block), 900);
 
-},{"./data/data.json.es6":1,"./lib/ArrayMain.es6":4,"./lib/Block.es6":5,"./lib/Game.es6":9}]},{},[19])
+// setTimeout(block.rotateRight.bind(block), 1000);
+// setTimeout(block.rotateRight.bind(block), 2000);
+// setTimeout(block.rotateRight.bind(block), 3000);
+// setTimeout(block.rotateRight.bind(block), 4000);
+
+},{"./data/data.json.es6":1,"./lib/ArrayMain.es6":4,"./lib/Block.es6":5,"./lib/Game.es6":9}]},{},[18])
 
 
 //# sourceMappingURL=superblocks.js.map

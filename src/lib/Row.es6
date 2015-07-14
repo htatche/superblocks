@@ -12,7 +12,27 @@ export default class Row {
         }
     }
 
+    /**
+     * @todo  level Up if x rows deleted from las time
+     * @return {[type]}
+     */
     destroy() {
-        // level Up if x rows deleted from las time
+        for (var i = 0; i < this.cells.length; ++i) {
+            var cell = this.cells[i];
+
+            if (!cell.isEmpty()) {
+                cell.brick.destroy();
+            }
+        }
+    }
+
+    down() {
+        for (var i = 0; i < this.cells.length; ++i) {
+            var cell = this.cells[i];
+
+            if (!cell.isEmpty()) {
+                cell.brick.block.down();
+            }
+        }
     }
 }

@@ -20,25 +20,81 @@ var createBlocksArray = function() {
     return array;
 };
 
+var moveAround = function(block) {
+    // setTimeout(block.down.bind(block), 500);
+    // setTimeout(block.down.bind(block), 700);
+    // setTimeout(block.right.bind(block), 900);
+
+    // setTimeout(block.rotateRight.bind(block), 1000);
+    // setTimeout(block.rotateRight.bind(block), 2000);
+    // setTimeout(block.rotateRight.bind(block), 3000);
+    // setTimeout(block.rotateRight.bind(block), 4000);
+};
+
 var start = function() {
     var blocks = createBlocksArray(),
-        block  = blocks[1];
+        column  = blocks[1],
+        pyramid  = blocks[0];
 
-    var block = new Block(game.phaser, game.table, block.patterns, block.pivot, block.anchor);
+    new Block(
+        game.phaser, game.table, column.patterns,
+        2, 19, column.pivot, column.anchor
+    ).build();
 
-    block.build();
-    setTimeout(block.down.bind(block), 500);
-    // setTimeout(block.down.bind(block), 700);
-    setTimeout(block.right.bind(block), 900);
+    new Block(
+        game.phaser, game.table, column.patterns,
+        6, 19, column.pivot, column.anchor
+    ).build();
 
-    setTimeout(block.rotateRight.bind(block), 1000);
-    setTimeout(block.rotateRight.bind(block), 2000);
-    setTimeout(block.rotateRight.bind(block), 3000);
-    setTimeout(block.rotateRight.bind(block), 4000);
+    var pyramidBlock = new Block(
+        game.phaser, game.table, pyramid.patterns,
+        2, 2, pyramid.pivot, pyramid.anchor
+    );
+
+    pyramidBlock.build();
+
+    setTimeout(pyramidBlock.rotateRight.bind(pyramidBlock), 1000);
+    setTimeout(pyramidBlock.to.bind(pyramidBlock, {x: 8, y: 18}), 2000);
+
+    setTimeout(function() {
+        game.table.row(19).destroy();
+        game.table.row(18).down();
+    }, 5000);
+
+
+
+    // cubeBlock.up();
+    // cubeBlock.up();
+    // cubeBlock.left();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 19, block.pivot, block.anchor
+    // ).build();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 2, block.pivot, block.anchor
+    // ).build();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 2, block.pivot, block.anchor
+    // ).build();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 2, block.pivot, block.anchor
+    // ).build();
+
+    // new Block(
+    //     game.phaser, game.table, block.patterns,
+    //     2, 2, block.pivot, block.anchor
+    // ).build();                
+
 };
 
 var update = function() {
-    // console.log('upd');
 };
 
 game = new Game(10, 20, 35, 'path', start, update);

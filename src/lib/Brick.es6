@@ -5,9 +5,9 @@
  */
 export default class Brick {
     constructor(position, block, phaserSprite) {
-        this.position = position;
-        this.block   = block;
-        this.phaserSprite = phaserSprite;
+        this.position               = position;
+        this.block                  = block;
+        this.phaserSprite           = phaserSprite;
 
         this.loadPhaserSpriteAnchor();
     }
@@ -28,15 +28,19 @@ export default class Brick {
      * @todo Apply changes in Table
      */
     remove(destroy = false) {
-        return this.block.remove(destroy);
+        var index = this.block.bricks.find(this);
+
+        this.block.bricks.splice(index, 1);
+        this.block.phaserGroup.remove(this.phaserSprite, destroy);
+
+        return this.clearCell();
     }
 
     /**
-     * @todo Apply changes in Table
      * @return {[type]}
      */
     destroy() {
-        return this.block.remove(true);
+        return this.remove(true);
     }
 
     clearCell() {
@@ -48,11 +52,7 @@ export default class Brick {
         this.position = position;
 
         return this.block.table.cellsArray.cell(this.position)
-        .setTo(this.block.nBlock);
+        .setTo(this);
     }
-
-    // down()      { return this.moveBlock.down(); }
-
-    // up()        { return this.moveBlock.up(); }
 
 }

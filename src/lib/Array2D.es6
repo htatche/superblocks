@@ -25,7 +25,9 @@ export default class Array2D {
     prettyPrint() {
         var array = this.array.map(row => {
             return row.map(cell => {
-                return (cell.nBlock);
+                if (!cell.isEmpty()) {
+                    return (cell.brick.block.nBlock);
+                }
             });
         });
 

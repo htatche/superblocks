@@ -13,6 +13,10 @@ export default class ArrayMain extends Array {
         return this.last;
     }
 
+    find(idx) {
+        return this.indexOf(idx);
+    }
+
     randomPick() {
         return this[Math.floor(Math.random() * this.length)];
     }

@@ -1,7 +1,7 @@
 /*global Phaser*/
 
 import Table        from './Table.es6';
-import Position     from './Position.es6';
+import Position     from './Position/Position.es6';
 
 export default class Game {
     constructor(xSize, ySize, cellSize, dataPath, startCallback, updateCallback) {
@@ -18,8 +18,9 @@ export default class Game {
     get cellsArray()   { return this._cellsArray; }
 
     phaserGame(startCallback, updateCallback) {
-        var width  = Position.toPixels(this.xSize, this.cellSize),
-            height = Position.toPixels(this.ySize, this.cellSize);
+        var position = new Position(),
+            width    = position.toPixels(this.xSize, this.cellSize),
+            height   = position.toPixels(this.ySize, this.cellSize);
 
         return new Phaser.Game(
             width,
@@ -49,7 +50,7 @@ export default class Game {
 
     phaserUpdate(updateCallback) {
 
-        updateCallback();
+        // updateCallback();
     }
 
     phaserRender() {
