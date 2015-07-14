@@ -5,26 +5,36 @@ import MoveBlock        from './Move/MoveBlock.es6';
 import Rotate           from './Rotate.es6';
 
 export default class Block {
-    constructor(phaserGame, table) {
-        this.position    = new Position(1, 1);
-        this.angle       = 0;
-        this.bricks      = new ArrayMain();
-        this.table       = table;
-        this.nBlock      = table.incrementNBlocks();
-        this.phaserGame  = phaserGame;
-        this.phaserGroup = phaserGame.add.group();
+    constructor(phaserGame, table, patterns, pivot, anchor) {
+        this.position           = new Position(1, 1, anchor, pivot);
+        this.anchor             = anchor;
+        this.bricks             = new ArrayMain();
 
-        this.put();
+        this.patterns           = patterns;
+        this.table              = table;
+        this.nBlock             = table.incrementNBlocks();
+
+        this.phaserGame         = phaserGame;
+        this.phaserGroup        = phaserGame.add.group();
+
+        this.phaserPivot        = this.position.phaserPivot;
+        this.phaserPosition     = this.position.phaserGroupPosition();
     }
 
     get position()          { return this._position; }
     set position(position)  { this._position = position; }
+
     get moveBlock()         { return new MoveBlock(this.position, this); }
     get rotate()            { return new Rotate(this); }
 
-    put() {
-        this.phaserGroup.x = this.position.xCenterPosition();
-        this.phaserGroup.y = this.position.yCenterPosition();
+    set phaserPivot(pivot) {
+        this.phaserGroup.pivot.x = pivot.x;
+        this.phaserGroup.pivot.y = pivot.y;
+    }
+
+    set phaserPosition(position) {
+        this.phaserGroup.x = position.x;
+        this.phaserGroup.y = position.y;
     }
 
     addBrick(brick) {
@@ -34,31 +44,38 @@ export default class Block {
     }
 
     newBrick(position) {
-        var sprite = this.phaserGroup.create(position.xPixels, position.yPixels, 'green');
+        var sprite = this.phaserGroup.create(
+            position.relativeToPivot(this.position.pivot).x,
+            position.relativeToPivot(this.position.pivot).y,
+            'green'
+        );
+
+        position.x = position.relativeTo(this.position).x;
+        position.y = position.relativeTo(this.position).y;
 
         return this.addBrick(new Brick(position, this, sprite));
     }
 
-    /**
-     * @todo  Add possibility to choose angle
-     * @param  {[type]}
-     * @return {[type]}
-     */
-    build(shape) {
+    build() {
         return new Promise((resolve, reject) => {
             if (!this.bricks.isEmpty) { return false; }
 
-            var blocks = shape.angles[0].blocks;
+            var pattern = this.rotate.findPatternByAngle(0);
 
-            for (var i = 0; i < blocks.length; ++i) {
-                this.newBrick(new Position(blocks[i][0], blocks[i][1]));
+            for (var i = 0; i < pattern.positions.length; ++i) {
+                this.newBrick(new Position(
+                    pattern.positions[i][0],
+                    pattern.positions[i][1],
+                    this.anchor
+                ));
             }
-
-            this.phaserGroup.pivot.x = shape.pivot.x;
-            this.phaserGroup.pivot.y = shape.pivot.y;
 
             resolve(this);
         });
+    }
+
+    put() {
+
     }
 
     buildAny(shapes) {
@@ -71,18 +88,11 @@ export default class Block {
         });
     }
 
-    /**
-     * @param  {Boolean}
-     * @return {[type]}
-     */
     removeBricks(destroy = false) {
         this.phaserGroup.removeAll(destroy);
         this.clearCells();
     }
 
-    /**
-     * @return {[type]}
-     */
     destroy() {
         this.phaserGroup.removeAll(true);
     }
@@ -90,6 +100,10 @@ export default class Block {
     down()              { return this.moveBlock.down(); }
 
     up()                { return this.moveBlock.up(); }
+
+    right()             { return this.moveBlock.right(); }
+
+    left()             { return this.moveBlock.left(); }
 
     rotateRight()       { return new Rotate(this).right(); }
 

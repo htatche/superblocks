@@ -17,7 +17,10 @@ export default class Brick {
     get moveBrick()         { return new MoveBrick(this.position, this); }
 
     setAnchor() {
-        this.phaserSprite.anchor.setTo(this.position.anchor, this.position.anchor);
+        this.phaserSprite.anchor.setTo(
+            this.position.anchor.x,
+            this.position.anchor.y
+        );
     }
 
     /**
@@ -42,14 +45,15 @@ export default class Brick {
     }
 
     putCell(position) {
+        // Allow to pass no position arg (Block.addBrick)
         this.position = position;
 
-        return this.block.table.cellsArray.cell(position)
+        return this.block.table.cellsArray.cell(this.position)
         .setTo(this.block.nBlock);
     }
 
-    down()      { return this.moveBlock.down(); }
+    // down()      { return this.moveBlock.down(); }
 
-    up()        { return this.moveBlock.up(); }
+    // up()        { return this.moveBlock.up(); }
 
 }

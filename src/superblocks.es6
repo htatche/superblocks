@@ -7,32 +7,39 @@ import data             from './data/data.json.es6';
 
 var game;
 
-var printMessage = function() {
-    console.log('Done !');
-};
-
 /**
  * @todo This will be translate to parseJSONFile in Block
  */
-var createShapesArray = function() {
+var createBlocksArray = function() {
     var array = new ArrayMain();
 
-    for (var i = 0; i < data.shapes.length; ++i) {
-        array.add(data.shapes[i]);
+    for (var i = 0; i < data.blocks.length; ++i) {
+        array.add(data.blocks[i]);
     }
 
     return array;
 };
 
 var start = function() {
-    var shapes = createShapesArray();
+    var blocks = createBlocksArray(),
+        block  = blocks[0];
 
-    var block = new Block(game.phaser, game.table);
+    var block = new Block(game.phaser, game.table, block.patterns, block.pivot, block.anchor);
 
-    block.build(shapes.first)
-    // .then(block.rotateRight.bind(block))
-    .then(block.rotateRight.bind(block));
+    block.build();
+    // setTimeout(block.right.bind(block), 500);
+    // setTimeout(block.down.bind(block), 700);
+    // setTimeout(block.right.bind(block), 900);
+
+    // setTimeout(block.rotateRight.bind(block), 1000);
+    // setTimeout(block.rotateRight.bind(block), 2000);
+    // setTimeout(block.rotateRight.bind(block), 3000);
+    // // setTimeout(block.rotateRight.bind(block), 4000);
 };
 
-game = new Game(10, 20, 35, 'path', start);
+var update = function() {
+    // console.log('upd');
+};
+
+game = new Game(10, 20, 35, 'path', start, update);
 window.game = game;

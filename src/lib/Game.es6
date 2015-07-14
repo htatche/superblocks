@@ -4,11 +4,11 @@ import Table        from './Table.es6';
 import Position     from './Position.es6';
 
 export default class Game {
-    constructor(xSize, ySize, cellSize, dataPath, startCallback) {
+    constructor(xSize, ySize, cellSize, dataPath, startCallback, updateCallback) {
         this.xSize = xSize;
         this.ySize = ySize;
         this.cellSize = cellSize;
-        this.phaser = this.phaserGame(startCallback);
+        this.phaser = this.phaserGame(startCallback, updateCallback);
         this.table = new Table(xSize, ySize);
         this.cursos = null;
         // this.data = this.parseJSONFile(dataPath);
@@ -17,7 +17,7 @@ export default class Game {
 
     get cellsArray()   { return this._cellsArray; }
 
-    phaserGame(startCallback) {
+    phaserGame(startCallback, updateCallback) {
         var width  = Position.toPixels(this.xSize, this.cellSize),
             height = Position.toPixels(this.ySize, this.cellSize);
 
@@ -28,7 +28,7 @@ export default class Game {
             'tetris', {
                 preload: this.phaserPreload,
                 create: this.phaserCreate.bind(this, startCallback),
-                update: this.phaserUpdate,
+                update: this.phaserUpdate.bind(this, updateCallback),
                 render: this.phaserRender
             });
     }
@@ -47,8 +47,9 @@ export default class Game {
         startCallback();
     }
 
-    phaserUpdate() {
+    phaserUpdate(updateCallback) {
 
+        updateCallback();
     }
 
     phaserRender() {

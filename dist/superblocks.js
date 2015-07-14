@@ -5,19 +5,53 @@ Object.defineProperty(exports, '__esModule', {
     value: true
 });
 var data = {
-    shapes: [{
+    blocks: [{
+        name: 'pyramid',
+        color: 'green',
+        pivot: {
+            x: 1,
+            y: 1
+        },
+        anchor: {
+            x: 0.5,
+            y: 0.5
+        },
+        patterns: [{
+            angle: 0,
+            positions: [[-1, 0], [0, 0], [1, 0], [0, -1]]
+        }, {
+            angle: 90,
+            positions: [[0, 0], [0, -1], [0, 1], [1, 0]]
+        }, {
+            angle: 180,
+            positions: [[-1, 0], [0, 0], [1, 0], [0, 1]]
+        }, {
+            angle: 270,
+            positions: [[0, 0], [0, -1], [0, 1], [-1, 0]]
+        }]
+    }, {
         name: 'column',
         color: 'yellow',
         pivot: {
-            x: 35,
-            y: 35
+            x: 2,
+            y: 0
         },
-        angles: [{
-            degrees: 0,
-            blocks: [[0, 1], [1, 1], [2, 1], [1, 0]]
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        patterns: [{
+            angle: 0,
+            positions: [[-2, 0], [-1, 0], [0, 0], [1, 0]]
         }, {
-            degrees: 90,
-            blocks: [[1, 0], [1, 1], [2, 1], [1, 2]]
+            angle: 90,
+            positions: [[0, -1], [0, -0], [0, 1], [0, 2]]
+        }, {
+            angle: 180,
+            positions: [[1, 1], [0, 1], [-1, 1], [-2, 1]]
+        }, {
+            angle: 270,
+            positions: [[-1, 2], [-1, 1], [-1, 0], [-1, -1]]
         }]
     }]
 };
@@ -229,27 +263,25 @@ var _RotateEs6 = require('./Rotate.es6');
 var _RotateEs62 = _interopRequireDefault(_RotateEs6);
 
 var Block = (function () {
-    function Block(phaserGame, table) {
+    function Block(phaserGame, table, patterns, pivot, anchor) {
         _classCallCheck(this, Block);
 
-        this.position = new _PositionEs62['default'](1, 1);
-        this.angle = 0;
+        this.position = new _PositionEs62['default'](1, 1, anchor, pivot);
+        this.anchor = anchor;
         this.bricks = new _ArrayMainEs62['default']();
+
+        this.patterns = patterns;
         this.table = table;
         this.nBlock = table.incrementNBlocks();
+
         this.phaserGame = phaserGame;
         this.phaserGroup = phaserGame.add.group();
 
-        this.put();
+        this.phaserPivot = this.position.phaserPivot;
+        this.phaserPosition = this.position.phaserGroupPosition();
     }
 
     _createClass(Block, [{
-        key: 'put',
-        value: function put() {
-            this.phaserGroup.x = this.position.xCenterPosition();
-            this.phaserGroup.y = this.position.yCenterPosition();
-        }
-    }, {
         key: 'addBrick',
         value: function addBrick(brick) {
             brick.putCell(brick.position, this.table);
@@ -259,19 +291,16 @@ var Block = (function () {
     }, {
         key: 'newBrick',
         value: function newBrick(position) {
-            var sprite = this.phaserGroup.create(position.xPixels, position.yPixels, 'green');
+            var sprite = this.phaserGroup.create(position.relativeToPivot(this.position.pivot).x, position.relativeToPivot(this.position.pivot).y, 'green');
+
+            position.x = position.relativeTo(this.position).x;
+            position.y = position.relativeTo(this.position).y;
 
             return this.addBrick(new _BrickEs62['default'](position, this, sprite));
         }
     }, {
         key: 'build',
-
-        /**
-         * @todo  Add possibility to choose angle
-         * @param  {[type]}
-         * @return {[type]}
-         */
-        value: function build(shape) {
+        value: function build() {
             var _this = this;
 
             return new Promise(function (resolve, reject) {
@@ -279,18 +308,18 @@ var Block = (function () {
                     return false;
                 }
 
-                var blocks = shape.angles[0].blocks;
+                var pattern = _this.rotate.findPatternByAngle(0);
 
-                for (var i = 0; i < blocks.length; ++i) {
-                    _this.newBrick(new _PositionEs62['default'](blocks[i][0], blocks[i][1]));
+                for (var i = 0; i < pattern.positions.length; ++i) {
+                    _this.newBrick(new _PositionEs62['default'](pattern.positions[i][0], pattern.positions[i][1], _this.anchor));
                 }
-
-                _this.phaserGroup.pivot.x = shape.pivot.x;
-                _this.phaserGroup.pivot.y = shape.pivot.y;
 
                 resolve(_this);
             });
         }
+    }, {
+        key: 'put',
+        value: function put() {}
     }, {
         key: 'buildAny',
         value: function buildAny(shapes) {
@@ -305,11 +334,6 @@ var Block = (function () {
         }
     }, {
         key: 'removeBricks',
-
-        /**
-         * @param  {Boolean}
-         * @return {[type]}
-         */
         value: function removeBricks() {
             var destroy = arguments[0] === undefined ? false : arguments[0];
 
@@ -318,10 +342,6 @@ var Block = (function () {
         }
     }, {
         key: 'destroy',
-
-        /**
-         * @return {[type]}
-         */
         value: function destroy() {
             this.phaserGroup.removeAll(true);
         }
@@ -334,6 +354,16 @@ var Block = (function () {
         key: 'up',
         value: function up() {
             return this.moveBlock.up();
+        }
+    }, {
+        key: 'right',
+        value: function right() {
+            return this.moveBlock.right();
+        }
+    }, {
+        key: 'left',
+        value: function left() {
+            return this.moveBlock.left();
         }
     }, {
         key: 'rotateRight',
@@ -362,6 +392,18 @@ var Block = (function () {
         key: 'rotate',
         get: function get() {
             return new _RotateEs62['default'](this);
+        }
+    }, {
+        key: 'phaserPivot',
+        set: function set(pivot) {
+            this.phaserGroup.pivot.x = pivot.x;
+            this.phaserGroup.pivot.y = pivot.y;
+        }
+    }, {
+        key: 'phaserPosition',
+        set: function set(position) {
+            this.phaserGroup.x = position.x;
+            this.phaserGroup.y = position.y;
         }
     }]);
 
@@ -406,7 +448,7 @@ var Brick = (function () {
     _createClass(Brick, [{
         key: 'setAnchor',
         value: function setAnchor() {
-            this.phaserSprite.anchor.setTo(this.position.anchor, this.position.anchor);
+            this.phaserSprite.anchor.setTo(this.position.anchor.x, this.position.anchor.y);
         }
     }, {
         key: 'remove',
@@ -439,20 +481,16 @@ var Brick = (function () {
     }, {
         key: 'putCell',
         value: function putCell(position) {
+            // Allow to pass no position arg (Block.addBrick)
             this.position = position;
 
-            return this.block.table.cellsArray.cell(position).setTo(this.block.nBlock);
+            return this.block.table.cellsArray.cell(this.position).setTo(this.block.nBlock);
         }
-    }, {
-        key: 'down',
-        value: function down() {
-            return this.moveBlock.down();
-        }
-    }, {
-        key: 'up',
-        value: function up() {
-            return this.moveBlock.up();
-        }
+
+        // down()      { return this.moveBlock.down(); }
+
+        // up()        { return this.moveBlock.up(); }
+
     }, {
         key: 'position',
         get: function get() {
@@ -601,13 +639,13 @@ var _PositionEs6 = require('./Position.es6');
 var _PositionEs62 = _interopRequireDefault(_PositionEs6);
 
 var Game = (function () {
-    function Game(xSize, ySize, cellSize, dataPath, startCallback) {
+    function Game(xSize, ySize, cellSize, dataPath, startCallback, updateCallback) {
         _classCallCheck(this, Game);
 
         this.xSize = xSize;
         this.ySize = ySize;
         this.cellSize = cellSize;
-        this.phaser = this.phaserGame(startCallback);
+        this.phaser = this.phaserGame(startCallback, updateCallback);
         this.table = new _TableEs62['default'](xSize, ySize);
         this.cursos = null;
         // this.data = this.parseJSONFile(dataPath);
@@ -616,14 +654,14 @@ var Game = (function () {
 
     _createClass(Game, [{
         key: 'phaserGame',
-        value: function phaserGame(startCallback) {
+        value: function phaserGame(startCallback, updateCallback) {
             var width = _PositionEs62['default'].toPixels(this.xSize, this.cellSize),
                 height = _PositionEs62['default'].toPixels(this.ySize, this.cellSize);
 
             return new Phaser.Game(width, height, Phaser.AUTO, 'tetris', {
                 preload: this.phaserPreload,
                 create: this.phaserCreate.bind(this, startCallback),
-                update: this.phaserUpdate,
+                update: this.phaserUpdate.bind(this, updateCallback),
                 render: this.phaserRender
             });
         }
@@ -645,7 +683,10 @@ var Game = (function () {
         }
     }, {
         key: 'phaserUpdate',
-        value: function phaserUpdate() {}
+        value: function phaserUpdate(updateCallback) {
+
+            updateCallback();
+        }
     }, {
         key: 'phaserRender',
         value: function phaserRender() {}
@@ -694,14 +735,28 @@ var Move = (function () {
   _createClass(Move, [{
     key: 'up',
     value: function up() {
-      this.nextPosition = new _PositionEs62['default'](this.position.x, this.position.y - 1);
+      this.nextPosition = new _PositionEs62['default'](this.position.x, this.position.y - 1, this.position.anchor);
 
       return this.nextPosition;
     }
   }, {
     key: 'down',
     value: function down() {
-      this.nextPosition = new _PositionEs62['default'](this.position.x, this.position.y + 1);
+      this.nextPosition = new _PositionEs62['default'](this.position.x, this.position.y + 1, this.position.anchor);
+
+      return this.nextPosition;
+    }
+  }, {
+    key: 'right',
+    value: function right() {
+      this.nextPosition = new _PositionEs62['default'](this.position.x + 1, this.position.y, this.position.anchor);
+
+      return this.nextPosition;
+    }
+  }, {
+    key: 'left',
+    value: function left() {
+      this.nextPosition = new _PositionEs62['default'](this.position.x - 1, this.position.y, this.position.anchor);
 
       return this.nextPosition;
     }
@@ -740,6 +795,10 @@ var _MoveBrickEs6 = require('./MoveBrick.es6');
 
 var _MoveBrickEs62 = _interopRequireDefault(_MoveBrickEs6);
 
+var _PositionEs6 = require('../Position.es6');
+
+var _PositionEs62 = _interopRequireDefault(_PositionEs6);
+
 var MoveBlock = (function (_Move) {
     function MoveBlock(position, block) {
         _classCallCheck(this, MoveBlock);
@@ -757,17 +816,23 @@ var MoveBlock = (function (_Move) {
         value: function phaserTranslate(position) {
             var tween = this.block.phaserGame.add.tween(this.block.phaserGroup);
 
-            tween.to(position.tweenPosition, 1, Phaser.Easing.Linear.None, true);
+            tween.to(position.phaserGroupPosition(), 1, Phaser.Easing.Linear.None, true);
 
             return tween;
         }
     }, {
         key: 'tableTranslate',
-        value: function tableTranslate(strDirection) {
+        value: function tableTranslate() {
+            var _this = this;
+
             this.block.clearCells();
 
-            this.block.bricks.forEach(function (brick) {
-                var nextPosition = new _MoveEs62['default'](brick.position, brick)[strDirection]();
+            var pos = this.block.rotate.findPatternByAngle(this.block.phaserGroup.angle).positions;
+
+            this.block.bricks.forEach(function (brick, idx) {
+                var position = new _PositionEs62['default'](pos[idx][0], pos[idx][1], brick.block.anchor);
+
+                var nextPosition = position.relativeTo(_this.block.position);
 
                 return brick.putCell(nextPosition);
             });
@@ -781,15 +846,15 @@ var MoveBlock = (function (_Move) {
          * @return {[type]}
          */
         value: function move(strDirection) {
-            var _this = this;
+            var self = this;
 
             return new Promise(function (resolve, reject) {
-                _this.block.position = _this.nextPosition;
+                self.block.position = self.nextPosition;
 
-                _this.phaserTranslate(_this.nextPosition);
-                _this.tableTranslate(strDirection);
+                self.phaserTranslate(self.block.position);
+                self.tableTranslate();
 
-                resolve(_this.position);
+                resolve(self.position);
             });
         }
     }, {
@@ -806,6 +871,20 @@ var MoveBlock = (function (_Move) {
 
             return this.move('up');
         }
+    }, {
+        key: 'right',
+        value: function right() {
+            _get(Object.getPrototypeOf(MoveBlock.prototype), 'right', this).call(this);
+
+            return this.move('right');
+        }
+    }, {
+        key: 'left',
+        value: function left() {
+            _get(Object.getPrototypeOf(MoveBlock.prototype), 'left', this).call(this);
+
+            return this.move('left');
+        }
     }]);
 
     return MoveBlock;
@@ -814,7 +893,7 @@ var MoveBlock = (function (_Move) {
 exports['default'] = MoveBlock;
 module.exports = exports['default'];
 
-},{"./Move.es6":10,"./MoveBrick.es6":12}],12:[function(require,module,exports){
+},{"../Position.es6":13,"./Move.es6":10,"./MoveBrick.es6":12}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -884,6 +963,8 @@ exports['default'] = MoveBrick;
 module.exports = exports['default'];
 
 },{"./Move.es6":10}],13:[function(require,module,exports){
+// Create a BrickPosition and BlockPosition
+
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -898,60 +979,52 @@ var Position = (function () {
     function Position() {
         var x = arguments[0] === undefined ? 0 : arguments[0];
         var y = arguments[1] === undefined ? 0 : arguments[1];
-        var cellSize = arguments[2] === undefined ? 35 : arguments[2];
-        var anchor = arguments[3] === undefined ? 0.5 : arguments[3];
+        var anchor = arguments[2] === undefined ? 0 : arguments[2];
+        var pivot = arguments[3] === undefined ? { x: 0, y: 0 } : arguments[3];
+        var cellSize = arguments[4] === undefined ? 35 : arguments[4];
 
         _classCallCheck(this, Position);
 
         this.x = x;
         this.y = y;
+        this.pivot = pivot;
         this.cellSize = cellSize;
         this.anchor = anchor;
+
+        // this.relativeX      =
+        // this.relativeY      =
     }
 
     _createClass(Position, [{
-        key: "xCenterPosition",
-
-        /**
-         * @internal
-         *     0  1  2  3
-         *   0  __________
-         *   1 |  o
-         *   2 |o x o
-         *   3 |
-         *
-         * The center of the block
-         * (x * cellSize) + (cellSize / 2)
-         * (y * cellSize) + (cellSize / 2)
-         *
-         * @todo      Modify so last value represents pivot and not cellSi
-         * @param  {Number}
-         * @return {[type]}
-         */
-        value: function xCenterPosition() {
-            return this.xPixels + this.cellSize * this.anchor;
+        key: "phaserGroupPosition",
+        value: function phaserGroupPosition() {
+            return {
+                x: Position.toPixels(this.x + this.anchor.x, this.cellSize),
+                y: Position.toPixels(this.y + this.anchor.y, this.cellSize)
+            };
         }
     }, {
-        key: "yCenterPosition",
-        value: function yCenterPosition() {
-            return this.yPixels + this.cellSize * this.anchor;
+        key: "relativeTo",
+        value: function relativeTo(position) {
+            return {
+                x: position.x + this.x,
+                y: position.y + this.y
+            };
         }
     }, {
-        key: "xPixels",
-        get: function get() {
-            return Position.toPixels(this.x, this.cellSize);
+        key: "relativeToPivot",
+        value: function relativeToPivot(pivot) {
+            return {
+                x: (pivot.x + this.x + this.anchor.x) * this.cellSize,
+                y: (pivot.y + this.y + this.anchor.y) * this.cellSize
+            };
         }
     }, {
-        key: "yPixels",
-        get: function get() {
-            return Position.toPixels(this.y, this.cellSize);
-        }
-    }, {
-        key: "tweenPosition",
+        key: "phaserPivot",
         get: function get() {
             return {
-                x: this.xCenterPosition(),
-                y: this.yCenterPosition()
+                x: Position.toPixels(this.pivot.x + this.anchor.x, this.cellSize),
+                y: Position.toPixels(this.pivot.y + this.anchor.y, this.cellSize)
             };
         }
     }], [{
@@ -972,79 +1045,107 @@ module.exports = exports["default"];
 
 // import Brick            from './Brick.es6';
 // import ArrayMain        from './ArrayMain.es6';
-// import Position         from './Position.es6';
-// import MoveBlock        from './Move/MoveBlock.es6';
-// import Promise          from '../../bower_components/when/es6-shim/Promise.browserify-es6.js';
+'use strict';
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _PositionEs6 = require('./Position.es6');
+
+var _PositionEs62 = _interopRequireDefault(_PositionEs6);
+
+// import MoveBlock        from './Move/MoveBlock.es6';
+// import Promise          from '../../bower_components/when/es6-shim/Promise.browserify-es6.js';
 
 var Rotate = (function () {
     function Rotate(block) {
         _classCallCheck(this, Rotate);
+
+        this.block = block;
 
         this.phaserGame = block.phaserGame;
         this.phaserGroup = block.phaserGroup;
     }
 
     _createClass(Rotate, [{
-        key: "phaserTranslate",
+        key: 'findPatternByAngle',
+        value: function findPatternByAngle(angle) {
+            var array = this.block.patterns.filter(function (i) {
+                return i.angle === angle;
+            });
+
+            return array[0];
+        }
+    }, {
+        key: 'phaserTranslate',
         value: function phaserTranslate(angle) {
             var _this = this;
 
+            // this.phaserGroup.pivot.x = 0;
+            // this.phaserGroup.pivot.y = 0;
+
             return new Promise(function (resolve, reject) {
-                _this.phaserGame.add.tween(_this.phaserGroup).to({ angle: _this.phaserGroup.angle += angle }, 1, Phaser.Easing.Linear.None, true);
+                _this.phaserGame.add.tween(_this.phaserGroup).to({ angle: angle }, 1, Phaser.Easing.Linear.None, true);
 
-                resolve(_this.phaserGroup);
+                resolve(_this.block);
             });
         }
     }, {
-        key: "execute",
+        key: 'tableTranslate',
+        value: function tableTranslate(angle) {
+            var pos = this.findPatternByAngle(angle).positions;
 
-        // tableTranslate() {
-        //     this.block.clearCells();
+            this.block.clearCells();
 
-        //     this.block.bricks.forEach((brick) => {
-        //         var nextPosition = new Move(brick.position, brick)[strDirection]();
+            this.block.bricks.forEach(function (brick, idx) {
+                var position = new _PositionEs62['default'](pos[idx][0], pos[idx][1], brick.block.anchor);
 
-        //         return brick.putCell(nextPosition);
-        //     });
-        // }
+                var nextPosition = position.relativeTo(brick.block.position);
 
+                return brick.putCell(nextPosition);
+            });
+        }
+    }, {
+        key: 'execute',
         value: function execute(angle) {
-            this.phaserTranslate(angle).then(function (phaserGroup) {
-                phaserGroup.children.forEach(function (i) {});
+            var _this2 = this;
+
+            this.phaserTranslate(angle).then(function (block) {
+                _this2.tableTranslate(angle, block);
             });
-            // this.tableTranslate(angle);
         }
     }, {
-        key: "left",
+        key: 'left',
         value: function left() {
-            this.execute(-90);
+            /////// ?
+            // var nextAngle = this.phaserGroup.angle === 0 ? 270 : -90;
+            var angle = this.phaserGroup.angle === 0 ? 270 : this.phaserGroup.angle - 90;
+
+            this.execute(angle);
         }
     }, {
-        key: "right",
+        key: 'right',
         value: function right() {
-            this.execute(90);
+            var angle = this.phaserGroup.angle === 270 ? 0 : this.phaserGroup.angle + 90;
+
+            this.execute(angle);
         }
     }]);
 
     return Rotate;
 })();
 
-exports["default"] = Rotate;
-module.exports = exports["default"];
+exports['default'] = Rotate;
+module.exports = exports['default'];
 
-// debugger;
-
-},{}],15:[function(require,module,exports){
+},{"./Position.es6":13}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1181,35 +1282,42 @@ var _dataDataJsonEs62 = _interopRequireDefault(_dataDataJsonEs6);
 
 var game;
 
-var printMessage = function printMessage() {
-    console.log('Done !');
-};
-
 /**
  * @todo This will be translate to parseJSONFile in Block
  */
-var createShapesArray = function createShapesArray() {
+var createBlocksArray = function createBlocksArray() {
     var array = new _libArrayMainEs62['default']();
 
-    for (var i = 0; i < _dataDataJsonEs62['default'].shapes.length; ++i) {
-        array.add(_dataDataJsonEs62['default'].shapes[i]);
+    for (var i = 0; i < _dataDataJsonEs62['default'].blocks.length; ++i) {
+        array.add(_dataDataJsonEs62['default'].blocks[i]);
     }
 
     return array;
 };
 
 var start = function start() {
-    var shapes = createShapesArray();
+    var blocks = createBlocksArray(),
+        block = blocks[0];
 
-    var block = new _libBlockEs62['default'](game.phaser, game.table);
+    var block = new _libBlockEs62['default'](game.phaser, game.table, block.patterns, block.pivot, block.anchor);
 
-    block.build(shapes.first)
-    // .then(block.rotateRight.bind(block))
-    .then(block.rotateRight.bind(block));
+    block.build();
+    // setTimeout(block.right.bind(block), 500);
+    // setTimeout(block.down.bind(block), 700);
+    // setTimeout(block.right.bind(block), 900);
+
+    // setTimeout(block.rotateRight.bind(block), 1000);
+    // setTimeout(block.rotateRight.bind(block), 2000);
+    // setTimeout(block.rotateRight.bind(block), 3000);
+    // // setTimeout(block.rotateRight.bind(block), 4000);
 };
 
-game = new _libGameEs62['default'](10, 20, 35, 'path', start);
+var update = function update() {};
+
+game = new _libGameEs62['default'](10, 20, 35, 'path', start, update);
 window.game = game;
+
+// console.log('upd');
 
 },{"./data/data.json.es6":1,"./lib/ArrayMain.es6":4,"./lib/Block.es6":5,"./lib/Game.es6":9}]},{},[17])
 

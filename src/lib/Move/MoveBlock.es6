@@ -2,6 +2,7 @@
 
 import Move             from './Move.es6';
 import MoveBrick        from './MoveBrick.es6';
+import Position         from '../Position.es6';
 
 export default class MoveBlock extends Move {
     constructor(position, block) {
@@ -15,7 +16,7 @@ export default class MoveBlock extends Move {
         var tween = this.block.phaserGame.add.tween(this.block.phaserGroup);
 
         tween.to(
-          position.tweenPosition,
+          position.phaserGroupPosition(),
           1,
           Phaser.Easing.Linear.None,
           true
@@ -24,14 +25,24 @@ export default class MoveBlock extends Move {
         return tween;
     }
 
-    tableTranslate(strDirection) {
+    tableTranslate() {
         this.block.clearCells();
 
-        this.block.bricks.forEach((brick) => {
-            var nextPosition = new Move(brick.position, brick)[strDirection]();
+        var pos = this.block.rotate.
+        findPatternByAngle(this.block.phaserGroup.angle).positions;
+
+        this.block.bricks.forEach((brick, idx) => {
+            var position = new Position(
+                pos[idx][0],
+                pos[idx][1],
+                brick.block.anchor
+            );
+
+            var nextPosition = position.relativeTo(this.block.position);
 
             return brick.putCell(nextPosition);
         });
+
     }
 
     /**
@@ -40,13 +51,15 @@ export default class MoveBlock extends Move {
      * @return {[type]}
      */
     move(strDirection) {
+        var self = this;
+
         return new Promise((resolve, reject) => {
-            this.block.position = this.nextPosition;
+            self.block.position = self.nextPosition;
 
-            this.phaserTranslate(this.nextPosition);
-            this.tableTranslate(strDirection);
+            self.phaserTranslate(self.block.position);
+            self.tableTranslate();
 
-            resolve(this.position);
+            resolve(self.position);
         });
     }
 
@@ -60,5 +73,17 @@ export default class MoveBlock extends Move {
         super.up();
 
         return this.move('up');
+    }
+
+    right() {
+        super.right();
+
+        return this.move('right');
+    }
+
+    left() {
+        super.left();
+
+        return this.move('left');
     }
 }

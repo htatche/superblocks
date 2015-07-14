@@ -9,7 +9,8 @@ export default class Move {
     up() {
       this.nextPosition = new Position(
         this.position.x,
-        this.position.y - 1
+        this.position.y - 1,
+        this.position.anchor
       );
 
       return this.nextPosition;
@@ -18,7 +19,28 @@ export default class Move {
     down() {
       this.nextPosition = new Position(
         this.position.x,
-        this.position.y + 1
+        this.position.y + 1,
+        this.position.anchor
+      );
+
+      return this.nextPosition;
+    }
+
+    right() {
+      this.nextPosition = new Position(
+        this.position.x + 1,
+        this.position.y,
+        this.position.anchor
+      );
+
+      return this.nextPosition;
+    }
+
+    left() {
+      this.nextPosition = new Position(
+        this.position.x - 1,
+        this.position.y,
+        this.position.anchor
       );
 
       return this.nextPosition;

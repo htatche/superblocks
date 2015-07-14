@@ -1,43 +1,43 @@
+// Create a BrickPosition and BlockPosition
+
 export default class Position {
-    constructor(x = 0, y = 0, cellSize = 35, anchor = 0.5) {
+    constructor(x = 0, y = 0, anchor = 0, pivot = {x : 0, y : 0}, cellSize = 35) {
         this.x              = x;
         this.y              = y;
+        this.pivot          = pivot;
         this.cellSize       = cellSize;
         this.anchor         = anchor;
+
+        // this.relativeX      = 
+        // this.relativeY      = 
     }
 
-    get xPixels() { return Position.toPixels(this.x, this.cellSize); }
-    get yPixels() { return Position.toPixels(this.y, this.cellSize); }
-
-    get tweenPosition() {
+    phaserGroupPosition() {
         return {
-            x: this.xCenterPosition(),
-            y: this.yCenterPosition()
+            x: Position.toPixels(this.x + this.anchor.x, this.cellSize),
+            y: Position.toPixels(this.y + this.anchor.y, this.cellSize)
         };
     }
 
-    /**
-     * @internal
-     *     0  1  2  3
-     *   0  __________
-     *   1 |  o
-     *   2 |o x o
-     *   3 |
-     *
-     * The center of the block
-     * (x * cellSize) + (cellSize / 2)
-     * (y * cellSize) + (cellSize / 2)
-     *
-     * @todo      Modify so last value represents pivot and not cellSi
-     * @param  {Number}
-     * @return {[type]}
-     */
-    xCenterPosition() {
-        return this.xPixels + this.cellSize * this.anchor;
+    get phaserPivot() {
+        return {
+            x: Position.toPixels(this.pivot.x + this.anchor.x, this.cellSize),
+            y: Position.toPixels(this.pivot.y + this.anchor.y, this.cellSize)
+        };
     }
 
-    yCenterPosition() {
-        return this.yPixels + this.cellSize * this.anchor;
+    relativeTo(position) {
+        return {
+            x: (position.x + this.x),
+            y: (position.y + this.y)
+        };
+    }
+
+    relativeToPivot(pivot) {
+        return {
+            x: (pivot.x + this.x + this.anchor.x) * this.cellSize,
+            y: (pivot.y + this.y + this.anchor.y) * this.cellSize
+        };
     }
 
     static toPixels(val, cellSize) {
