@@ -52,18 +52,22 @@ export default class MoveBlock extends Move {
     up() {
         var position = super.up();
 
-        return this.execute(position);        
+        return this.execute(position);
     }
 
     right() {
         var position = super.right();
 
-        return this.execute(position);        
+        return this.execute(position);
     }
 
     left() {
         var position = super.left();
 
-        return this.execute(position);        
+        return this.execute(position);
+    }
+
+    to(position) {
+        return this.execute(position);
     }
 }

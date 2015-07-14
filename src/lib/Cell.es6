@@ -1,18 +1,21 @@
 export default class Cell {
     constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.nBrick = null;
-      this.nBlock = null;
+        this.x = x;
+        this.y = y;
+        this.brick = null;
     }
 
     clear() {
-      this.nBlock = null;
+        this.brick = null;
     }
 
-    setTo(nBlock) {
-      this.nBlock = nBlock;
+    setTo(brick) {
+        this.brick = brick;
 
-      return this;
+        return this;
+    }
+
+    isEmpty() {
+        return this.brick === null;
     }
 }

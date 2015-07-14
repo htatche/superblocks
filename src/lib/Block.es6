@@ -6,11 +6,11 @@ import MoveBlock        from './Move/MoveBlock.es6';
 import Rotate           from './Rotate.es6';
 
 export default class Block {
-    constructor(phaserGame, table, patterns, pivot, childsAnchor) {
+    constructor(phaserGame, table, patterns, x, y, pivot, childsAnchor) {
         this.phaserGame         = phaserGame;
         this.phaserGroup        = this.phaserGame.add.group();
 
-        this.position           = new BlockPosition(2, 2, pivot, childsAnchor);
+        this.position           = new BlockPosition(x, y, pivot, childsAnchor);
         this.bricks             = new ArrayMain();
 
         this.patterns           = patterns;
@@ -99,6 +99,8 @@ export default class Block {
     right()             { return this.moveBlock.right(); }
 
     left()              { return this.moveBlock.left(); }
+
+    to(position)        { return this.moveBlock.to(position); }
 
     rotateRight()       { return new Rotate(this).right(); }
 
