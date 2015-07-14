@@ -22,7 +22,7 @@ export default class Rotate {
         return new Promise((resolve) => {
             this.phaserGame.add.tween(this.phaserGroup).to(
                 { angle: angle },
-                1,
+                500,
                 Phaser.Easing.Linear.None,
                 true
             );
@@ -32,7 +32,11 @@ export default class Rotate {
     }
 
     tableTranslate(angle) {
-        var pattern = this.findPatternByAngle(angle);
+        var pattern;
+
+        if (angle === 360) { angle = 0; }
+
+        pattern = this.findPatternByAngle(angle);
 
         this.block.clearCells();
 
@@ -54,8 +58,7 @@ export default class Rotate {
         });
     }
 
-    left() {    /////// ?
-        // var nextAngle = this.phaserGroup.angle === 0 ? 270 : -90;
+    left() {
         var angle = this.phaserGroup.angle === 0
             ? 270 : this.phaserGroup.angle - 90;
 
@@ -63,8 +66,10 @@ export default class Rotate {
     }
 
     right() {
-        var angle = this.phaserGroup.angle === 270
-            ? 0 : this.phaserGroup.angle + 90;
+        var angle = this.phaserGroup.angle === 360
+            ? 90 : this.phaserGroup.angle + 90;
+
+        console.log(angle);
 
         this.execute(angle);
     }
