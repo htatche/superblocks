@@ -4,14 +4,12 @@ var gulp = require('gulp');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var sourcemaps = require('gulp-sourcemaps');
-var babel = require('gulp-babel');
-var concat = require('gulp-concat');
-var watch = require('gulp-watch');
 var plumber = require('gulp-plumber');
 var eslint = require('gulp-eslint');
 var browserSync = require('browser-sync').create();
 var browserify = require('browserify');
 var babelify = require('babelify');
+// var concat = require('gulp-concat');
 
 gulp.task('images', function () {
     return gulp

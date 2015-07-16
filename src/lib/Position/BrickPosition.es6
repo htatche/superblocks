@@ -20,6 +20,18 @@ export default class BrickPosition extends Position {
         return this.blockPosition.y + this.relativeY;
     }
 
+    get relativeCoordinates() {
+        return {
+            x: this.relativeX,
+            y: this.relativeY
+        };
+    }
+
+    set relativeCoordinates(coordinates) {
+        this.relativeX = coordinates.x;
+        this.relativeY = coordinates.y;
+    }
+
     phaserSpritePosition() {
         var pivot = this.blockPosition.pivot;
 
@@ -27,5 +39,13 @@ export default class BrickPosition extends Position {
             x: this.toPixels(pivot.x + this.relativeX + this.anchor.x),
             y: this.toPixels(pivot.y + this.relativeY + this.anchor.y)
         };
+    }
+
+    saveRelativeCoords() {
+        this.previousRelativeCoords = this.relativeCoordinates;
+    }
+
+    rollbackRelativeCoords() {
+        this.relativeCoordinates = this.previousRelativeCoords;
     }
 }

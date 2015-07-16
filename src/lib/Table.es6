@@ -19,4 +19,9 @@ export default class Table {
         return ++this.blocks.length;
     }
 
+    offLimits(position) {
+        return position.x >= this.xSize || position.x < 0 ||
+               position.y >= this.ySize || position.y < 0;
+    }
+
 }

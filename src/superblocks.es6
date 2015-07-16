@@ -36,32 +36,34 @@ var start = function() {
         column  = blocks[1],
         pyramid  = blocks[0];
 
-    new Block(
+    var column1 = new Block(
         game.phaser, game.table, column.patterns,
-        2, 19, column.pivot, column.anchor
-    ).build();
-
-    new Block(
-        game.phaser, game.table, column.patterns,
-        6, 19, column.pivot, column.anchor
-    ).build();
-
-    var pyramidBlock = new Block(
-        game.phaser, game.table, pyramid.patterns,
-        2, 2, pyramid.pivot, pyramid.anchor
+        2, 1, column.pivot, column.anchor
     );
 
-    pyramidBlock.build();
+    column1.build();
 
-    setTimeout(pyramidBlock.rotateRight.bind(pyramidBlock), 1000);
-    setTimeout(pyramidBlock.to.bind(pyramidBlock, {x: 8, y: 18}), 2000);
+    var column2 = new Block(
+        game.phaser, game.table, column.patterns,
+        3, 4, column.pivot, column.anchor
+    );
 
-    setTimeout(function() {
-        game.table.row(19).destroy();
-        game.table.row(18).down();
-    }, 5000);
+    column2.build();
 
+    var rotateRight = function() {
+        var onSuccess = function() {
+            console.log('sucess');
+        };
 
+        var onFail = function(collisions) {
+            console.log(collisions);
+        };
+
+        this.rotateRight(true).then(onSuccess, onFail);
+    };
+
+    setTimeout(rotateRight.bind(column1), 1000);
+    setTimeout(rotateRight.bind(column2), 2000);
 
     // cubeBlock.up();
     // cubeBlock.up();
