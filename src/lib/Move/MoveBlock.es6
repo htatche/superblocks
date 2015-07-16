@@ -1,13 +1,14 @@
 /*global Phaser*/
 
-import Move             from './Move.es6';
+import Move                      from './Move.es6';
+import CollisionDetection        from '../Collision/CollisionDetection.es6';
 
 export default class MoveBlock extends Move {
     constructor(position, block) {
         super();
 
-        this.position = position;
-        this.block    = block;
+        this.position               = position;
+        this.block                  = block;
     }
 
     phaserTranslate() {
@@ -29,45 +30,72 @@ export default class MoveBlock extends Move {
         });
     }
 
-    execute(position) {
-        return new Promise((resolve) => {
-            this.block.clearCells();
+    pretendFirst(position, resolve, reject) {
+        var collisions;
 
-            this.block.position.x = position.x;
-            this.block.position.y = position.y;
+        this.block.position.saveCoordinates();
+        this.block.position.coordinates = position;
 
-            this.tableTranslate();
-            this.phaserTranslate();
+        collisions = new CollisionDetection(this.block.table)
+        .lookOut(
+            this.block.bricks.map((i) => { return i.position; })
+        );
 
-            resolve(this.position);
+        this.block.position.rollbackCoordinates();
+
+        if (collisions.length === 0) {
+            return this.execute(position, resolve);
+        } else {
+            reject(collisions);
+        }
+    }
+
+    execute(coordinates, resolve) {
+        this.block.clearCells();
+
+        this.block.position.coordinates = coordinates;
+
+        this.tableTranslate();
+        this.phaserTranslate();
+
+        resolve(this.position);
+    }
+
+    carryOut(coordinates, detectCollision) {
+        return new Promise((resolve, reject) => {
+            if (detectCollision) {
+                this.pretendFirst(coordinates, resolve, reject);
+            } else {
+                this.execute(coordinates, resolve);
+            }
         });
     }
 
-    down() {
-        var position = super.down();
+    down(detectCollision) {
+        var coordinates = super.down();
 
-        return this.execute(position);
+        return this.carryOut(coordinates, detectCollision);
     }
 
-    up() {
-        var position = super.up();
+    up(detectCollision) {
+        var coordinates = super.up();
 
-        return this.execute(position);
+        return this.carryOut(coordinates, detectCollision);
     }
 
-    right() {
-        var position = super.right();
+    right(detectCollision) {
+        var coordinates = super.right();
 
-        return this.execute(position);
+        return this.carryOut(coordinates, detectCollision);
     }
 
-    left() {
-        var position = super.left();
+    left(detectCollision) {
+        var coordinates = super.left();
 
-        return this.execute(position);
+        return this.carryOut(coordinates, detectCollision);
     }
 
-    to(position) {
-        return this.execute(position);
+    to(coordinates, detectCollision) {
+        return this.carryOut(coordinates, detectCollision);
     }
 }

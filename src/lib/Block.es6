@@ -22,7 +22,7 @@ export default class Block {
     }
 
     get moveBlock()         { return new MoveBlock(this.position, this); }
-    get rotate()            { return new Rotate(this); }
+    get rotate()            { return new Rotate(this, true); }
 
     loadPhaserGroupPosition() {
         var position = this.position.phaserGroupPosition();
@@ -92,18 +92,23 @@ export default class Block {
         this.phaserGroup.removeAll(true);
     }
 
-    down()              { return this.moveBlock.down(); }
+    down(detectCollision)   { return this.moveBlock.down(detectCollision); }
 
-    up()                { return this.moveBlock.up(); }
+    up(detectCollision)     { return this.moveBlock.up(detectCollision); }
 
-    right()             { return this.moveBlock.right(); }
+    right(detectCollision)  { return this.moveBlock.right(detectCollision); }
 
-    left()              { return this.moveBlock.left(); }
+    left(detectCollision)   { return this.moveBlock.left(detectCollision); }
 
-    to(position)        { return this.moveBlock.to(position); }
+    to(position, detectCollision) {
+        return this.moveBlock.to(position, detectCollision);
+    }
 
-    rotateRight()       { return new Rotate(this).right(); }
+    rotateRight(detectCollision) {
+        return new Rotate(this, detectCollision).right();
+    }
 
-    rotateLeft()        { return new Rotate(this).left(); }
-
+    rotateLeft(detectCollision) {
+        return new Rotate(this, detectCollision).left();
+    }
 }
