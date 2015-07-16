@@ -10,12 +10,23 @@ export default class Game {
         this.cellSize = cellSize;
         this.phaser = this.phaserGame(startCallback, updateCallback);
         this.table = new Table(xSize, ySize);
-        this.cursos = null;
+
+        this.cursors = null;
+        this.keyboard = {};
+
         // this.data = this.parseJSONFile(dataPath);
         this.data = dataPath;
     }
 
     get cellsArray()   { return this._cellsArray; }
+
+    addKeyboardKeys() {
+        var phaserKeyboard = this.phaser.input.keyboard;
+
+        this.cursors = phaserKeyboard.createCursorKeys();
+        this.keyboard.A = phaserKeyboard.addKey(Phaser.Keyboard.A);
+        this.keyboard.S = phaserKeyboard.addKey(Phaser.Keyboard.S);
+    }
 
     phaserGame(startCallback, updateCallback) {
         var position = new Position(),
@@ -43,12 +54,42 @@ export default class Game {
 
     phaserCreate(startCallback) {
         this.phaser.add.graphics(0, 0);
-        this.cursors = this.phaser.input.keyboard.createCursorKeys();
+
+        this.addKeyboardKeys();
 
         startCallback();
     }
 
     phaserUpdate(updateCallback) {
+        var keyArrow;
+
+        if (this.cursors.up.justDown)         { keyArrow = 'up'; }
+        else if (this.cursors.down.justDown)  { keyArrow = 'down'; }
+        else if (this.cursors.left.justDown)  { keyArrow = 'left'; }
+        else if (this.cursors.right.justDown) { keyArrow = 'right'; }
+        else if (this.keyboard.A.justDown)    { keyArrow = 'A'; }
+        else if (this.keyboard.S.justDown)    { keyArrow = 'S'; }
+
+        switch (keyArrow) {
+            case 'up':
+                this.landingBlock.up(true);
+                break;
+            case 'down':
+                this.landingBlock.down(true);
+                break;
+            case 'left':
+                this.landingBlock.left(true);
+                break;
+            case 'right':
+                this.landingBlock.right(true);
+                break;
+            case 'A':
+                this.landingBlock.rotateLeft(true);
+                break;
+            case 'S':
+                this.landingBlock.rotateRight(true);
+                break;
+        }
 
         // updateCallback();
     }

@@ -36,9 +36,6 @@ export default class Brick {
         return this.clearCell();
     }
 
-    /**
-     * @return {[type]}
-     */
     destroy() {
         return this.remove(true);
     }

@@ -14,8 +14,8 @@ export default class Rotate {
 
     findPatternByAngle(angle) {
         var array = this.block.patterns.filter((i) => {
-            return i.angle === angle; }
-        );
+            return i.angle === angle;
+        });
 
         return array[0];
     }
@@ -24,7 +24,7 @@ export default class Rotate {
         return new Promise((resolve) => {
             this.phaserGame.add.tween(this.phaserGroup).to(
                 { angle: angle },
-                500,
+                1,
                 Phaser.Easing.Linear.None,
                 true
             );
@@ -55,49 +55,30 @@ export default class Rotate {
     }
 
     pretendFirst(angle, resolve, reject) {
-        var collisions;
-        var positions = [];
-        var pattern;
+        var pattern, bricks, collisions;
 
         if (angle === 360) { angle = 0; }
 
         pattern = this.findPatternByAngle(angle);
 
-        // this.block.bricks.forEach((brick) => {
-        //     brick.position.saveRelativeCoords();
-        //     brick.clearCell();
-        // });
-        // this.block.clearCells();
+        bricks = this.block.bricks.map((brick, idx) => {
+            /*
+                We only reference the object, no deep cloning.
+             */
+            var brickRef = Object.create(brick);
 
-        positions = this.block.bricks.map((brick, idx) => {
-            brick.position.saveRelativeCoords();
-            brick.clearCell();
-                        
-            return new BrickPosition(
+            brickRef.position = new BrickPosition(
                 this.block.position,
                 pattern.positions[idx][0],
                 pattern.positions[idx][1],
                 brick.anchor
             );
-        });
 
-        // for (var i = 0; i < this.block.bricks.length; ++i) {
-        //     positions.push(new BrickPosition(
-        //         this.block.position,
-        //         pattern.positions[i][0],
-        //         pattern.positions[i][1],
-        //         this.block.bricks[i].anchor
-        //     ));
-        // }
+            return brickRef;
+        });
 
         collisions = new CollisionDetection(this.block.table)
-        .lookOut(
-            positions
-        );
-
-        this.block.bricks.forEach((brick) => {
-            brick.position.rollbackRelativeCoords();
-        });
+        .lookOut(bricks);
 
         if (collisions.length === 0) {
             return this.execute(angle, resolve);

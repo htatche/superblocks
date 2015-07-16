@@ -57,7 +57,7 @@ export default class Block {
     }
 
     build() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             var pattern = this.rotate.findPatternByAngle(0);
 
             for (var i = 0; i < pattern.positions.length; ++i) {
@@ -78,7 +78,7 @@ export default class Block {
     }
 
     clearCells() {
-        this.bricks.forEach((brick) => {
+        return this.bricks.forEach((brick) => {
             return brick.clearCell();
         });
     }

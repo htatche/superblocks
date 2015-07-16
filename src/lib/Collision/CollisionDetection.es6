@@ -6,33 +6,36 @@ export default class CollisionDetection {
         this.table          = table;
     }
 
-    againstWall(position) {
-        return this.table.offLimits(position);
+    againstWall(brick) {
+        return this.table.offLimits(brick.position);
     }
 
-    againstBlock(position) {
-        return this.table.cell(position).brick !== null;
+    againstBlock(brick) {
+        var cellBrick = this.table.cell(brick.position).brick;
+
+        return cellBrick !== null &&
+               cellBrick.block.nBlock !== brick.block.nBlock;
     }
 
-    againstAll(position) {        
-        if (this.againstWall(position)) {
-            return new Collision(position, 'WALL_COLLISION');
+    againstAll(brick) {
+        if (this.againstWall(brick)) {
+            return new Collision(brick.position, 'WALL_COLLISION');
         }
 
-        if (this.againstBlock(position)) {
-            return new Collision(position, 'BLOCK_COLLISION');
+        if (this.againstBlock(brick)) {
+            return new Collision(brick.position, 'BLOCK_COLLISION');
         }
 
         return false;
     }
 
-    lookOut(positions) {
+    lookOut(bricks) {
         var collisions = new ArrayMain();
 
-        if (!(positions instanceof Array)) { positions = [positions]; }
+        if (!(bricks instanceof Array)) { bricks = [bricks]; }
 
-        positions.forEach((i) => {
-            var collision = this.againstAll(i);
+        bricks.forEach((brick) => {
+            var collision = this.againstAll(brick);
 
             if (collision) { collisions.add(collision); }
         }, this);

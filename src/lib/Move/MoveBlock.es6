@@ -14,14 +14,16 @@ export default class MoveBlock extends Move {
     phaserTranslate() {
         var tween = this.block.phaserGame.add.tween(this.block.phaserGroup);
 
-        tween.to(
-          this.block.position.phaserGroupPosition(),
-          1,
-          Phaser.Easing.Linear.None,
-          true
-        );
+        return new Promise((resolve) => {
+            tween.to(
+              this.block.position.phaserGroupPosition(),
+              1,
+              Phaser.Easing.Linear.None,
+              true
+            );
 
-        return tween;
+            resolve(this.block.position);
+        });
     }
 
     tableTranslate() {
@@ -30,21 +32,19 @@ export default class MoveBlock extends Move {
         });
     }
 
-    pretendFirst(position, resolve, reject) {
+    pretendFirst(coordinates, resolve, reject) {
         var collisions;
 
         this.block.position.saveCoordinates();
-        this.block.position.coordinates = position;
+        this.block.position.coordinates = coordinates;
 
         collisions = new CollisionDetection(this.block.table)
-        .lookOut(
-            this.block.bricks.map((i) => { return i.position; })
-        );
+        .lookOut(this.block.bricks);
 
         this.block.position.rollbackCoordinates();
 
         if (collisions.length === 0) {
-            return this.execute(position, resolve);
+            return this.execute(coordinates, resolve);
         } else {
             reject(collisions);
         }
@@ -56,7 +56,7 @@ export default class MoveBlock extends Move {
         this.block.position.coordinates = coordinates;
 
         this.tableTranslate();
-        this.phaserTranslate();
+        this.phaserTranslate().then(resolve);
 
         resolve(this.position);
     }
