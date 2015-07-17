@@ -1,37 +1,35 @@
 /*global Phaser*/
 
-import Table        from './Table.es6';
-import Position     from './Position/Position.es6';
+import Table            from '../Table.es6';
+import Position         from '../Position/Position.es6';
+import Block            from '../Block.es6';
+import GameLoop         from './GameLoop.es6';
 
 export default class Game {
-    constructor(xSize, ySize, cellSize, dataPath, startCallback, updateCallback) {
-        this.xSize = xSize;
-        this.ySize = ySize;
-        this.cellSize = cellSize;
-        this.phaser = this.phaserGame(startCallback, updateCallback);
-        this.table = new Table(xSize, ySize);
+    constructor(
+        tableOptions, gameOptions, dataBlocks,
+        startCallback, updateCallback
+    ) {
+        this.cellSize   = tableOptions.cellSize;
+        this.options    = gameOptions;
 
-        this.cursors = null;
-        this.keyboard = {};
+        this.table      = new Table(tableOptions.xSize, tableOptions.ySize);
+        this.phaserGame = this.phaserGame(startCallback, updateCallback);
+
+        this.cursors    = null;
+        this.keyboard   = {};
 
         // this.data = this.parseJSONFile(dataPath);
-        this.data = dataPath;
+
+        this.blocks = dataBlocks;
     }
 
     get cellsArray()   { return this._cellsArray; }
 
-    addKeyboardKeys() {
-        var phaserKeyboard = this.phaser.input.keyboard;
-
-        this.cursors = phaserKeyboard.createCursorKeys();
-        this.keyboard.A = phaserKeyboard.addKey(Phaser.Keyboard.A);
-        this.keyboard.S = phaserKeyboard.addKey(Phaser.Keyboard.S);
-    }
-
     phaserGame(startCallback, updateCallback) {
         var position = new Position(),
-            width    = position.toPixels(this.xSize, this.cellSize),
-            height   = position.toPixels(this.ySize, this.cellSize);
+            width    = position.toPixels(this.table.xSize, this.cellSize),
+            height   = position.toPixels(this.table.ySize, this.cellSize);
 
         return new Phaser.Game(
             width,
@@ -53,14 +51,37 @@ export default class Game {
     }
 
     phaserCreate(startCallback) {
-        this.phaser.add.graphics(0, 0);
+        this.phaserGame.add.graphics(0, 0);
 
         this.addKeyboardKeys();
 
-        startCallback();
+        this.start();
+
+        // startCallback();
     }
 
     phaserUpdate(updateCallback) {
+        this.listenKeyboardInput();
+
+        // updateCallback();
+    }
+
+    phaserRender() {
+
+    }
+
+    // parseJSONFile(json) {
+    // }
+
+    addKeyboardKeys() {
+        var phaserKeyboard = this.phaserGame.input.keyboard;
+
+        this.cursors = phaserKeyboard.createCursorKeys();
+        this.keyboard.A = phaserKeyboard.addKey(Phaser.Keyboard.A);
+        this.keyboard.S = phaserKeyboard.addKey(Phaser.Keyboard.S);
+    }
+
+    listenKeyboardInput() {
         var keyArrow;
 
         if (this.cursors.up.justDown)         { keyArrow = 'up'; }
@@ -90,15 +111,32 @@ export default class Game {
                 this.landingBlock.rotateRight(true);
                 break;
         }
-
-        // updateCallback();
     }
 
-    phaserRender() {
-
+    newBlock(blockData) {
+        return new Block(
+            this.phaserGame, this.table, blockData.patterns,
+            { pivot: blockData.pivot, childsAnchor: blockData.anchor }
+        );
     }
 
-    // parseJSONFile(json) {
-    // }
+    newRandomBlock() {
+        return this.newBlock(this.blocks.randomPick());
+    }
+
+    gameOver() {
+        
+    }
+
+    start() {
+        var gameLoop = new GameLoop(this);
+
+        gameLoop.start();
+    }
+
+    restart() {
+        this.table.destroyAllRows();
+        this.start();
+    }
 
 }

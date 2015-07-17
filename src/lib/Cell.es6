@@ -15,6 +15,7 @@ export default class Cell {
         return this;
     }
 
+
     isEmpty() {
         return this.brick === null;
     }

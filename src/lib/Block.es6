@@ -1,20 +1,22 @@
-import Brick            from './Brick.es6';
-import ArrayMain        from './ArrayMain.es6';
-import BlockPosition    from './Position/BlockPosition.es6';
-import BrickPosition    from './Position/BrickPosition.es6';
-import MoveBlock        from './Move/MoveBlock.es6';
-import Rotate           from './Rotate.es6';
+import Util                      from './Util.es6';
+import Brick                     from './Brick.es6';
+import ArrayMain                 from './ArrayMain.es6';
+import BlockPosition             from './Position/BlockPosition.es6';
+import BrickPosition             from './Position/BrickPosition.es6';
+import MoveBlock                 from './Move/MoveBlock.es6';
+import Rotate                    from './Rotate.es6';
+import CollisionDetection        from './Collision/CollisionDetection.es6';
 
 export default class Block {
-    constructor(phaserGame, table, patterns, x, y, pivot, childsAnchor) {
+    constructor(phaserGame, table, patterns, positionArgs) {
         this.phaserGame         = phaserGame;
         this.phaserGroup        = this.phaserGame.add.group();
 
-        this.position           = new BlockPosition(x, y, pivot, childsAnchor);
-        this.bricks             = new ArrayMain();
-
-        this.patterns           = patterns;
         this.table              = table;
+        this.position           = this.randomLandingPosition(positionArgs);
+
+        this.bricks             = new ArrayMain();
+        this.patterns           = patterns;
         this.nBlock             = table.incrementNBlocks();
 
         this.loadPhaserGroupPosition();
@@ -38,13 +40,19 @@ export default class Block {
         this.phaserGroup.pivot.y = pivot.y;
     }
 
-    addBrick(brick) {
+    addOneBrick(brick) {
         brick.putCell(brick.position, this.table);
 
         return this.bricks.add(brick);
     }
 
-    newBrick(position) {
+    addBricks(bricks) {
+        bricks.forEach((brick) => {
+            this.addOneBrick(brick);
+        });
+    }
+
+    createBrick(position) {
         var spritePosition = position.phaserSpritePosition();
 
         var sprite = this.phaserGroup.create(
@@ -53,23 +61,34 @@ export default class Block {
             'green'
         );
 
-        return this.addBrick(new Brick(position, this, sprite));
+        return new Brick(position, this, sprite);
     }
 
     build() {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
+
             var pattern = this.rotate.findPatternByAngle(0);
 
-            for (var i = 0; i < pattern.positions.length; ++i) {
-                this.newBrick(new BrickPosition(
+            var bricks = pattern.positions.map((position) => {
+                return this.createBrick(new BrickPosition(
                     this.position,
-                    pattern.positions[i][0],
-                    pattern.positions[i][1],
+                    position[0],
+                    position[1],
                     this.position.childsAnchor
                 ));
-            }
+            });
 
-            resolve(this);
+
+            var collisions = new CollisionDetection(this.table)
+            .lookOut(bricks);
+
+            if (collisions.length === 0) {
+                this.addBricks(bricks);
+
+                resolve(this);
+            } else {
+                reject(collisions);
+            }
         });
     }
 
@@ -90,6 +109,32 @@ export default class Block {
 
     destroy() {
         this.phaserGroup.removeAll(true);
+    }
+
+    land(speed, didLand) {
+        var resolved = function() {
+            setTimeout(this.land.bind(this, speed, didLand), speed);
+        };
+
+        var rejected = function(collisions) {
+            didLand(collisions);
+        };
+
+        this.down(true).then(
+            resolved.bind(this),
+            rejected
+        );
+    }
+
+    randomLandingPosition(args) {
+        var min = args.pivot.x,
+            max = this.table.xSize - args.pivot.x,
+            x = Util.getRandomInt(min, max - 1),
+            y = args.pivot.y;
+
+        return new BlockPosition(
+            x, y, args.pivot, args.childsAnchor
+        );
     }
 
     down(detectCollision)   { return this.moveBlock.down(detectCollision); }

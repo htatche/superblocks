@@ -1,24 +1,21 @@
 /*global Phaser*/
 
-import Game             from './lib/Game.es6';
-import Block            from './lib/Block.es6';
 import ArrayMain        from './lib/ArrayMain.es6';
-import data             from './data/data.json.es6';
-
-var game;
+import Game             from './lib/Game/Game.es6';
+import Data             from './data/data.json.es6';
 
 /**
  * @todo This will be translate to parseJSONFile in Block
  */
-var createBlocksArray = function() {
-    var array = new ArrayMain();
+var DataBlocks = (function() {
+    var data = Data,
+        array = new ArrayMain();
 
     for (var i = 0; i < data.blocks.length; ++i) {
         array.add(data.blocks[i]);
     }
-
     return array;
-};
+})();
 
 // var moveAround = function(block) {
     // setTimeout(block.down.bind(block), 500);
@@ -31,16 +28,19 @@ var createBlocksArray = function() {
     // setTimeout(block.rotateRight.bind(block), 4000);
 // };
 
+/**
+ * Creates a new Game environment, with a phaserGame and a Table
+ */
 var start = function() {
-    var blocks = createBlocksArray(),
-        column  = blocks[1];
+    // var game = window.Superblocks,
 
-    game.landingBlock = new Block(
-        game.phaser, game.table, column.patterns,
-        2, 0, column.pivot, column.anchor
-    );
+    // game.landingBlock = new Block(
+    //     game.phaserGame, game.table, column.patterns,
+    //     2, 0, column.pivot, column.anchor
+    // );
 
-    game.landingBlock.build();
+    // game.landingBlock.build();
+
 
     // var rotateRight = function() {
     //     var onSuccess = function() {
@@ -63,5 +63,11 @@ var update = function() {
 
 };
 
-game = new Game(10, 20, 35, 'path', start, update);
-window.game = game;
+window.Superblocks = new Game(
+    {
+        xSize: 10, ySize: 20, cellSize: 35
+    },
+    {speed: 100},
+    DataBlocks,
+    start, update
+);

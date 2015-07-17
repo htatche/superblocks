@@ -38,6 +38,8 @@ export default class CollisionDetection {
             var collision = this.againstAll(brick);
 
             if (collision) { collisions.add(collision); }
+
+            return;
         }, this);
 
         return collisions;
