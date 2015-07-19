@@ -9,7 +9,9 @@ export default class CellsArray extends Array2D {
     }
 
     /* Notice that x and y are switched */
-    cell(position) { return this.array[position.y][position.x]; }
+    cell(position) {
+        return this.array[position.y][position.x];
+    }
 
     createCells() {
         for (var x = 0; x < this.ySize; ++x) {

@@ -8,10 +8,13 @@ import GameLoop         from './GameLoop.es6';
 export default class Game {
     constructor(
         tableOptions, gameOptions, dataBlocks,
-        startCallback, updateCallback
+        startCallback, updateCallback,
+        debugMode
     ) {
         this.cellSize   = tableOptions.cellSize;
         this.options    = gameOptions;
+
+        this.blocks     = dataBlocks;
 
         this.table      = new Table(tableOptions.xSize, tableOptions.ySize);
         this.phaserGame = this.phaserGame(startCallback, updateCallback);
@@ -20,8 +23,8 @@ export default class Game {
         this.keyboard   = {};
 
         // this.data = this.parseJSONFile(dataPath);
-
-        this.blocks = dataBlocks;
+        // 
+        this.debugMode  = debugMode;
     }
 
     get cellsArray()   { return this._cellsArray; }
@@ -55,9 +58,9 @@ export default class Game {
 
         this.addKeyboardKeys();
 
-        this.start();
+        startCallback();
 
-        // startCallback();
+        this.start();
     }
 
     phaserUpdate(updateCallback) {
@@ -116,7 +119,7 @@ export default class Game {
     newBlock(blockData) {
         return new Block(
             this.phaserGame, this.table, blockData.patterns,
-            { pivot: blockData.pivot, childsAnchor: blockData.anchor }
+            { randomLanding: true, pivot: blockData.pivot, childsAnchor: blockData.anchor }
         );
     }
 
@@ -125,10 +128,88 @@ export default class Game {
     }
 
     gameOver() {
-        
+
     }
 
     start() {
+        if (this.debugMode) {
+            // var debug = new Debug();
+        }
+
+        var self = this;
+
+        var cube     = self.blocks[2],
+            pyramid  = self.blocks[0];
+
+
+        var createBlocksAtBottom = function() {
+            var x = 1;
+
+            /*
+             Cubes
+             */
+            while (x <= 9) {
+                var block = new Block(
+                    self.phaserGame, self.table, cube.patterns,
+                    {
+                        x: x, y: 19,
+                        pivot: cube.pivot,
+                        childsAnchor: cube.anchor
+                    }
+                );
+
+                x = x + 2;
+
+                block.build();
+            }
+
+            /*
+             Pyramids
+             */
+            
+            var x = 1;
+
+            while (x <= 9) {
+                var block = new Block(
+                    self.phaserGame, self.table, pyramid.patterns,
+                    {
+                        x: x, y: 17,
+                        pivot: pyramid.pivot,
+                        childsAnchor: pyramid.anchor
+                    }
+                );
+
+                x = x + 3;
+
+                block.build();
+            }
+
+            var block = new Block(
+                self.phaserGame, self.table, cube.patterns,
+                {
+                    x: 3, y: 16,
+                    pivot: cube.pivot,
+                    childsAnchor: cube.anchor
+                }
+            );
+
+            block.build();
+
+            var block = new Block(
+                self.phaserGame, self.table, cube.patterns,
+                {
+                    x: 6, y: 16,
+                    pivot: cube.pivot,
+                    childsAnchor: cube.anchor
+                }
+            );
+
+            block.build();
+
+        };
+
+        createBlocksAtBottom();
+
         var gameLoop = new GameLoop(this);
 
         gameLoop.start();

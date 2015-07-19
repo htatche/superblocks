@@ -1,7 +1,5 @@
-// import MoveBrick             from './Move/MoveBrick.es6';
-
 /**
- * @internal Brick is always be attached to a Block
+ * @internal Brick is always attached to a Block
  */
 export default class Brick {
     constructor(position, block, phaserSprite) {
@@ -12,9 +10,6 @@ export default class Brick {
         this.loadPhaserSpriteAnchor();
     }
 
-    // Deprecated
-    // get moveBrick()         { return new MoveBrick(this.position, this); }
-
     loadPhaserSpriteAnchor() {
         this.phaserSprite.anchor.setTo(
             this.position.anchor.x,
@@ -22,16 +17,21 @@ export default class Brick {
         );
     }
 
-    /**
-     * @param  {Boolean}
-     * @return {[type]}
-     * @todo Apply changes in Table
-     */
     remove(destroy = false) {
-        var index = this.block.bricks.find(this);
+        var block = this.block,
+            index = block.bricks.find(this);
 
-        this.block.bricks.splice(index, 1);
-        this.block.phaserGroup.remove(this.phaserSprite, destroy);
+        block.bricks.splice(index, 1);
+        block.phaserGroup.remove(this.phaserSprite, destroy);
+
+        /*
+            Remove block from table.blocks is last brick was removed.
+         */
+        if (block.bricks.isEmpty) {
+            var idx = block.table.blocks.indexOf(block);
+
+            block.table.blocks.splice(idx, 1);
+        }
 
         return this.clearCell();
     }

@@ -18,7 +18,20 @@ export default class Table {
         });
     }
 
-    row(x)             { return new Row(this.cellsArray.array[x]); }
+    get completedRows() {
+        return this.rows.filter((row) => {
+            return row.isCompleted;
+        });
+    }
+
+    row(x)             { return new Row(this.cellsArray.array[x], x); }
+
+    rowAbove(row) {
+        if (row.nRow === 0) { return false; }
+
+        return this.row(row.nRow - 1);
+    }
+
     cell(position)     { return this.cellsArray.cell(position); }
 
     destroyAllRows() {
@@ -27,28 +40,49 @@ export default class Table {
         });
     }
 
-    destroyCompletedRows() {
-        var nRow;
+    shiftBlocksDown() {
+        var promises = [];
 
-        this.rows.forEach((row, idx) => {
-            if (row.isCompleted) {
-                nRow = idx;
-
-                return row.destroy();
-            }
+        this.blocks.forEach((block) => {
+            promises.push(block.down());
         });
 
-        return nRow;
+        return promises;
+
+
+        // for (var i = nRow - 1; i >= 0; --i) {
+        //     if (!this.row(i).isEmpty) {
+        //         debugger;
+        //         promises.push(this.row(i).down());
+        //     }
+        // }
     }
 
     /**
      * Will shift down all the rows above nRow
      */
     shiftRowsDown(nRow) {
-        debugger;
-        for (var i = nRow; i >= 0; --i) {
-            this.row(i).down();
+        var promises = [];
+        // var rows = this.rows;
+
+        // rows.pop();
+
+        // rows.reverse().forEach((row) => {
+        //     if (!row.isEmpty) {
+        //         promises.push(row.down());
+        //     }
+        // });
+
+        // debugger;
+
+        for (var i = nRow - 1; i >= 0; --i) {
+            if (!this.row(i).isEmpty) {
+                debugger;
+                promises.push(this.row(i).down());
+            }
         }
+
+        return promises;
     }
 
     incrementNBlocks() {

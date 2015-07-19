@@ -13,7 +13,7 @@ export default class Block {
         this.phaserGroup        = this.phaserGame.add.group();
 
         this.table              = table;
-        this.position           = this.randomLandingPosition(positionArgs);
+        this.position           = this.createPosition(positionArgs);
 
         this.bricks             = new ArrayMain();
         this.patterns           = patterns;
@@ -112,29 +112,42 @@ export default class Block {
     }
 
     land(speed, didLand) {
-        var resolved = function() {
-            setTimeout(this.land.bind(this, speed, didLand), speed);
+        var resolved = () => {
+            debugger;
+            this.land(speed, didLand);
         };
 
         var rejected = function(collisions) {
             didLand(collisions);
         };
 
-        this.down(true).then(
-            resolved.bind(this),
-            rejected
+        setTimeout(() => {
+            this.down(true).then(
+                resolved,
+                rejected
+            );
+        }, speed);
+    }
+
+    createPosition(args) {
+        if (args.randomLanding) { args = this.randomLandingPosition(args); }
+
+        return new BlockPosition(
+            args.x, args.y, args.pivot, args.childsAnchor
         );
     }
 
     randomLandingPosition(args) {
         var min = args.pivot.x,
             max = this.table.xSize - args.pivot.x,
-            x = Util.getRandomInt(min, max - 1),
-            y = args.pivot.y;
 
-        return new BlockPosition(
-            x, y, args.pivot, args.childsAnchor
-        );
+            x   = Util.getRandomInt(min, max - 1),
+            y   = args.pivot.y;
+
+        args.x = x;
+        args.y = y;
+
+        return args;
     }
 
     down(detectCollision)   { return this.moveBlock.down(detectCollision); }

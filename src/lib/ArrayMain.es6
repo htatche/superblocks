@@ -20,4 +20,8 @@ export default class ArrayMain extends Array {
     randomPick() {
         return this[Math.floor(Math.random() * this.length)];
     }
+
+    contains(elm) {
+        return this.indexOf(elm) !== -1;
+    }
 }

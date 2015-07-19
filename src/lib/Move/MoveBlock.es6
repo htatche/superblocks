@@ -15,19 +15,19 @@ export default class MoveBlock extends Move {
         var tween = this.block.phaserGame.add.tween(this.block.phaserGroup);
 
         return new Promise((resolve) => {
+            tween.onComplete.add(resolve);
+
             tween.to(
               this.block.position.phaserGroupPosition(),
               1,
               Phaser.Easing.Linear.None,
               true
             );
-
-            resolve(this.block.position);
         });
     }
 
     tableTranslate() {
-        this.block.bricks.forEach((brick) => {
+        return this.block.bricks.forEach((brick) => {
             return brick.putCell(brick.position);
         });
     }
@@ -57,8 +57,6 @@ export default class MoveBlock extends Move {
 
         this.tableTranslate();
         this.phaserTranslate().then(resolve);
-
-        resolve(this.position);
     }
 
     carryOut(coordinates, detectCollision) {
@@ -73,6 +71,8 @@ export default class MoveBlock extends Move {
 
     down(detectCollision) {
         var coordinates = super.down();
+
+        // console.log(`down on ${this.block.nBlock}`);
 
         return this.carryOut(coordinates, detectCollision);
     }
