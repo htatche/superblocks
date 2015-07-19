@@ -1,4 +1,4 @@
-import ArrayMain      from '../ArrayMain.es6';
+import ArrayMain      from '../Array/ArrayMain.es6';
 
 export default class GameLoop {
     constructor(game) {
@@ -104,7 +104,6 @@ export default class GameLoop {
     }
 
     destroyRows(allCollapsed) {
-    // destroyRows(rows, allCollapsed) {        
         console.log('destroyRows()');
 
         var completedRows = this.game.table.completedRows.reverse();
@@ -127,11 +126,8 @@ export default class GameLoop {
 
     collapseTable() {
         console.log('collapseTable()');
-        // var completedRows = this.game.table.completedRows.reverse();
-
         return new Promise((allCollapsed) => {
             this.destroyRows(allCollapsed);
-            // this.destroyRows(completedRows, allCollapsed);
         });
     }
 

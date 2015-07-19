@@ -1,4 +1,4 @@
-import Array2D from './Array2D.es6';
+import Array2D from './Array/Array2D.es6';
 import Cell    from './Cell.es6';
 
 export default class CellsArray extends Array2D {

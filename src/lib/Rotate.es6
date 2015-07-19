@@ -1,6 +1,6 @@
 /*global Phaser*/
 
-import BrickPosition         from './Position/BrickPosition.es6';
+import BrickPosition             from './Position/BrickPosition.es6';
 import CollisionDetection        from './Collision/CollisionDetection.es6';
 
 export default class Rotate {

@@ -1,6 +1,6 @@
 import Util                      from './Util.es6';
 import Brick                     from './Brick.es6';
-import ArrayMain                 from './ArrayMain.es6';
+import ArrayMain                 from './Array/ArrayMain.es6';
 import BlockPosition             from './Position/BlockPosition.es6';
 import BrickPosition             from './Position/BrickPosition.es6';
 import MoveBlock                 from './Move/MoveBlock.es6';
@@ -113,7 +113,6 @@ export default class Block {
 
     land(speed, didLand) {
         var resolved = () => {
-            debugger;
             this.land(speed, didLand);
         };
 

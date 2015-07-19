@@ -1,4 +1,4 @@
-import ArrayBlocks      from './ArrayBlocks.es6';
+import ArrayBlocks      from './Array/ArrayBlocks.es6';
 import CellsArray       from './CellsArray.es6';
 import Row              from './Row.es6';
 
@@ -46,41 +46,6 @@ export default class Table {
         this.blocks.forEach((block) => {
             promises.push(block.down());
         });
-
-        return promises;
-
-
-        // for (var i = nRow - 1; i >= 0; --i) {
-        //     if (!this.row(i).isEmpty) {
-        //         debugger;
-        //         promises.push(this.row(i).down());
-        //     }
-        // }
-    }
-
-    /**
-     * Will shift down all the rows above nRow
-     */
-    shiftRowsDown(nRow) {
-        var promises = [];
-        // var rows = this.rows;
-
-        // rows.pop();
-
-        // rows.reverse().forEach((row) => {
-        //     if (!row.isEmpty) {
-        //         promises.push(row.down());
-        //     }
-        // });
-
-        // debugger;
-
-        for (var i = nRow - 1; i >= 0; --i) {
-            if (!this.row(i).isEmpty) {
-                debugger;
-                promises.push(this.row(i).down());
-            }
-        }
 
         return promises;
     }

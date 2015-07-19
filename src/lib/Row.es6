@@ -1,4 +1,4 @@
-import ArrayMain      from './ArrayMain.es6';
+import ArrayMain      from './Array/ArrayMain.es6';
 
 export default class Row {
     constructor(tableRow, nRow) {

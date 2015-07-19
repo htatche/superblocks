@@ -1,6 +1,6 @@
 /*global Phaser*/
 
-import ArrayMain        from './lib/ArrayMain.es6';
+import ArrayMain        from './lib/Array/ArrayMain.es6';
 import Game             from './lib/Game/Game.es6';
 import Data             from './data/data.json.es6';
 import Block            from './lib/Block.es6';
