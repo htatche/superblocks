@@ -2,7 +2,7 @@ var data = {
     blocks: [
         {
             name: 'pyramid',
-            color: 'green',
+            colorName: 'green',
             pivot: {
                 x: 1,
                 y: 1
@@ -40,7 +40,7 @@ var data = {
         },
         {
             name: 'column',
-            color: 'yellow',
+            colorName: 'yellow',
             pivot: {
                 x: 2,
                 y: 0
@@ -84,7 +84,7 @@ var data = {
         },
         {
             name: 'cube',
-            color: 'blue',
+            colorName: 'orange',
             pivot: {
                 x: 1,
                 y: 1

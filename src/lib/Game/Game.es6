@@ -1,9 +1,10 @@
 /*global Phaser*/
 
-import Table            from '../Table.es6';
-import Position         from '../Position/Position.es6';
-import Block            from '../Block.es6';
-import GameLoop         from './GameLoop.es6';
+import Table                     from '../Table.es6';
+import Position                  from '../Position/Position.es6';
+import Block                     from '../Block.es6';
+import GameLoop                  from './GameLoop.es6';
+import Color                     from '../Color.es6';
 
 export default class Game {
     constructor(
@@ -47,10 +48,7 @@ export default class Game {
     }
 
     phaserPreload() {
-        this.load.image('orange', '../images/block_orange.png');
-        this.load.image('green', './images/block_green.png');
-        this.load.image('yellow', '../../images/block_yellow.png');
-        this.load.image('pink', '../../images/block_pink.png');
+        Color.loadTextures(this);
     }
 
     phaserCreate(startCallback) {
@@ -119,7 +117,8 @@ export default class Game {
     newBlock(blockData) {
         return new Block(
             this.phaserGame, this.table, blockData.patterns,
-            { randomLanding: true, pivot: blockData.pivot, childsAnchor: blockData.anchor }
+            { randomLanding: true, pivot: blockData.pivot, childsAnchor: blockData.anchor },
+            blockData.colorName
         );
     }
 
@@ -141,27 +140,27 @@ export default class Game {
         var cube     = self.blocks[2],
             pyramid  = self.blocks[0];
 
-
         var createBlocksAtBottom = function() {
             var x = 1;
 
             /*
              Cubes
              */
-            while (x <= 9) {
-                var block = new Block(
-                    self.phaserGame, self.table, cube.patterns,
-                    {
-                        x: x, y: 19,
-                        pivot: cube.pivot,
-                        childsAnchor: cube.anchor
-                    }
-                );
+            // while (x <= 9) {
+            //     var block = new Block(
+            //         self.phaserGame, self.table, cube.patterns,
+            //         {
+            //             x: x, y: 19,
+            //             pivot: cube.pivot,
+            //             childsAnchor: cube.anchor
+            //         },
+            //         'orange'
+            //     );
 
-                x = x + 2;
+            //     x = x + 2;
 
-                block.build();
-            }
+            //     block.build();
+            // }
 
             /*
              Pyramids
@@ -173,10 +172,11 @@ export default class Game {
                 var block = new Block(
                     self.phaserGame, self.table, pyramid.patterns,
                     {
-                        x: x, y: 17,
+                        x: x, y: 19,
                         pivot: pyramid.pivot,
                         childsAnchor: pyramid.anchor
-                    }
+                    },
+                    'green'
                 );
 
                 x = x + 3;
@@ -187,10 +187,11 @@ export default class Game {
             var block = new Block(
                 self.phaserGame, self.table, cube.patterns,
                 {
-                    x: 3, y: 16,
+                    x: 3, y: 18,
                     pivot: cube.pivot,
                     childsAnchor: cube.anchor
-                }
+                },
+                'orange'
             );
 
             block.build();
@@ -198,10 +199,11 @@ export default class Game {
             var block = new Block(
                 self.phaserGame, self.table, cube.patterns,
                 {
-                    x: 6, y: 16,
+                    x: 6, y: 18,
                     pivot: cube.pivot,
                     childsAnchor: cube.anchor
-                }
+                },
+                'orange'
             );
 
             block.build();

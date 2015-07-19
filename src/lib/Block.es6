@@ -6,9 +6,10 @@ import BrickPosition             from './Position/BrickPosition.es6';
 import MoveBlock                 from './Move/MoveBlock.es6';
 import Rotate                    from './Rotate.es6';
 import CollisionDetection        from './Collision/CollisionDetection.es6';
+import Color                     from './Color.es6';
 
 export default class Block {
-    constructor(phaserGame, table, patterns, positionArgs) {
+    constructor(phaserGame, table, patterns, positionArgs, colorName) {
         this.phaserGame         = phaserGame;
         this.phaserGroup        = this.phaserGame.add.group();
 
@@ -17,6 +18,7 @@ export default class Block {
 
         this.bricks             = new ArrayMain();
         this.patterns           = patterns;
+        this.color              = new Color(colorName);
         this.nBlock             = table.incrementNBlocks();
 
         this.loadPhaserGroupPosition();
@@ -58,7 +60,7 @@ export default class Block {
         var sprite = this.phaserGroup.create(
             spritePosition.x,
             spritePosition.y,
-            'green'
+            this.color.name
         );
 
         return new Brick(position, this, sprite);
@@ -112,13 +114,8 @@ export default class Block {
     }
 
     land(speed, didLand) {
-        var resolved = () => {
-            this.land(speed, didLand);
-        };
-
-        var rejected = function(collisions) {
-            didLand(collisions);
-        };
+        var resolved = () =>                { this.land(speed, didLand); },
+            rejected = (collisions) =>      { didLand(collisions); };
 
         setTimeout(() => {
             this.down(true).then(
