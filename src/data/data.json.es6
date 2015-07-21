@@ -192,44 +192,6 @@ var data = {
             ]
         },
         {
-            name: 'square_right',
-            colorName: 'blue',
-            pivot: {
-                x: 1,
-                y: 1
-            },
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            patterns: [
-                {
-                    angle: 0,
-                    positions: [
-                        [-1, -1], [-1, 0], [0, 0], [1, 0]
-                    ]
-                },
-                {
-                    angle: 90,
-                    positions: [
-                        [1, -1], [0, -1], [0, 0], [0, 1]
-                    ]
-                },
-                {
-                    angle: 180,
-                    positions: [
-                        [1, 1], [1, 0], [0, 0], [-1, 0]
-                    ]
-                },
-                {
-                    angle: 270,
-                    positions: [
-                        [-1, 1], [0, 1], [0, 0], [0, -1]
-                    ]
-                }
-            ]
-        },
-        {
             name: 'square_left',
             colorName: 'red',
             pivot: {
@@ -263,6 +225,44 @@ var data = {
                     angle: 270,
                     positions: [
                         [0, 1], [0, 0], [0, -1], [-1, -1]
+                    ]
+                }
+            ]
+        },
+        {
+            name: 'square_right',
+            colorName: 'blue',
+            pivot: {
+                x: 1,
+                y: 1
+            },
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            patterns: [
+                {
+                    angle: 0,
+                    positions: [
+                        [-1, -1], [-1, 0], [0, 0], [1, 0]
+                    ]
+                },
+                {
+                    angle: 90,
+                    positions: [
+                        [1, -1], [0, -1], [0, 0], [0, 1]
+                    ]
+                },
+                {
+                    angle: 180,
+                    positions: [
+                        [1, 1], [1, 0], [0, 0], [-1, 0]
+                    ]
+                },
+                {
+                    angle: 270,
+                    positions: [
+                        [-1, 1], [0, 1], [0, 0], [0, -1]
                     ]
                 }
             ]
