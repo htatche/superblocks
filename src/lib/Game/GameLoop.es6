@@ -1,5 +1,3 @@
-import ArrayMain      from '../Array/ArrayMain.es6';
-
 export default class GameLoop {
     constructor(game) {
         this.game                   = game;
@@ -7,10 +5,6 @@ export default class GameLoop {
 
     start() {
         this.landBlocksIterate();
-    }
-
-    createRandomBlock() {
-        return this.game.table.blocks.add(this.game.newRandomBlock());
     }
 
     successBuild(didLand, block) {
@@ -28,6 +22,10 @@ export default class GameLoop {
         return this.game.landingBlock.build();
     }
 
+    createRandomBlock() {
+        return this.game.table.blocks.add(this.game.newRandomBlock());
+    }
+
     landBlock() {
         var self = this;
 
@@ -41,7 +39,7 @@ export default class GameLoop {
         });
     }
 
-    afterLanding(collisions) {
+    afterLanding() {
         this.destroyCompletedRows(this.landBlocksIterate.bind(this));
     }
 
@@ -49,14 +47,7 @@ export default class GameLoop {
         this.landBlock().then(this.afterLanding.bind(this));
     }
 
-    collapseTable() {
-        return new Promise((allCollapsed) => {
-            this.destroyRows(allCollapsed);
-        });
-    }
-
     destroyCompletedRows(doneCallback) {
-        var self = this;
         var completedRows = this.game.table.completedRows;
 
         var row = completedRows.pop();
@@ -68,7 +59,7 @@ export default class GameLoop {
             var rowsAbove = this.game.table.rowsAbove(row.nRow);
 
             this.game.table.collapseRows(rowsAbove, () => {
-                self.destroyCompletedRows(doneCallback);
+                this.destroyCompletedRows(doneCallback);
             });
         }
     }

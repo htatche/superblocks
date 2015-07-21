@@ -80,7 +80,6 @@ export default class Block {
                 ));
             });
 
-
             var collisions = new CollisionDetection(this.table)
             .lookOut(bricks);
 
@@ -89,6 +88,8 @@ export default class Block {
 
                 resolve(this);
             } else {
+                this.removeBricks(true);
+
                 reject(collisions);
             }
         });
