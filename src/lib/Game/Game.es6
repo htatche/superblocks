@@ -24,7 +24,6 @@ export default class Game {
         this.keyboard   = {};
 
         // this.data = this.parseJSONFile(dataPath);
-        // 
         this.debugMode  = debugMode;
     }
 
@@ -137,9 +136,13 @@ export default class Game {
 
         var self = this;
 
-        var cube     = self.blocks[2],
-            pyramid  = self.blocks[0],
-            column   = self.blocks[1];
+        var pyramid             = self.blocks[0],
+            column              = self.blocks[1],
+            cube                = self.blocks[2],
+            stackRight          = self.blocks[3],
+            stackLeft           = self.blocks[4],
+            squareLeft          = self.blocks[5],
+            squareRight         = self.blocks[6];
 
         var createBlocksAtBottom = function() {
             var x = 1;
@@ -199,34 +202,35 @@ export default class Game {
 
         };
 
-        createBlocksAtBottom();
+        // createBlocksAtBottom();
 
         // var block = new Block(
-        //     self.phaserGame, self.table, cube.patterns,
+        //     self.phaserGame, self.table, squareRight.patterns,
         //     {
         //         x: 5, y: 2,
-        //         pivot: cube.pivot,
-        //         childsAnchor: cube.anchor
+        //         pivot: squareRight.pivot,
+        //         childsAnchor: squareRight.anchor
         //     },
-        //     'pink'
+        //     'blue'
         // );
 
         // block.build();
 
         // var block = new Block(
-        //     self.phaserGame, self.table, cube.patterns,
+        //     self.phaserGame, self.table, squareRight.patterns,
         //     {
         //         x: 5, y: 5,
-        //         pivot: cube.pivot,
-        //         childsAnchor: cube.anchor
+        //         pivot: squareRight.pivot,
+        //         childsAnchor: squareRight.anchor
         //     },
-        //     'pink'
+        //     'blue'
         // );
 
         // block.build();
 
-        // block.rotateLeft()
-        // .then(block.rotateLeft.bind(block))
+        // block.rotateRight()
+        // .then(block.rotateRight.bind(block))
+        // .then(block.rotateRight.bind(block))
         // .then(block.rotateRight.bind(block));
         // .then(block.to.bind(block, {x: 9, y: 16}));
 
@@ -274,7 +278,7 @@ export default class Game {
 
         //         // this.table.collapseRowsAbove(2, () => {
         //             // console.log('YYYIIP');
-        //         // });                
+        //         // });
         //     });
         // });
 
