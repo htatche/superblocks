@@ -2,10 +2,11 @@
  * @internal Brick is always attached to a Block
  */
 export default class Brick {
-    constructor(position, block, phaserSprite) {
+    constructor(position, block, phaserSprite, n) {
         this.position               = position;
         this.block                  = block;
         this.phaserSprite           = phaserSprite;
+        this.nBrick                 = n;
 
         this.loadPhaserSpriteAnchor();
     }

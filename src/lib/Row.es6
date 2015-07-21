@@ -76,17 +76,18 @@ export default class Row {
     }
 
     collapse(doneCallback) {
-        var bricks          = this.bricks,
-            promises        = [];
+        var promises        = [],
+            previousBricks  = this.bricks.mapTo('nBrick');
 
         this.blocks.forEach((block) => {
             promises.push(block.collapse(function() {}));
         });
 
         Promise.all(promises).then(() => {
-            if (Util.deepCompare(bricks, this.bricks)) {
-                doneCallback();
-            } else { this.collapse(doneCallback); }
+            var bricks  = this.bricks.mapTo('nBrick');
+
+            if (bricks.equals(previousBricks)) { doneCallback(); }
+            else { this.collapse(doneCallback); }
         });
     }
 }

@@ -9,6 +9,7 @@ export default class Table {
         this._cellsArray    = new CellsArray(xSize, ySize);
         this.blocks         = new ArrayBlocks();
         this.nBlocks        = 0;
+        this.nBricks        = 0;
     }
 
     get cellsArray()   { return this._cellsArray; }
@@ -37,6 +38,10 @@ export default class Table {
 
     incrementNBlocks() {
         return ++this.nBlocks;
+    }
+
+    incrementNBricks() {
+        return ++this.nBricks;
     }
 
     offLimits(position) {
@@ -68,20 +73,4 @@ export default class Table {
             row.collapse(this.collapseRows.bind(this, rows, doneCallback));
         }
     }
-
-    /**
-     * Collapses every block above the specified row
-     * @param  {[type]} nRow [description]
-     * @return {[type]}      [description]
-     */
-    // collapseRowsAbove(i, doneCallback) {
-    //     var promises  = [],
-    //         rowsAbove = this.rowsAbove();
-
-    //     rowsAbove.reverse().forEach((row) => {
-    //         promises.push(row.collapse(function() {}));
-    //     });
-
-    //     Promise.all(promises).then(() => { doneCallback(); });
-    // }
 }

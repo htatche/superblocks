@@ -63,7 +63,7 @@ export default class Block {
             this.color.name
         );
 
-        return new Brick(position, this, sprite);
+        return new Brick(position, this, sprite, this.table.incrementNBricks());
     }
 
     build() {
