@@ -125,11 +125,10 @@ export default class Block {
         }, speed);
     }
 
-    createPosition(args) {
-        if (args.randomLanding) { args = this.randomLandingPosition(args); }
-
-        return new BlockPosition(
-            args.x, args.y, args.pivot, args.childsAnchor
+    collapse(doneCallback) {
+        return this.down(true).then(
+            this.collapse.bind(this, doneCallback),
+            doneCallback
         );
     }
 
@@ -144,6 +143,14 @@ export default class Block {
         args.y = y;
 
         return args;
+    }
+
+    createPosition(args) {
+        if (args.randomLanding) { args = this.randomLandingPosition(args); }
+
+        return new BlockPosition(
+            args.x, args.y, args.pivot, args.childsAnchor
+        );
     }
 
     down(detectCollision)   { return this.moveBlock.down(detectCollision); }

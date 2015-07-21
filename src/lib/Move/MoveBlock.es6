@@ -28,6 +28,8 @@ export default class MoveBlock extends Move {
 
     tableTranslate() {
         return this.block.bricks.forEach((brick) => {
+            // debugger;
+
             return brick.putCell(brick.position);
         });
     }

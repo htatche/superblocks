@@ -138,7 +138,8 @@ export default class Game {
         var self = this;
 
         var cube     = self.blocks[2],
-            pyramid  = self.blocks[0];
+            pyramid  = self.blocks[0],
+            column   = self.blocks[1];
 
         var createBlocksAtBottom = function() {
             var x = 1;
@@ -146,21 +147,21 @@ export default class Game {
             /*
              Cubes
              */
-            // while (x <= 9) {
-            //     var block = new Block(
-            //         self.phaserGame, self.table, cube.patterns,
-            //         {
-            //             x: x, y: 19,
-            //             pivot: cube.pivot,
-            //             childsAnchor: cube.anchor
-            //         },
-            //         'orange'
-            //     );
+            while (x <= 9) {
+                var block = new Block(
+                    self.phaserGame, self.table, cube.patterns,
+                    {
+                        x: x, y: 19,
+                        pivot: cube.pivot,
+                        childsAnchor: cube.anchor
+                    },
+                    'orange'
+                );
 
-            //     x = x + 2;
+                x = x + 2;
 
-            //     block.build();
-            // }
+                block.build();
+            }
 
             /*
              Pyramids
@@ -172,7 +173,7 @@ export default class Game {
                 var block = new Block(
                     self.phaserGame, self.table, pyramid.patterns,
                     {
-                        x: x, y: 19,
+                        x: x, y: 17,
                         pivot: pyramid.pivot,
                         childsAnchor: pyramid.anchor
                     },
@@ -187,19 +188,7 @@ export default class Game {
             var block = new Block(
                 self.phaserGame, self.table, cube.patterns,
                 {
-                    x: 3, y: 18,
-                    pivot: cube.pivot,
-                    childsAnchor: cube.anchor
-                },
-                'orange'
-            );
-
-            block.build();
-
-            var block = new Block(
-                self.phaserGame, self.table, cube.patterns,
-                {
-                    x: 6, y: 18,
+                    x: 3, y: 16,
                     pivot: cube.pivot,
                     childsAnchor: cube.anchor
                 },
@@ -211,6 +200,89 @@ export default class Game {
         };
 
         createBlocksAtBottom();
+
+        // var block = new Block(
+        //     self.phaserGame, self.table, cube.patterns,
+        //     {
+        //         x: 5, y: 2,
+        //         pivot: cube.pivot,
+        //         childsAnchor: cube.anchor
+        //     },
+        //     'pink'
+        // );
+
+        // block.build();
+
+        // var block = new Block(
+        //     self.phaserGame, self.table, cube.patterns,
+        //     {
+        //         x: 5, y: 5,
+        //         pivot: cube.pivot,
+        //         childsAnchor: cube.anchor
+        //     },
+        //     'pink'
+        // );
+
+        // block.build();
+
+        // block.rotateLeft()
+        // .then(block.rotateLeft.bind(block))
+        // .then(block.rotateRight.bind(block));
+        // .then(block.to.bind(block, {x: 9, y: 16}));
+
+        // var block = new Block(
+        //     self.phaserGame, self.table, pyramid.patterns,
+        //     {
+        //         x: 3, y: 2,
+        //         pivot: pyramid.pivot,
+        //         childsAnchor: pyramid.anchor
+        //     },
+        //     'orange'
+        // );
+
+        // block.build();
+
+        // this.landingBlock = new Block(
+        //     self.phaserGame, self.table, pyramid.patterns,
+        //     {
+        //         x: 5, y: 1,
+        //         pivot: pyramid.pivot,
+        //         childsAnchor: pyramid.anchor
+        //     },
+        //     'green'
+        // );
+
+        // this.landingBlock.build();
+
+        // var block = new Block(
+        //     self.phaserGame, self.table, pyramid.patterns,
+        //     {
+        //         x: 7, y: 2,
+        //         pivot: pyramid.pivot,
+        //         childsAnchor: pyramid.anchor
+        //     },
+        //     'orange'
+        // );
+
+        // block.build();
+
+        // this.landingBlock.rotateRight();
+        // .then(() => {
+        //     block3.rotateRight()
+        //     .then(() => {
+        //         // this.table.row(2).destroy();
+
+        //         // this.table.collapseRowsAbove(2, () => {
+        //             // console.log('YYYIIP');
+        //         // });                
+        //     });
+        // });
+
+
+        // this.table.collapseRowsAbove(1, () => {
+            // console.log('YYYIIP');
+        // });
+        // debugger;{}
 
         var gameLoop = new GameLoop(this);
 

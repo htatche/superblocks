@@ -18,6 +18,8 @@ export default class Brick {
     }
 
     remove(destroy = false) {
+        // debugger;
+        
         var block = this.block,
             index = block.bricks.find(this);
 

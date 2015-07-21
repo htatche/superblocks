@@ -8,6 +8,7 @@ export default class Table {
         this.ySize          = ySize;
         this._cellsArray    = new CellsArray(xSize, ySize);
         this.blocks         = new ArrayBlocks();
+        this.nBlocks        = 0;
     }
 
     get cellsArray()   { return this._cellsArray; }
@@ -24,7 +25,9 @@ export default class Table {
         });
     }
 
-    row(x)             { return new Row(this.cellsArray.array[x], x); }
+    cell(position)     { return this.cellsArray.cell(position); }
+
+    row(x)             { return new Row(this, this.cellsArray.array[x], x); }
 
     rowAbove(row) {
         if (row.nRow === 0) { return false; }
@@ -32,26 +35,8 @@ export default class Table {
         return this.row(row.nRow - 1);
     }
 
-    cell(position)     { return this.cellsArray.cell(position); }
-
-    destroyAllRows() {
-        this.rows.forEach((row) => {
-            return row.destroy();
-        });
-    }
-
-    shiftBlocksDown() {
-        var promises = [];
-
-        this.blocks.forEach((block) => {
-            promises.push(block.down());
-        });
-
-        return promises;
-    }
-
     incrementNBlocks() {
-        return ++this.blocks.length;
+        return ++this.nBlocks;
     }
 
     offLimits(position) {
@@ -59,4 +44,44 @@ export default class Table {
                position.y >= this.ySize || position.y < 0;
     }
 
+    /**
+     * @info Deprecated
+     * @return {[type]} [description]
+     */
+    destroyAllRows() {
+        this.rows.forEach((row) => {
+            return row.destroy();
+        });
+    }
+
+    rowsAbove(i) {
+        return this.rows.filter(
+            (row) => { return row.nRow < i; }
+        );
+    }
+
+    collapseRows(rows, doneCallback) {
+        var row = rows.pop();
+
+        if (!row) { doneCallback(); }
+        else {
+            row.collapse(this.collapseRows.bind(this, rows, doneCallback));
+        }
+    }
+
+    /**
+     * Collapses every block above the specified row
+     * @param  {[type]} nRow [description]
+     * @return {[type]}      [description]
+     */
+    // collapseRowsAbove(i, doneCallback) {
+    //     var promises  = [],
+    //         rowsAbove = this.rowsAbove();
+
+    //     rowsAbove.reverse().forEach((row) => {
+    //         promises.push(row.collapse(function() {}));
+    //     });
+
+    //     Promise.all(promises).then(() => { doneCallback(); });
+    // }
 }

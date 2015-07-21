@@ -1,7 +1,9 @@
+import Util           from './Util.es6';
 import ArrayMain      from './Array/ArrayMain.es6';
 
 export default class Row {
-    constructor(tableRow, nRow) {
+    constructor(table, tableRow, nRow) {
+        this.table          = table;
         this.cells          = tableRow;
         this.nRow           = nRow;
     }
@@ -21,6 +23,26 @@ export default class Row {
         });
     }
 
+    get bricks() {
+        var bricks = new ArrayMain();
+
+        this.cells.forEach(function(cell) {
+
+            if (!cell.isEmpty()) {
+                var brick = cell.brick;
+
+                if (!bricks.contains(brick)) { bricks.add(brick); }
+            }
+
+        });
+
+        return bricks;
+    }
+
+    /**
+     * @todo Refactor to use get bricks()
+     * @return {[type]} [description]
+     */
     get blocks() {
         var blocks = new ArrayMain();
 
@@ -47,21 +69,24 @@ export default class Row {
         for (var i = 0; i < this.cells.length; ++i) {
             var cell = this.cells[i];
 
-            if (!cell.isEmpty()) {
-                cell.brick.destroy();
-            }
+            if (!cell.isEmpty()) { cell.brick.destroy(); }
         }
 
         return this.nRow;
     }
 
-    down() {
-        for (var i = 0; i < this.cells.length; ++i) {
-            var cell = this.cells[i];
+    collapse(doneCallback) {
+        var bricks          = this.bricks,
+            promises        = [];
 
-            if (!cell.isEmpty()) {
-                cell.brick.block.down();
-            }
-        }
+        this.blocks.forEach((block) => {
+            promises.push(block.collapse(function() {}));
+        });
+
+        Promise.all(promises).then(() => {
+            if (Util.deepCompare(bricks, this.bricks)) {
+                doneCallback();
+            } else { this.collapse(doneCallback); }
+        });
     }
 }

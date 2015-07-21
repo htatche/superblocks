@@ -21,15 +21,17 @@ export default class Rotate {
     }
 
     phaserTranslate(angle) {
+        var tween = this.phaserGame.add.tween(this.phaserGroup);
+
         return new Promise((resolve) => {
-            this.phaserGame.add.tween(this.phaserGroup).to(
+            tween.onComplete.add(resolve);
+
+            tween.to(
                 { angle: angle },
                 1,
                 Phaser.Easing.Linear.None,
                 true
             );
-
-            resolve(angle);
         });
     }
 
