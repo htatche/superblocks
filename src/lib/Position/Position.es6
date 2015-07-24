@@ -1,5 +1,8 @@
 export default class Position {
-    constructor(cellSize = 35) {
+    constructor(x, y, cellSize = 35) {
+        this.x                          = x;
+        this.y                          = y;
+
         this.cellSize       = cellSize;
     }
 

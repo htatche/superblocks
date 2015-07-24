@@ -2,6 +2,7 @@
 
 import Table                     from '../Table.es6';
 import Position                  from '../Position/Position.es6';
+import Brick                     from '../Brick.es6';
 import Block                     from '../Block.es6';
 import GameLoop                  from './GameLoop.es6';
 import Color                     from '../Color.es6';
@@ -202,19 +203,31 @@ export default class Game {
 
         };
 
+        var brick = new Brick(
+            self.phaserGame, self.table, squareRight.patterns,
+            {
+                x: 2, y: 2,
+                pivot: squareRight.pivot,
+                childsAnchor: squareRight.anchor
+            },
+            'blue'
+        );
+
+        brick.build();
+
         // createBlocksAtBottom();
 
-        // var block = new Block(
+        // this.landingBlock = new Block(
         //     self.phaserGame, self.table, squareRight.patterns,
         //     {
-        //         x: 5, y: 2,
+        //         x: 2, y: 2,
         //         pivot: squareRight.pivot,
         //         childsAnchor: squareRight.anchor
         //     },
         //     'blue'
         // );
 
-        // block.build();
+        // this.landingBlock.build();
 
         // var block = new Block(
         //     self.phaserGame, self.table, squareRight.patterns,
@@ -288,9 +301,9 @@ export default class Game {
         // });
         // debugger;{}
 
-        var gameLoop = new GameLoop(this);
+        // var gameLoop = new GameLoop(this);
 
-        gameLoop.start();
+        // gameLoop.start();
     }
 
     restart() {

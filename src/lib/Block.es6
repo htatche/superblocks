@@ -21,8 +21,8 @@ export default class Block {
         this.color              = new Color(colorName);
         this.nBlock             = table.incrementNBlocks();
 
-        this.loadPhaserGroupPosition();
         this.loadPhaserGroupPivot();
+        this.loadPhaserGroupPosition();
     }
 
     get moveBlock()         { return new MoveBlock(this.position, this); }
@@ -73,10 +73,10 @@ export default class Block {
 
             var bricks = pattern.positions.map((position) => {
                 return this.createBrick(new BrickPosition(
-                    this.position,
                     position[0],
                     position[1],
-                    this.position.childsAnchor
+                    this.position.childsAnchor,
+                    this.position
                 ));
             });
 
@@ -149,9 +149,11 @@ export default class Block {
     createPosition(args) {
         if (args.randomLanding) { args = this.randomLandingPosition(args); }
 
-        return new BlockPosition(
+        var pos = new BlockPosition(
             args.x, args.y, args.pivot, args.childsAnchor
         );
+
+        return pos;
     }
 
     down(detectCollision)   { return this.moveBlock.down(detectCollision); }

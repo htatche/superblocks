@@ -46,10 +46,10 @@ export default class Rotate {
 
         for (var i = 0; i < this.block.bricks.length; ++i) {
             var position = new BrickPosition(
-                this.block.position,
                 pattern.positions[i][0],
                 pattern.positions[i][1],
-                this.block.bricks[i].anchor
+                this.block.bricks[i].anchor,
+                this.block.position
             );
 
             this.block.bricks[i].putCell(position);
@@ -70,10 +70,10 @@ export default class Rotate {
             var brickRef = Object.create(brick);
 
             brickRef.position = new BrickPosition(
-                this.block.position,
                 pattern.positions[idx][0],
                 pattern.positions[idx][1],
-                brick.anchor
+                brick.anchor,
+                this.block.position
             );
 
             return brickRef;
