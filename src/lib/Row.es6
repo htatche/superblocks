@@ -49,7 +49,7 @@ export default class Row {
         this.cells.forEach(function(cell) {
 
             if (!cell.isEmpty()) {
-                var block = cell.brick.block;
+                var block = cell.brick.parentBlock;
 
                 if (!blocks.contains(block)) { blocks.add(block); }
             }

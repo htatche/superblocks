@@ -2,7 +2,7 @@ import Util                      from './Util.es6';
 import Brick                     from './Brick.es6';
 import ArrayMain                 from './Array/ArrayMain.es6';
 import BlockPosition             from './Position/BlockPosition.es6';
-import BrickPosition             from './Position/BrickPosition.es6';
+// import BrickPosition             from './Position/BrickPosition.es6';
 import MoveBlock                 from './Move/MoveBlock.es6';
 import Rotate                    from './Rotate.es6';
 import CollisionDetection        from './Collision/CollisionDetection.es6';
@@ -43,27 +43,14 @@ export default class Block {
     }
 
     addOneBrick(brick) {
-        brick.putCell(brick.position, this.table);
+        brick.build(false);
+        this.phaserGroup.add(brick.phaserSprite);
 
         return this.bricks.add(brick);
     }
 
     addBricks(bricks) {
-        bricks.forEach((brick) => {
-            this.addOneBrick(brick);
-        });
-    }
-
-    createBrick(position) {
-        var spritePosition = position.phaserSpritePosition();
-
-        var sprite = this.phaserGroup.create(
-            spritePosition.x,
-            spritePosition.y,
-            this.color.name
-        );
-
-        return new Brick(position, this, sprite, this.table.incrementNBricks());
+        bricks.forEach((brick) => { this.addOneBrick(brick); });
     }
 
     build() {
@@ -71,13 +58,10 @@ export default class Block {
 
             var pattern = this.rotate.findPatternByAngle(0);
 
-            var bricks = pattern.positions.map((position) => {
-                return this.createBrick(new BrickPosition(
-                    position[0],
-                    position[1],
-                    this.position.childsAnchor,
-                    this.position
-                ));
+            var bricks = pattern.positions.map((coord) => {
+                return new Brick(
+                    this.table, coord, this.color.name, this.phaserGame, this
+                );
             });
 
             var collisions = new CollisionDetection(this.table)
@@ -100,25 +84,42 @@ export default class Block {
     }
 
     clearCells() {
-        return this.bricks.forEach((brick) => {
-            return brick.clearCell();
-        });
+        return this.bricks.forEach((brick) => { return brick.clearCell(); });
     }
 
-    removeBricks(destroy = false) {
+    removeBrick(brick, destroy = false) {
+        var index = this.bricks.find(brick);
+
+        this.bricks.splice(index, 1);
+
+        /* Remove parentBlock from table.blocks is last brick was removed.
+         */
+        if (this.bricks.isEmpty) {
+            var tableBlocks = this.table.blocks,
+                idx = tableBlocks.indexOf(this);
+
+            tableBlocks.splice(idx, 1);
+        }
+
+        this.phaserGroup.remove(this.phaserSprite, destroy);
+    }
+
+    removeAllBricks(destroy = false) {
+        this.bricks = new ArrayMain();
+
         this.phaserGroup.removeAll(destroy);
-        this.clearCells();
     }
 
     destroy() {
-        this.phaserGroup.removeAll(true);
+        this.removeAllBricks(true);
+        this.clearCells();
     }
 
     land(speed, didLand) {
         var resolved = () =>                { this.land(speed, didLand); },
             rejected = (collisions) =>      { didLand(collisions); };
 
-        setTimeout(() => {
+        setTimeout(() => {  
             this.down(true).then(
                 resolved,
                 rejected

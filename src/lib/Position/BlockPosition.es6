@@ -3,7 +3,7 @@ import Position            from './Position.es6';
 export default class BlockPosition extends Position {
     constructor(x, y, pivot, childsAnchor) {
         super(x, y);
-        
+
         this.pivot                      = pivot;
         this.childsAnchor               = childsAnchor;
     }

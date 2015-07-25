@@ -19,7 +19,7 @@ export default class Game {
         this.blocks     = dataBlocks;
 
         this.table      = new Table(tableOptions.xSize, tableOptions.ySize);
-        this.phaserGame = this.phaserGame(startCallback, updateCallback);
+        this.phaserGame = this.createPhaserGame(startCallback, updateCallback);
 
         this.cursors    = null;
         this.keyboard   = {};
@@ -30,7 +30,7 @@ export default class Game {
 
     get cellsArray()   { return this._cellsArray; }
 
-    phaserGame(startCallback, updateCallback) {
+    createPhaserGame(startCallback, updateCallback) {
         var position = new Position(),
             width    = position.toPixels(this.table.xSize, this.cellSize),
             height   = position.toPixels(this.table.ySize, this.cellSize);
@@ -203,19 +203,16 @@ export default class Game {
 
         };
 
-        var brick = new Brick(
-            self.phaserGame, self.table, squareRight.patterns,
-            {
-                x: 2, y: 2,
-                pivot: squareRight.pivot,
-                childsAnchor: squareRight.anchor
-            },
-            'blue'
-        );
+        // var brick = new Brick(
+        //     self.table,
+        //     [5, 5],
+        //     'red',
+        //     self.phaserGame
+        // );
+        // brick.build(false);
 
-        brick.build();
 
-        // createBlocksAtBottom();
+        createBlocksAtBottom();
 
         // this.landingBlock = new Block(
         //     self.phaserGame, self.table, squareRight.patterns,
@@ -301,9 +298,9 @@ export default class Game {
         // });
         // debugger;{}
 
-        // var gameLoop = new GameLoop(this);
+        var gameLoop = new GameLoop(this);
 
-        // gameLoop.start();
+        gameLoop.start();
     }
 
     restart() {

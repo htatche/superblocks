@@ -2,12 +2,15 @@ import Position            from './Position.es6';
 
 export default class BrickPosition extends Position {
 
-    constructor(x, y, anchor, blockPosition) {
+    constructor(x, y, blockPosition, anchor = {x: 0, y: 0}) {
         super(x, y);
 
-        if (blockPosition) { this.blockPosition = blockPosition; }
-
-        this.anchor = anchor;
+        if (blockPosition) {
+            this.blockPosition = blockPosition;
+            this.anchor        = this.blockPosition.childsAnchor;
+        } else {
+            this.anchor = anchor;
+        }
     }
 
     get x() {
@@ -32,11 +35,15 @@ export default class BrickPosition extends Position {
     set y(y) { this._y = y; }
 
     phaserSpritePosition() {
-        var pivot = this.blockPosition.pivot;
+        var position;
 
-        return {
-            x: this.toPixels(pivot.x + this._x + this.anchor.x),
-            y: this.toPixels(pivot.y + this._y + this.anchor.y)
-        };
+        position = { x: this._x, y: this._y };
+
+        if (this.blockPosition) {
+            position.x += this.blockPosition.pivot.x + this.anchor.x;
+            position.y += this.blockPosition.pivot.y + this.anchor.y;
+        }
+
+        return {x: this.toPixels(position.x), y: this.toPixels(position.y)};
     }
 }

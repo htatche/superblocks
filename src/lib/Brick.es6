@@ -1,14 +1,60 @@
+import BrickPosition             from './Position/BrickPosition.es6';
+import CollisionDetection        from './Collision/CollisionDetection.es6';
+
 /**
- * @internal Brick is always attached to a Block
+ * @internal Brick can exist on its own or in a Block
  */
 export default class Brick {
-    constructor(position, block, phaserSprite, n) {
-        this.position               = position;
-        this.block                  = block;
-        this.phaserSprite           = phaserSprite;
-        this.nBrick                 = n;
+    constructor(table, coord, color, phaserGame, parentBlock, n) {
+        this.table                  = table;
+        this.color                  = color;
+        this.phaserGame             = phaserGame;
 
-        this.loadPhaserSpriteAnchor();
+        if (parentBlock) { this.parentBlock = parentBlock; }
+
+        this.nBrick = n ? n : this.table.incrementNBricks();
+        this.position     = this.createPosition(coord);
+    }
+
+    // get / set cell
+
+    detectCollisions() {
+        var collisions = new CollisionDetection(this.table).lookOut(this);
+
+        return collisions.length === 0;
+    }
+
+    build(checkCollision = false) {
+        return new Promise((resolve, reject) => {
+
+            var buildSuccess = () => {
+                this.phaserSprite = this.createPhaserSprite();
+
+                this.loadPhaserSpriteAnchor();
+                this.putCell(this.position);
+
+                resolve(this);
+            };
+
+            if (!checkCollision) { buildSuccess.call(this); }
+            else {
+                if (this.detectCollisions()) { reject(collisions); }
+                else { buildSuccess.call(this); }
+            }
+        });
+    }
+
+    createPosition(coord) {
+        if (this.parentBlock) {
+            return new BrickPosition(
+                coord[0], coord[1],
+                this.parentBlock.position
+            );
+        } else {
+            return new BrickPosition(
+                coord[0], coord[1]
+            );
+        }
     }
 
     loadPhaserSpriteAnchor() {
@@ -18,39 +64,35 @@ export default class Brick {
         );
     }
 
+    createPhaserSprite() {
+        var spritePosition = this.position.phaserSpritePosition();
+
+        return this.phaserGame.add.sprite(
+            spritePosition.x,
+            spritePosition.y,
+            this.color
+        );
+    }
+
     remove(destroy = false) {
-        var block = this.block,
-            index = block.bricks.find(this);
+        if (this.parentBlock) { this.parentBlock.removeBrick(this, destroy); }
+    }
 
-        block.bricks.splice(index, 1);
-        block.phaserGroup.remove(this.phaserSprite, destroy);
-
-        /*
-            Remove block from table.blocks is last brick was removed.
-         */
-        if (block.bricks.isEmpty) {
-            var idx = block.table.blocks.indexOf(block);
-
-            block.table.blocks.splice(idx, 1);
-        }
+    destroy() {
+        this.remove(true);
 
         return this.clearCell();
     }
 
-    destroy() {
-        return this.remove(true);
-    }
-
     clearCell() {
-        return this.block.table.cell(this.position).clear();
+        return this.table.cell(this.position).clear();
     }
 
     putCell(position) {
         // Allow to pass no position arg (Block.addBrick)
         this.position = position;
 
-        return this.block.table.cellsArray.cell(this.position)
-        .setTo(this);
+        return this.table.cellsArray.cell(this.position).setTo(this);
     }
 
 }

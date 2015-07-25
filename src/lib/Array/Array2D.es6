@@ -26,7 +26,7 @@ export default class Array2D {
         var array = this.array.map(row => {
             return row.map(cell => {
                 if (!cell.isEmpty()) {
-                    return (cell.brick.block.nBlock);
+                    return (cell.brick.nBrick);
                 }
             });
         });

@@ -28,8 +28,6 @@ export default class MoveBlock extends Move {
 
     tableTranslate() {
         return this.block.bricks.forEach((brick) => {
-            // debugger;
-
             return brick.putCell(brick.position);
         });
     }
@@ -73,8 +71,6 @@ export default class MoveBlock extends Move {
 
     down(detectCollision) {
         var coordinates = super.down();
-
-        // console.log(`down on ${this.block.nBlock}`);
 
         return this.carryOut(coordinates, detectCollision);
     }

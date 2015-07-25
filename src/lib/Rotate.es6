@@ -48,7 +48,6 @@ export default class Rotate {
             var position = new BrickPosition(
                 pattern.positions[i][0],
                 pattern.positions[i][1],
-                this.block.bricks[i].anchor,
                 this.block.position
             );
 
@@ -72,7 +71,6 @@ export default class Rotate {
             brickRef.position = new BrickPosition(
                 pattern.positions[idx][0],
                 pattern.positions[idx][1],
-                brick.anchor,
                 this.block.position
             );
 
