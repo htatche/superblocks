@@ -3,48 +3,29 @@ export default class GameLoop {
         this.game                   = game;
     }
 
-    start() {
-        this.landBlocksIterate();
+    landBlock(block, didLand) {
+        this.game.landingBlock = block;
+
+        this.game.landingBlock
+        .land(this.game.options.speed, didLand);
     }
 
-    successBuild(didLand, block) {
-        block.land(this.game.options.speed, didLand);
-    }
+    tossBlocks() {
+        var didLand = () => {
+                this.destroyCompletedRows(this.tossBlocks.bind(this));
+            };
 
-    failedBuild(collisions) {
-        this.game.restart();
+        var randomBlock = this.game.newRandomBlock();
 
-        console.log('Game Over');
-        console.log(collisions);
-    }
-
-    buildBlock() {
-        return this.game.landingBlock.build();
-    }
-
-    createRandomBlock() {
-        return this.game.table.blocks.add(this.game.newRandomBlock());
-    }
-
-    landBlock() {
-        var self = this;
-
-        return new Promise((didLand) => {
-            this.game.landingBlock = this.createRandomBlock();
-
-            this.buildBlock().then(
-                this.successBuild.bind(self, didLand),
-                this.failedBuild.bind(self)
-            );
-        });
-    }
-
-    afterLanding() {
-        this.destroyCompletedRows(this.landBlocksIterate.bind(this));
-    }
-
-    landBlocksIterate() {
-        this.landBlock().then(this.afterLanding.bind(this));
+        randomBlock.build().then(
+            (_block) => {
+                this.game.table.blocks.add(_block);
+                this.landBlock(_block, didLand);
+            },
+            () => {
+                this.game.restart();
+            }
+        );
     }
 
     destroyCompletedRows(doneCallback) {
@@ -62,6 +43,10 @@ export default class GameLoop {
                 this.destroyCompletedRows(doneCallback);
             });
         }
+    }
+
+    start() {
+        this.tossBlocks();
     }
 
 }

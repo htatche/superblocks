@@ -80,17 +80,19 @@ export default class Game {
         this.cursors = phaserKeyboard.createCursorKeys();
         this.keyboard.A = phaserKeyboard.addKey(Phaser.Keyboard.A);
         this.keyboard.S = phaserKeyboard.addKey(Phaser.Keyboard.S);
+        this.keyboard.SPACE = phaserKeyboard.addKey(Phaser.Keyboard.SPACEBAR);
     }
 
     listenKeyboardInput() {
         var keyArrow;
 
-        if (this.cursors.up.justDown)         { keyArrow = 'up'; }
-        else if (this.cursors.down.justDown)  { keyArrow = 'down'; }
-        else if (this.cursors.left.justDown)  { keyArrow = 'left'; }
-        else if (this.cursors.right.justDown) { keyArrow = 'right'; }
-        else if (this.keyboard.A.justDown)    { keyArrow = 'A'; }
-        else if (this.keyboard.S.justDown)    { keyArrow = 'S'; }
+        if (this.cursors.up.justDown)          { keyArrow = 'up'; }
+        else if (this.cursors.down.justDown)   { keyArrow = 'down'; }
+        else if (this.cursors.left.justDown)   { keyArrow = 'left'; }
+        else if (this.cursors.right.justDown)  { keyArrow = 'right'; }
+        else if (this.keyboard.A.justDown)     { keyArrow = 'A'; }
+        else if (this.keyboard.S.justDown)     { keyArrow = 'S'; }
+        else if (this.keyboard.SPACE.justDown) { keyArrow = 'SPACE'; }
 
         switch (keyArrow) {
             case 'up':
@@ -110,6 +112,9 @@ export default class Game {
                 break;
             case 'S':
                 this.landingBlock.rotateRight(true);
+                break;
+            case 'SPACE':
+                this.landingBlock.collapse(() => {});
                 break;
         }
     }
@@ -145,64 +150,6 @@ export default class Game {
             squareLeft          = self.blocks[5],
             squareRight         = self.blocks[6];
 
-        var createBlocksAtBottom = function() {
-            var x = 1;
-
-            /*
-             Cubes
-             */
-            while (x <= 9) {
-                var block = new Block(
-                    self.phaserGame, self.table, cube.patterns,
-                    {
-                        x: x, y: 19,
-                        pivot: cube.pivot,
-                        childsAnchor: cube.anchor
-                    },
-                    'orange'
-                );
-
-                x = x + 2;
-
-                block.build();
-            }
-
-            /*
-             Pyramids
-             */
-            
-            var x = 1;
-
-            while (x <= 9) {
-                var block = new Block(
-                    self.phaserGame, self.table, pyramid.patterns,
-                    {
-                        x: x, y: 17,
-                        pivot: pyramid.pivot,
-                        childsAnchor: pyramid.anchor
-                    },
-                    'green'
-                );
-
-                x = x + 3;
-
-                block.build();
-            }
-
-            var block = new Block(
-                self.phaserGame, self.table, cube.patterns,
-                {
-                    x: 3, y: 16,
-                    pivot: cube.pivot,
-                    childsAnchor: cube.anchor
-                },
-                'orange'
-            );
-
-            block.build();
-
-        };
-
         // this.landingBlock = new Brick(
         //     self.table,
         //     [5, 5],
@@ -211,9 +158,6 @@ export default class Game {
         // );
 
         // this.landingBlock.build(false);
-
-
-        // createBlocksAtBottom();
 
         // this.landingBlock = new Block(
         //     self.phaserGame, self.table, squareRight.patterns,
