@@ -1,4 +1,13 @@
 var data = {
+    gameOptions: {
+        speedOptions: {
+            defaultSpeed: 220,
+            speedFactor: 20
+        },
+        levels: {
+            requiredRows: 5
+        }
+    },
     blocks: [
         {
             name: 'pyramid',
@@ -34,7 +43,6 @@ var data = {
                     angle: 270,
                     positions: [
                         [0, 1], [0, 0], [0, -1], [-1, 0]
-                        // [0, 0], [0, -1], [0, 1], [-1, 0]
                     ]
                 }
             ]

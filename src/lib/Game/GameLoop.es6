@@ -7,7 +7,7 @@ export default class GameLoop {
         this.game.landingBlock = block;
 
         this.game.landingBlock
-        .land(this.game.options.speed, didLand);
+        .land(this.game.level.speed(), didLand);
     }
 
     tossBlocks() {
@@ -40,8 +40,20 @@ export default class GameLoop {
             var rowsAbove = this.game.table.rowsAbove(row.nRow);
 
             this.game.table.collapseRows(rowsAbove, () => {
+                this.updateScore();
                 this.destroyCompletedRows(doneCallback);
             });
+        }
+    }
+
+    updateScore() {
+        var nRequiredRows = this.game.options.levels.requiredRows,
+            nDeletedRows  = this.game.score - this.game.level.lastScore;
+
+        ++this.game.score;
+
+        if (nDeletedRows === nRequiredRows) {
+            this.game.level.up(this.game.score);
         }
     }
 

@@ -49,10 +49,6 @@ export default class Table {
                position.y >= this.ySize || position.y < 0;
     }
 
-    /**
-     * @info Deprecated
-     * @return {[type]} [description]
-     */
     destroyAllRows() {
         this.rows.forEach((row) => {
             return row.destroy();

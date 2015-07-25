@@ -2,7 +2,6 @@ import Util                      from './Util.es6';
 import Brick                     from './Brick.es6';
 import ArrayMain                 from './Array/ArrayMain.es6';
 import BlockPosition             from './Position/BlockPosition.es6';
-// import BrickPosition             from './Position/BrickPosition.es6';
 import MoveBlock                 from './Move/MoveBlock.es6';
 import Rotate                    from './Rotate.es6';
 import CollisionDetection        from './Collision/CollisionDetection.es6';
@@ -146,11 +145,6 @@ export default class Block {
         }, speed);
     }
 
-    /**
-     * @deprecated !
-     * @param  {[type]} doneCallback [description]
-     * @return {[type]}              [description]
-     */
     collapse(doneCallback) {
         return this.down(true).then(
             this.collapse.bind(this, doneCallback),

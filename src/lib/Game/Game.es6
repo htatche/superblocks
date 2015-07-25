@@ -6,6 +6,7 @@ import Brick                     from '../Brick.es6';
 import Block                     from '../Block.es6';
 import GameLoop                  from './GameLoop.es6';
 import Color                     from '../Color.es6';
+import Level                     from '../Level.es6';
 
 export default class Game {
     constructor(
@@ -13,19 +14,27 @@ export default class Game {
         startCallback, updateCallback,
         debugMode
     ) {
-        this.cellSize   = tableOptions.cellSize;
-        this.options    = gameOptions;
+        this.cellSize           = tableOptions.cellSize;
+        this.options            = gameOptions;
 
-        this.blocks     = dataBlocks;
+        this.level              = new Level(1, gameOptions.speedOptions);
+        this.score              = 0;
 
-        this.table      = new Table(tableOptions.xSize, tableOptions.ySize);
-        this.phaserGame = this.createPhaserGame(startCallback, updateCallback);
+        this.blocks             = dataBlocks;
 
-        this.cursors    = null;
-        this.keyboard   = {};
+        this.table              = new Table(
+            tableOptions.xSize, tableOptions.ySize
+        );
+
+        this.phaserGame         = this.createPhaserGame(
+            startCallback, updateCallback
+        );
+
+        this.cursors            = null;
+        this.keyboard           = {};
 
         // this.data = this.parseJSONFile(dataPath);
-        this.debugMode  = debugMode;
+        this.debugMode          = debugMode;
     }
 
     get cellsArray()   { return this._cellsArray; }
@@ -170,78 +179,6 @@ export default class Game {
         // );
 
         // this.landingBlock.build();
-
-        // var block = new Block(
-        //     self.phaserGame, self.table, squareRight.patterns,
-        //     {
-        //         x: 5, y: 5,
-        //         pivot: squareRight.pivot,
-        //         childsAnchor: squareRight.anchor
-        //     },
-        //     'blue'
-        // );
-
-        // block.build();
-
-        // block.rotateRight()
-        // .then(block.rotateRight.bind(block))
-        // .then(block.rotateRight.bind(block))
-        // .then(block.rotateRight.bind(block));
-        // .then(block.to.bind(block, {x: 9, y: 16}));
-
-        // var block = new Block(
-        //     self.phaserGame, self.table, pyramid.patterns,
-        //     {
-        //         x: 3, y: 2,
-        //         pivot: pyramid.pivot,
-        //         childsAnchor: pyramid.anchor
-        //     },
-        //     'orange'
-        // );
-
-        // block.build();
-
-        // this.landingBlock = new Block(
-        //     self.phaserGame, self.table, pyramid.patterns,
-        //     {
-        //         x: 5, y: 1,
-        //         pivot: pyramid.pivot,
-        //         childsAnchor: pyramid.anchor
-        //     },
-        //     'green'
-        // );
-
-        // this.landingBlock.build();
-
-        // var block = new Block(
-        //     self.phaserGame, self.table, pyramid.patterns,
-        //     {
-        //         x: 7, y: 2,
-        //         pivot: pyramid.pivot,
-        //         childsAnchor: pyramid.anchor
-        //     },
-        //     'orange'
-        // );
-
-        // block.build();
-
-        // this.landingBlock.rotateRight();
-        // .then(() => {
-        //     block3.rotateRight()
-        //     .then(() => {
-        //         // this.table.row(2).destroy();
-
-        //         // this.table.collapseRowsAbove(2, () => {
-        //             // console.log('YYYIIP');
-        //         // });
-        //     });
-        // });
-
-
-        // this.table.collapseRowsAbove(1, () => {
-            // console.log('YYYIIP');
-        // });
-        // debugger;{}
 
         var gameLoop = new GameLoop(this);
 
