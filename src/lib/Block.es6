@@ -115,11 +115,30 @@ export default class Block {
         this.clearCells();
     }
 
-    land(speed, didLand) {
-        var resolved = () =>                { this.land(speed, didLand); },
-            rejected = (collisions) =>      { didLand(collisions); };
+    unbound() {
+        this.bricks.forEach((brick) => {
+            var _brick = new Brick(
+                brick.table, brick.position.coordinates,
+                brick.color,
+                brick.phaserGame,
+                null,
+                brick.nBrick
+            );
 
-        setTimeout(() => {  
+            _brick.build(false);
+        });
+
+        return this.destroy();
+    }
+
+    land(speed, didLand) {
+        var resolved = ()           => { this.land(speed, didLand); },
+            rejected = (collisions) => {
+                this.unbound();
+                didLand(collisions);
+            };
+
+        setTimeout(() => {
             this.down(true).then(
                 resolved,
                 rejected
@@ -127,6 +146,11 @@ export default class Block {
         }, speed);
     }
 
+    /**
+     * @deprecated !
+     * @param  {[type]} doneCallback [description]
+     * @return {[type]}              [description]
+     */
     collapse(doneCallback) {
         return this.down(true).then(
             this.collapse.bind(this, doneCallback),

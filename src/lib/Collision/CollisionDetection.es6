@@ -10,16 +10,19 @@ export default class CollisionDetection {
         return this.table.offLimits(brick.position);
     }
 
-    /**
-     * @todo Change name to againstBrick()
-     * @param  {[type]} brick [description]
-     * @return {[type]}       [description]
-     */
-    againstBlock(brick) {
+    againstBrick(brick) {
         var cell = this.table.cell(brick.position);
 
-        return cell.brick !== null &&
-               cell.brick.parentBlock.nBlock !== brick.parentBlock.nBlock;
+        if (cell.isEmpty()) {
+            return false;
+        } else {
+            if (cell.brick.parentBlock) {
+                return cell.brick.parentBlock.nBlock !==
+                       brick.parentBlock.nBlock;
+            } else {
+                return true;
+            }
+        }
     }
 
     againstAll(brick) {
@@ -27,7 +30,7 @@ export default class CollisionDetection {
             return new Collision(brick.position, 'WALL_COLLISION');
         }
 
-        if (this.againstBlock(brick)) {
+        if (this.againstBrick(brick)) {
             return new Collision(brick.position, 'BLOCK_COLLISION');
         }
 

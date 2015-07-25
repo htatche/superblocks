@@ -203,16 +203,17 @@ export default class Game {
 
         };
 
-        // var brick = new Brick(
+        // this.landingBlock = new Brick(
         //     self.table,
         //     [5, 5],
         //     'red',
         //     self.phaserGame
         // );
-        // brick.build(false);
+
+        // this.landingBlock.build(false);
 
 
-        createBlocksAtBottom();
+        // createBlocksAtBottom();
 
         // this.landingBlock = new Block(
         //     self.phaserGame, self.table, squareRight.patterns,

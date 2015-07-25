@@ -1,4 +1,5 @@
 import BrickPosition             from './Position/BrickPosition.es6';
+import MoveBrick                 from './Move/MoveBrick.es6';
 import CollisionDetection        from './Collision/CollisionDetection.es6';
 
 /**
@@ -15,6 +16,8 @@ export default class Brick {
         this.nBrick = n ? n : this.table.incrementNBricks();
         this.position     = this.createPosition(coord);
     }
+
+    get moveBrick()         { return new MoveBrick(this.position, this); }
 
     // get / set cell
 
@@ -52,7 +55,7 @@ export default class Brick {
             );
         } else {
             return new BrickPosition(
-                coord[0], coord[1]
+                coord.x, coord.y
             );
         }
     }
@@ -81,12 +84,14 @@ export default class Brick {
     destroy() {
         this.remove(true);
 
+        this.phaserSprite.destroy();
+
         return this.clearCell();
     }
 
     clearCell() {
         return this.table.cell(this.position).clear();
-    }
+    } 
 
     putCell(position) {
         // Allow to pass no position arg (Block.addBrick)
@@ -95,4 +100,12 @@ export default class Brick {
         return this.table.cellsArray.cell(this.position).setTo(this);
     }
 
+    collapse(doneCallback) {
+        return this.down(true).then(
+            this.collapse.bind(this, doneCallback),
+            doneCallback
+        );
+    }
+
+    down(detectCollision)   { return this.moveBrick.down(detectCollision); }
 }

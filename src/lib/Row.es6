@@ -79,12 +79,12 @@ export default class Row {
         var promises        = [],
             previousBricks  = this.bricks.mapTo('nBrick');
 
-        this.blocks.forEach((block) => {
-            promises.push(block.collapse(function() {}));
+        this.bricks.forEach((brick) => {
+            promises.push(brick.collapse(function() {}));
         });
 
         Promise.all(promises).then(() => {
-            var bricks  = this.bricks.mapTo('nBrick');
+            var bricks = this.bricks.mapTo('nBrick');
 
             if (bricks.equals(previousBricks)) { doneCallback(); }
             else { this.collapse(doneCallback); }
