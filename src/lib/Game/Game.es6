@@ -104,9 +104,9 @@ export default class Game {
         else if (this.keyboard.SPACE.justDown) { keyArrow = 'SPACE'; }
 
         switch (keyArrow) {
-            case 'up':
-                this.landingBlock.up(true);
-                break;
+            // case 'up':
+            //     this.landingBlock.up(true);
+            //     break;
             case 'down':
                 this.landingBlock.down(true);
                 break;
