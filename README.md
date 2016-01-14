@@ -1,3 +1,15 @@
-# Tetris
+# Superblocks
 
-Here goes my attempt on building a Tetris with Phaser.js, right now it is a work in progress !
+A heavy but already playable WIP in an atempt to create a Tetromino-esque game with extra functionality.
+
+![Demo](https://zippy.gfycat.com/FeminineGraveEmeraldtreeskink.gif)
+
+### Install
+
+npm install
+bundle install
+gulp serve
+
+### Tech
+
+Phaser.JS to handle the HTML5 canvas.
