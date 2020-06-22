@@ -1,14 +1,20 @@
 # Superblocks
 
-A heavy but already playable WIP in an atempt to create a Tetromino-esque game with extra functionality.
+An attempt to create a Tetromino-esque game with extra functionality.
 
-![Demo](https://zippy.gfycat.com/FeminineGraveEmeraldtreeskink.gif)
+![Demo](https://github.com/htatche/superblocks/blob/master/demo/demo.gif)
+
+### Demo
+
+A demo is available [here](https://super-blocks.herokuapp.com/)
 
 ### Install
 
+```
 npm install
-bundle install
+bower install
 gulp serve
+```
 
 ### Tech
 
